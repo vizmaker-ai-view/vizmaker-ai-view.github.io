@@ -9,12 +9,12 @@
 <script>
   var GA_ID = 'G-00QC63JGWS';   // GA4: VizMaker Viewer (Ads)
 
-  // Tutorial (popup). TUTORIAL_VIDEO = ID filmu z YouTube (część po v= lub youtu.be/), puste = tylko link do kanału.
+  // Tutorial (popup): ID filmu YouTube + teksty
   var TUTORIAL = {
-    video:   '',                                        // np. 'dQw4w9WgXcQ'
-    channel: 'https://www.youtube.com/@vizmaker-ai',
-    title:   'Full tutorial: how to use this project in VizMaker',
-    delaySec: 15                                        // auto-popup po X s (0 = wyłączony)
+    video:    'WRiuqYljDQ4',
+    title:    'Turn any 3D scene into a realistic Live Preview',
+    subtitle: 'Watch how this project was made in VizMaker, step by step.',
+    delaySec: 15            // auto-popup po X s (0 = wyłączony), raz na sesję
   };
 
   // Projekty pokazowe pod reklamy. W linku reklamy: ?p=kuchnia (bez ?p = 'default')
@@ -60,33 +60,73 @@
     width: 100vw; height: 100vh; height: 100dvh;
     border: 0; display: block;
   }
+  :root { --vm-teal: #4fe3d8; --vm-teal-d: #2bbdb3; --vm-bg: #0e1418; --vm-line: rgba(255,255,255,.09); }
   #tut-btn {
     position: fixed; left: 84px; bottom: 112px; z-index: 10;
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,.18);
-    background: rgba(17,24,32,.92); color: #fff; font: 600 14px/1 system-ui, sans-serif;
-    cursor: pointer; box-shadow: 0 6px 24px rgba(0,0,0,.35); backdrop-filter: blur(6px);
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 16px 7px 7px; border-radius: 999px;
+    background: rgba(14,20,24,.88); border: 1px solid var(--vm-line);
+    color: #e9f4f3; font: 600 13.5px/1 Inter, system-ui, -apple-system, sans-serif; letter-spacing: .1px;
+    cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 8px 28px rgba(0,0,0,.45);
+    transition: transform .15s ease, border-color .15s ease;
   }
-  #tut-btn:hover { background: #1f2c38; }
-  #tut-btn .dot { width: 22px; height: 22px; border-radius: 50%; background: #ff0033;
-    display: grid; place-items: center; font-size: 10px; }
-  #tut-overlay { position: fixed; inset: 0; z-index: 20; display: none;
-    align-items: center; justify-content: center; background: rgba(0,0,0,.6); padding: 16px; }
-  #tut-overlay.open { display: flex; }
-  #tut-box { width: min(860px, 100%); background: #111820; color: #fff; border-radius: 14px;
-    overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.5); font-family: system-ui, sans-serif; }
-  #tut-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; }
-  #tut-head h2 { margin: 0; font-size: 16px; font-weight: 600; }
-  #tut-close { background: none; border: 0; color: #aab; font-size: 26px; line-height: 1; cursor: pointer; }
-  #tut-video { position: relative; aspect-ratio: 16 / 9; background: #000; }
-  #tut-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-  #tut-foot { display: flex; gap: 10px; justify-content: flex-end; padding: 14px 18px; flex-wrap: wrap; }
-  .tut-link { padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
-  .tut-yt { background: #ff0033; color: #fff; }
-  .tut-later { background: transparent; color: #aab; border: 1px solid #334; cursor: pointer; }
-  #tut-nov { padding: 28px 18px; color: #cdd; font-size: 15px; }
+  #tut-btn:hover { transform: translateY(-1px); border-color: rgba(79,227,216,.5); }
+  #tut-btn .ic { position: relative; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--vm-teal); display: grid; place-items: center; }
+  #tut-btn .ic svg { width: 12px; height: 12px; margin-left: 2px; fill: #071214; }
+  #tut-btn .ic::after { content: ''; position: absolute; inset: -4px; border-radius: 50%;
+    border: 2px solid var(--vm-teal); opacity: 0; animation: tutPulse 2.4s ease-out infinite; }
+  @keyframes tutPulse { 0% { transform: scale(.85); opacity: .7; } 100% { transform: scale(1.35); opacity: 0; } }
+  #tut-btn small { display: block; font-weight: 500; font-size: 11px; color: #8fa3a6; margin-top: 3px; }
+
+  #tut-overlay { position: fixed; inset: 0; z-index: 20; display: none; padding: 20px;
+    align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at center, rgba(5,10,12,.55), rgba(5,10,12,.82)); backdrop-filter: blur(3px); }
+  #tut-overlay.open { display: flex; animation: tutFade .2s ease; }
+  @keyframes tutFade { from { opacity: 0; } to { opacity: 1; } }
+  #tut-box { position: relative; width: min(760px, 100%); max-height: 100%; overflow: auto;
+    background: linear-gradient(180deg, #121a1f, var(--vm-bg)); border: 1px solid var(--vm-line);
+    border-radius: 20px; box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(79,227,216,.06) inset;
+    color: #e9f4f3; font-family: Inter, system-ui, -apple-system, sans-serif; animation: tutPop .25s cubic-bezier(.2,.9,.3,1.2); }
+  @keyframes tutPop { from { transform: translateY(10px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+  #tut-close { position: absolute; top: 14px; right: 14px; z-index: 2; width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--vm-line); background: rgba(255,255,255,.04); color: #9fb2b4; font-size: 20px; line-height: 1;
+    cursor: pointer; display: grid; place-items: center; }
+  #tut-close:hover { color: #fff; background: rgba(255,255,255,.1); }
+  #tut-head { padding: 22px 64px 16px 24px; }
+  .tut-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px;
+    background: rgba(79,227,216,.12); color: var(--vm-teal); font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; }
+  .tut-badge i { width: 6px; height: 6px; border-radius: 50%; background: var(--vm-teal); }
+  #tut-title { margin: 12px 0 6px; font-size: 21px; line-height: 1.25; font-weight: 700; letter-spacing: -.2px; }
+  #tut-sub { margin: 0; color: #93a7aa; font-size: 14px; line-height: 1.5; }
+  #tut-media { position: relative; margin: 0 24px; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden;
+    background: #000; border: 1px solid var(--vm-line); cursor: pointer; }
+  #tut-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
+  #tut-media:hover img { transform: scale(1.03); }
+  #tut-media .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.45)); }
+  #tut-media .play { position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; border-radius: 50%;
+    background: var(--vm-teal); display: grid; place-items: center; box-shadow: 0 10px 40px rgba(79,227,216,.45); transition: transform .15s ease; }
+  #tut-media:hover .play { transform: scale(1.08); }
+  #tut-media .play svg { width: 26px; height: 26px; margin-left: 4px; fill: #071214; }
+  #tut-media iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  #tut-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 18px 24px 22px; flex-wrap: wrap; }
+  .tut-btn2 { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 10px;
+    font: 600 14px/1 Inter, system-ui, sans-serif; text-decoration: none; cursor: pointer; border: 1px solid transparent; }
+  .tut-ghost { background: transparent; color: #a9bcbe; border-color: var(--vm-line); }
+  .tut-ghost:hover { color: #fff; border-color: rgba(255,255,255,.2); }
+  .tut-yt { background: var(--vm-teal); color: #071214; }
+  .tut-yt:hover { background: var(--vm-teal-d); }
+  .tut-yt svg { width: 18px; height: 18px; fill: currentColor; }
   @media (max-width: 768px) {
-    #tut-btn { left: 12px; bottom: auto; top: 64px; padding: 8px 12px; font-size: 13px; }
+    #tut-btn { left: 12px; bottom: auto; top: 60px; padding: 5px 12px 5px 5px; font-size: 12.5px; }
+    #tut-btn .ic { width: 26px; height: 26px; }
+    #tut-btn small { display: none; }
+    #tut-overlay { padding: 12px; }
+    #tut-head { padding: 18px 56px 12px 18px; }
+    #tut-title { font-size: 18px; }
+    #tut-media { margin: 0 18px; }
+    #tut-foot { padding: 16px 18px 18px; flex-direction: column-reverse; align-items: stretch; }
+    .tut-btn2 { justify-content: center; }
   }
 </style>
 </head>
@@ -118,48 +158,67 @@
     if (e.data && e.data.vmEvent) gtag('event', e.data.vmEvent, P);
   });
 </script>
-<button id="tut-btn" type="button"><span class="dot">&#9654;</span>Full tutorial</button>
+<button id="tut-btn" type="button" aria-label="Watch the video tutorial">
+  <span class="ic"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+  <span>Watch tutorial<small>Step-by-step video</small></span>
+</button>
 <div id="tut-overlay" role="dialog" aria-modal="true" aria-labelledby="tut-title">
   <div id="tut-box">
-    <div id="tut-head"><h2 id="tut-title"></h2><button id="tut-close" type="button" aria-label="Close">&times;</button></div>
-    <div id="tut-body"></div>
+    <button id="tut-close" type="button" aria-label="Close">&times;</button>
+    <div id="tut-head">
+      <span class="tut-badge"><i></i>Video tutorial</span>
+      <h2 id="tut-title"></h2>
+      <p id="tut-sub"></p>
+    </div>
+    <div id="tut-media" role="button" aria-label="Play video"></div>
     <div id="tut-foot">
-      <button class="tut-link tut-later" id="tut-later" type="button">Explore the project</button>
-      <a class="tut-link tut-yt" id="tut-yt" target="_blank" rel="noopener">Open on YouTube</a>
+      <button class="tut-btn2 tut-ghost" id="tut-later" type="button">Explore the project first</button>
+      <a class="tut-btn2 tut-yt" id="tut-yt" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
+        Watch on YouTube
+      </a>
     </div>
   </div>
 </div>
 <script>
   (function () {
-    var ov = document.getElementById('tut-overlay'), body = document.getElementById('tut-body');
+    var ov = document.getElementById('tut-overlay'), media = document.getElementById('tut-media');
     var vid = (PROJECTS[projectKey] && PROJECTS[projectKey].tutorial) || TUTORIAL.video;
-    var ytUrl = vid ? 'https://www.youtube.com/watch?v=' + vid : TUTORIAL.channel;
     document.getElementById('tut-title').textContent = TUTORIAL.title;
-    document.getElementById('tut-yt').href = ytUrl;
+    document.getElementById('tut-sub').textContent = TUTORIAL.subtitle;
+    document.getElementById('tut-yt').href = 'https://www.youtube.com/watch?v=' + vid;
     var shown = false;
     try { shown = sessionStorage.getItem('tut_shown') === '1'; } catch (e) {}
 
+    function thumb() {
+      media.innerHTML = '<img alt="" src="https://i.ytimg.com/vi/' + vid + '/maxresdefault.jpg" ' +
+        'onerror="this.onerror=null;this.src=\'https://i.ytimg.com/vi/' + vid + '/hqdefault.jpg\'">' +
+        '<div class="shade"></div><div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>';
+      media.dataset.state = 'thumb';
+    }
+    function play() {
+      if (media.dataset.state === 'play') return;
+      media.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + vid +
+        '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+      media.dataset.state = 'play';
+      gtag('event', 'tutorial_play', P);
+    }
     function open(source) {
-      body.innerHTML = vid
-        ? '<div id="tut-video"><iframe src="https://www.youtube-nocookie.com/embed/' + vid +
-          '?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe></div>'
-        : '<div id="tut-nov">Watch step-by-step tutorials on our YouTube channel.</div>';
-      ov.classList.add('open');
+      thumb(); ov.classList.add('open');
       try { sessionStorage.setItem('tut_shown', '1'); } catch (e) {}
       gtag('event', 'tutorial_open', Object.assign({ source: source }, P));
     }
     function close(how) {
-      ov.classList.remove('open'); body.innerHTML = '';   // zatrzymuje film
+      ov.classList.remove('open'); media.innerHTML = '';   // zatrzymuje film
       gtag('event', 'tutorial_close', Object.assign({ how: how }, P));
     }
+    media.onclick = play;
     document.getElementById('tut-btn').onclick = function () { open('button'); };
     document.getElementById('tut-close').onclick = function () { close('x'); };
     document.getElementById('tut-later').onclick = function () { close('explore'); };
     ov.addEventListener('click', function (e) { if (e.target === ov) close('backdrop'); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ov.classList.contains('open')) close('esc'); });
-    document.getElementById('tut-yt').onclick = function () {
-      gtag('event', 'tutorial_youtube_click', Object.assign({ video: vid || 'channel' }, P));
-    };
+    document.getElementById('tut-yt').onclick = function () { gtag('event', 'tutorial_youtube_click', P); };
     if (TUTORIAL.delaySec > 0 && !shown) setTimeout(function () {
       if (!ov.classList.contains('open')) open('auto');
     }, TUTORIAL.delaySec * 1000);
