@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VizMaker</title>
+
+<!-- ====== KONFIGURACJA ====== -->
+<script>
+  var GA_ID = 'G-00QC63JGWS';   // GA4: VizMaker Viewer (Ads)
+
+  // Projekty pokazowe pod reklamy. W linku reklamy: ?p=kuchnia (bez ?p = 'default')
+  var PROJECTS = {
+    'default': {
+      desktop: 'https://viewer.svc.vizmaker.com/projectviewer?token=YGUejv3XWkASVC86RyQH2BbWrVcmpVhT',
+      mobile:  'https://viewer.svc.vizmaker.com/projectviewer?token=YGUejv3XWkASVC86RyQH2BbWrVcmpVhT'
+    }
+    // ,'kuchnia': { desktop: 'https://...token=AAA', mobile: 'https://...token=BBB' }
+  };
+</script>
+<!-- ========================== -->
+
+<script>
+  var qs = new URLSearchParams(location.search);
+  var projectKey = PROJECTS[qs.get('p')] ? qs.get('p') : 'default';
+  var isMobile = window.matchMedia('(max-width: 768px)').matches ||
+                 /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  var device = isMobile ? 'mobile' : 'desktop';
+
+  // GA4 (UTM-y i gclid z linku reklamy GA4 łapie automatycznie)
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', GA_ID, { project: projectKey, device_layout: device });
+
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+  document.head.appendChild(s);
+</script>
+
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #0b0f14; }
+  iframe {
+    position: fixed; inset: 0;
+    width: 100vw; height: 100vh; height: 100dvh;
+    border: 0; display: block;
+  }
+</style>
+</head>
+<body>
+<iframe id="viewer" allow="fullscreen; clipboard-write" allowfullscreen></iframe>
+<script>
+  // Przekaż parametry reklamy (utm_*, gclid, fbclid...) dalej do viewera,
+  // żeby rejestracja w VizMaker też wiedziała, z jakiej reklamy przyszedł user.
+  var src = new URL(PROJECTS[projectKey][device]);
+  qs.forEach(function (v, k) {
+    if (/^(utm_|gclid|gbraid|wbraid|fbclid|ttclid|msclkid)/.test(k)) src.searchParams.set(k, v);
+  });
+  document.getElementById('viewer').src = src.toString();
+
+  // Czas na stronie / zaangażowanie: event co 15 s, dopóki karta jest aktywna
+  var seconds = 0;
+  setInterval(function () {
+    if (document.visibilityState === 'visible') {
+      seconds += 15;
+      if ([15, 30, 60, 120].indexOf(seconds) !== -1)
+        gtag('event', 'viewer_engaged', { seconds: seconds, project: projectKey });
+    }
+  }, 15000);
+
+  // Opcjonalnie: viewer może wysyłać kliknięcia do wrappera
+  // (dev dodaje w viewerze: window.parent.postMessage({vmEvent:'use_click'}, '*'))
+  window.addEventListener('message', function (e) {
+    if (!/vizmaker\.com$/.test(new URL(e.origin).hostname)) return;
+    if (e.data && e.data.vmEvent) gtag('event', e.data.vmEvent, { project: projectKey });
+  });
+</script>
+</body>
+</html>
