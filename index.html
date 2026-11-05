@@ -32,8 +32,8 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   var P = { project: projectKey, device_layout: device };   // dołączane do każdego eventu
-  gtag('config', GA_ID, { send_page_view: false });
-  gtag('event', 'page_view', P);
+  gtag('config', GA_ID);
+  gtag('event', 'viewer_open', P);   // otwarcie viewera z projektem i urządzeniem
 
   var s = document.createElement('script');
   s.async = true;
