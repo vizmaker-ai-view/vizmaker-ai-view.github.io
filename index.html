@@ -14,7 +14,9 @@
     video:    'WRiuqYljDQ4',
     title:    'Turn any 3D scene into a realistic Live Preview',
     subtitle: 'Watch how this project was made in VizMaker, step by step.',
-    delaySec: 15            // auto-popup po X s (0 = wyłączony), raz na sesję
+    quickSec: 4,            // popup po X s, jeśli user jeszcze nic nie kliknął w viewerze
+    lateSec:  45,           // jeśli user już klika: popup dopiero po X s (0 = nigdy)
+    everyDays: 7            // pokazuj automatycznie najwyżej raz na X dni
   };
 
   // Projekty pokazowe pod reklamy. W linku reklamy: ?p=kuchnia (bez ?p = 'default')
@@ -121,11 +123,18 @@
     #tut-btn { left: 66px; bottom: calc(176px + env(safe-area-inset-bottom)); padding: 5px 12px 5px 5px; font-size: 12.5px; }
     #tut-btn .ic { width: 26px; height: 26px; }
     #tut-btn small { display: none; }
-    #tut-overlay { padding: 12px; }
-    #tut-head { padding: 18px 56px 12px 18px; }
-    #tut-title { font-size: 18px; }
+    /* telefon: karta wysuwana od dołu, viewer dalej klikalny */
+    #tut-overlay { padding: 0; align-items: flex-end; background: none; backdrop-filter: none; pointer-events: none; }
+    #tut-box { pointer-events: auto; width: 100%; border-radius: 20px 20px 0 0; max-height: 78vh;
+      padding-bottom: env(safe-area-inset-bottom); animation: tutUp .3s cubic-bezier(.2,.9,.3,1); box-shadow: 0 -12px 40px rgba(0,0,0,.6); }
+    @keyframes tutUp { from { transform: translateY(100%); } to { transform: none; } }
+    #tut-box::before { content: ''; display: block; width: 40px; height: 4px; border-radius: 4px; background: #3a4a4e; margin: 10px auto 0; }
+    #tut-close { top: 16px; }
+    #tut-head { padding: 10px 56px 12px 18px; }
+    #tut-title { font-size: 17px; margin-top: 10px; }
+    #tut-sub { font-size: 13px; }
     #tut-media { margin: 0 18px; }
-    #tut-foot { padding: 16px 18px 18px; flex-direction: column-reverse; align-items: stretch; }
+    #tut-foot { padding: 14px 18px 18px; flex-direction: column-reverse; align-items: stretch; gap: 8px; }
     .tut-btn2 { justify-content: center; }
   }
 </style>
@@ -187,8 +196,8 @@
     document.getElementById('tut-title').textContent = TUTORIAL.title;
     document.getElementById('tut-sub').textContent = TUTORIAL.subtitle;
     document.getElementById('tut-yt').href = 'https://www.youtube.com/watch?v=' + vid;
-    var shown = false;
-    try { shown = sessionStorage.getItem('tut_shown') === '1'; } catch (e) {}
+    var KEY = 'vm_tut_seen', recent = false;
+    try { recent = Date.now() - (+localStorage.getItem(KEY) || 0) < TUTORIAL.everyDays * 864e5; } catch (e) {}
 
     function thumb() {
       media.innerHTML = '<img alt="" src="https://i.ytimg.com/vi/' + vid + '/maxresdefault.jpg" ' +
@@ -204,8 +213,8 @@
       gtag('event', 'tutorial_play', P);
     }
     function open(source) {
-      thumb(); ov.classList.add('open');
-      try { sessionStorage.setItem('tut_shown', '1'); } catch (e) {}
+      thumb(); ov.classList.add('open'); opened = true;
+      try { localStorage.setItem(KEY, Date.now()); } catch (e) {}
       gtag('event', 'tutorial_open', Object.assign({ source: source }, P));
     }
     function close(how) {
@@ -219,9 +228,23 @@
     ov.addEventListener('click', function (e) { if (e.target === ov) close('backdrop'); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ov.classList.contains('open')) close('esc'); });
     document.getElementById('tut-yt').onclick = function () { gtag('event', 'tutorial_youtube_click', P); };
-    if (TUTORIAL.delaySec > 0 && !shown) setTimeout(function () {
-      if (!ov.classList.contains('open')) open('auto');
-    }, TUTORIAL.delaySec * 1000);
+
+    // Auto-popup: szybko, jeśli user nic nie robi; później, jeśli już klika w viewer
+    var interacted = false, timer = null, opened = false;
+    function schedule(sec, src) {
+      clearTimeout(timer);
+      if (sec > 0) timer = setTimeout(function () { if (!ov.classList.contains('open')) open(src); }, sec * 1000);
+    }
+    function onInteract() {
+      if (interacted) return; interacted = true;
+      gtag('event', 'viewer_interact', P);
+      if (!recent && !opened) schedule(TUTORIAL.lateSec, 'auto_late');
+    }
+    // klik w viewer przenosi fokus do ramki -> okno dostaje 'blur'
+    window.addEventListener('blur', function () {
+      setTimeout(function () { if (document.activeElement && document.activeElement.id === 'viewer') onInteract(); }, 0);
+    });
+    if (!recent) schedule(TUTORIAL.quickSec, 'auto_idle');
   })();
 </script>
 </body>
