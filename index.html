@@ -19,6 +19,18 @@
     everyDays: 7            // pokazuj automatycznie najwyżej raz na X dni
   };
 
+  // Pasek promo u góry (jak na vizmaker.com)
+  var PROMO = {
+    on:       true,
+    title:    'Nano Banana 2 · 4K · FREE',
+    text:     '7 days of unlimited rendering in 4K quality.',
+    cta:      'Start free trial',
+    ctaShort: 'Try free',
+    url:      'https://www.vizmaker.com/?src=viewer',
+    delayMs:  1500,
+    hideDays: 1             // po zamknięciu (×) wraca po X dniach
+  };
+
   // Projekty pokazowe pod reklamy. W linku reklamy: ?p=kuchnia (bez ?p = 'default')
   var PROJECTS = {
     'default': {
@@ -137,6 +149,46 @@
     #tut-foot { padding: 14px 18px 18px; flex-direction: column-reverse; align-items: stretch; gap: 8px; }
     .tut-btn2 { justify-content: center; }
   }
+  /* ---- pasek promo ---- */
+  :root { --promo-h: 0px; }
+  body.has-promo { --promo-h: 56px; }
+  #viewer { top: var(--promo-h); height: calc(100vh - var(--promo-h)); height: calc(100dvh - var(--promo-h)); transition: top .35s ease, height .35s ease; }
+  #promo { position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 15; display: flex; align-items: center;
+    gap: 22px; padding: 0 64px 0 28px; box-sizing: border-box; overflow: hidden;
+    background: #0a1216; border-bottom: 1px solid rgba(79,227,216,.14);
+    font-family: Inter, system-ui, -apple-system, sans-serif; color: #e9f4f3;
+    transform: translateY(-100%); transition: transform .35s ease; }
+  body.has-promo #promo { transform: none; }
+  #promo::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .55;
+    background-image: radial-gradient(rgba(79,227,216,.35) 1px, transparent 1.5px);
+    background-size: 46px 46px; background-position: 13px 9px;
+    -webkit-mask-image: linear-gradient(90deg, #000, transparent 30%, transparent 70%, #000);
+            mask-image: linear-gradient(90deg, #000, transparent 30%, transparent 70%, #000); }
+  #promo .emo { font-size: 24px; line-height: 1; position: relative; }
+  #promo .ttl { font-weight: 700; font-size: 16px; color: var(--vm-teal); white-space: nowrap; position: relative; }
+  #promo .sep { width: 1px; height: 26px; background: rgba(255,255,255,.12); position: relative; }
+  #promo .txt { color: #c9d6d7; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; }
+  #promo .go { margin-left: auto; position: relative; display: inline-flex; align-items: center; gap: 10px;
+    padding: 0 26px; height: 38px; border-radius: 8px; background: var(--vm-teal); color: #061316;
+    font-weight: 600; font-size: 14px; text-decoration: none; white-space: nowrap;
+    box-shadow: 0 0 22px rgba(79,227,216,.35); transition: background .15s ease, transform .15s ease; }
+  #promo .go:hover { background: #6ff0e6; transform: translateY(-1px); }
+  #promo .go .s { display: none; }
+  #promo .x { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px;
+    border: 0; background: none; color: var(--vm-teal); font-size: 24px; line-height: 1; cursor: pointer; opacity: .85; }
+  #promo .x:hover { opacity: 1; }
+  @media (max-width: 900px) { #promo .sep, #promo .txt { display: none; } }
+  @media (max-width: 768px) {
+    body.has-promo { --promo-h: 50px; }
+    #promo { height: 50px; gap: 10px; padding: 0 44px 0 12px; }
+    #promo .emo { font-size: 20px; }
+    #promo .ttl { font-size: 13.5px; }
+    #promo .go { height: 34px; padding: 0 14px; font-size: 13px; gap: 6px; }
+    #promo .go .l { display: none; }
+    #promo .go .s { display: inline; }
+    #promo .x { right: 6px; font-size: 22px; }
+  }
+  @media (max-width: 340px) { #promo .ttl { font-size: 12px; } }
 </style>
 </head>
 <body>
@@ -245,6 +297,44 @@
       setTimeout(function () { if (document.activeElement && document.activeElement.id === 'viewer') onInteract(); }, 0);
     });
     if (!recent) schedule(TUTORIAL.quickSec, 'auto_idle');
+  })();
+</script>
+<div id="promo" role="region" aria-label="Offer">
+  <span class="emo">🍌</span>
+  <span class="ttl" id="promo-ttl"></span>
+  <span class="sep"></span>
+  <span class="txt" id="promo-txt"></span>
+  <a class="go" id="promo-go" target="_blank" rel="noopener"><span class="l" id="promo-cta"></span><span class="s" id="promo-cta-s"></span> &rarr;</a>
+  <button class="x" id="promo-x" type="button" aria-label="Close">&times;</button>
+</div>
+<script>
+  (function () {
+    if (!PROMO.on) return;
+    var KEY = 'vm_promo_closed', closed = false;
+    try { closed = Date.now() - (+localStorage.getItem(KEY) || 0) < PROMO.hideDays * 864e5; } catch (e) {}
+    if (closed) return;
+    document.getElementById('promo-ttl').textContent = PROMO.title;
+    document.getElementById('promo-txt').textContent = PROMO.text;
+    document.getElementById('promo-cta').textContent = PROMO.cta;
+    document.getElementById('promo-cta-s').textContent = PROMO.ctaShort;
+    // link: src=viewer + parametry reklamy (żeby główne GA wiedziało, z jakiej kampanii i projektu)
+    var u = new URL(PROMO.url), hasUtm = false;
+    qs.forEach(function (v, k) {
+      if (/^(utm_|gclid|gbraid|wbraid|fbclid|ttclid|msclkid)/.test(k)) { u.searchParams.set(k, v); if (k === 'utm_source') hasUtm = true; }
+    });
+    if (hasUtm && !u.searchParams.get('utm_content')) u.searchParams.set('utm_content', projectKey);
+    var go = document.getElementById('promo-go');
+    go.href = u.toString();
+    go.onclick = function () { gtag('event', 'promo_click', P); };
+    document.getElementById('promo-x').onclick = function () {
+      document.body.classList.remove('has-promo');
+      try { localStorage.setItem(KEY, Date.now()); } catch (e) {}
+      gtag('event', 'promo_close', P);
+    };
+    setTimeout(function () {
+      document.body.classList.add('has-promo');
+      gtag('event', 'promo_view', P);
+    }, PROMO.delayMs);
   })();
 </script>
 </body>
