@@ -31,7 +31,8 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', GA_ID, { project: projectKey, device_layout: device });
+  gtag('set', { project: projectKey, device_layout: device });   // trafia do każdego eventu
+  gtag('config', GA_ID);
 
   var s = document.createElement('script');
   s.async = true;
