@@ -31,8 +31,9 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('set', { project: projectKey, device_layout: device });   // trafia do każdego eventu
-  gtag('config', GA_ID);
+  var P = { project: projectKey, device_layout: device };   // dołączane do każdego eventu
+  gtag('config', GA_ID, { send_page_view: false });
+  gtag('event', 'page_view', P);
 
   var s = document.createElement('script');
   s.async = true;
@@ -66,7 +67,7 @@
     if (document.visibilityState === 'visible') {
       seconds += 15;
       if ([15, 30, 60, 120].indexOf(seconds) !== -1)
-        gtag('event', 'viewer_engaged', { seconds: seconds, project: projectKey });
+        gtag('event', 'viewer_engaged', Object.assign({ seconds: seconds }, P));
     }
   }, 15000);
 
@@ -74,7 +75,7 @@
   // (dev dodaje w viewerze: window.parent.postMessage({vmEvent:'use_click'}, '*'))
   window.addEventListener('message', function (e) {
     if (!/vizmaker\.com$/.test(new URL(e.origin).hostname)) return;
-    if (e.data && e.data.vmEvent) gtag('event', e.data.vmEvent, { project: projectKey });
+    if (e.data && e.data.vmEvent) gtag('event', e.data.vmEvent, P);
   });
 </script>
 </body>
