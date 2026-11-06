@@ -245,6 +245,39 @@
   @media (max-width: 768px) {
     #rem-btn { display: flex; left: 66px; bottom: calc(224px + env(safe-area-inset-bottom)); }
   }
+  /* ---- animacje przypomnienia ---- */
+  #rem-btn { overflow: hidden; border-color: rgba(79,227,216,.5); box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 0 0 rgba(79,227,216,.5); animation: remGlow 2.4s ease-out infinite; }
+  #rem-btn::after { content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 45%; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(79,227,216,.35), transparent); animation: remShine 3.2s ease-in-out infinite; }
+  #rem-btn .ic svg { transform-origin: 50% 20%; animation: remRing 4s ease-in-out infinite; }
+  @keyframes remGlow { 0% { box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 0 0 rgba(79,227,216,.55); } 70%,100% { box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 0 10px rgba(79,227,216,0); } }
+  @keyframes remShine { 0%,55% { left: -60%; } 100% { left: 130%; } }
+  @keyframes remRing { 0%,78%,100% { transform: rotate(0); } 82% { transform: rotate(16deg); } 86% { transform: rotate(-14deg); } 90% { transform: rotate(10deg); } 94% { transform: rotate(-6deg); } }
+  #rem-tip { position: fixed; z-index: 11; left: 60px; bottom: calc(272px + env(safe-area-inset-bottom)); width: 240px; display: none;
+    padding: 12px 14px; border-radius: 14px; background: #111c21; border: 1px solid rgba(79,227,216,.45);
+    box-shadow: 0 14px 36px rgba(0,0,0,.55), 0 0 24px rgba(79,227,216,.18); color: #e9f4f3; font: 500 13px/1.4 Inter, system-ui, sans-serif; }
+  #rem-tip.on { display: block; animation: tipIn .45s cubic-bezier(.2,1.4,.4,1); }
+  #rem-tip::after { content: ''; position: absolute; left: 22px; bottom: -7px; width: 12px; height: 12px; background: #111c21;
+    border-right: 1px solid rgba(79,227,216,.45); border-bottom: 1px solid rgba(79,227,216,.45); transform: rotate(45deg); }
+  #rem-tip b { color: #ffffff; }
+  #rem-tip button { margin-top: 10px; width: 100%; height: 36px; border: 0; border-radius: 9px; background: var(--vm-teal); color: #061316;
+    font: 700 13px/1 Inter, system-ui, sans-serif; cursor: pointer; }
+  @keyframes tipIn { from { opacity: 0; transform: translateY(12px) scale(.9); } to { opacity: 1; transform: none; } }
+  .rem-hero { display: flex; align-items: center; gap: 14px; margin: 2px 44px 14px 0; }
+  .rem-cal { width: 58px; flex: none; border-radius: 12px; overflow: hidden; background: #f4fbfa; text-align: center;
+    box-shadow: 0 8px 22px rgba(0,0,0,.45); animation: calDrop .6s cubic-bezier(.2,1.5,.4,1) both; }
+  .rem-cal span { display: block; background: var(--vm-teal); color: #061316; font: 800 10px/1 Inter, sans-serif; letter-spacing: 1px; padding: 5px 0 4px; }
+  .rem-cal b { display: block; color: #0a1216; font: 800 26px/1 'Space Grotesk', Inter, sans-serif; padding: 6px 0 7px; }
+  @keyframes calDrop { from { opacity: 0; transform: translateY(-18px) rotate(-12deg); } to { opacity: 1; transform: none; } }
+  .rem-when { display: flex; flex-direction: column; gap: 4px; }
+  .rem-when strong { display: flex; align-items: center; gap: 8px; font: 700 18px/1.2 Inter, sans-serif; color: #ffffff; }
+  .rem-when small { font-size: 12.5px; color: #93a7aa; }
+  .rem-when svg { width: 18px; height: 18px; stroke: var(--vm-teal); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transform-origin: 50% 15%; animation: bellRing 1.6s ease-in-out .5s 3; }
+  @keyframes bellRing { 0%,100% { transform: rotate(0); } 15% { transform: rotate(18deg); } 30% { transform: rotate(-16deg); } 45% { transform: rotate(12deg); } 60% { transform: rotate(-8deg); } 75% { transform: rotate(4deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    #rem-btn, #rem-btn::after, #rem-btn .ic svg, #rem-tip.on, .rem-cal, .rem-when svg { animation: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -341,7 +374,7 @@
     var interacted = false, timer = null, opened = false;
     function schedule(sec, src) {
       clearTimeout(timer);
-      if (sec > 0) timer = setTimeout(function () { if (!ov.classList.contains('open')) open(src); }, sec * 1000);
+      if (sec > 0 && !isMobile) timer = setTimeout(function () { if (!ov.classList.contains('open')) open(src); }, sec * 1000);   // na telefonie bez auto-popupu
     }
     function onInteract() {
       if (interacted) return; interacted = true;
@@ -418,8 +451,19 @@
   <span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M12 13.5v3.5M10.25 15.25h3.5"/></svg></span>
   <span>Open later on PC</span>
 </button>
+<div id="rem-tip" role="status">
+  <b>Not at your computer?</b> We'll remind you tomorrow at 9:00 with a link to this project.
+  <button type="button" id="rem-tip-go">Remind me</button>
+</div>
 <div id="rem-sheet" role="dialog" aria-modal="false" aria-labelledby="rem-title">
   <button id="rem-x" type="button" aria-label="Close">&times;</button>
+  <div class="rem-hero">
+    <div class="rem-cal" aria-hidden="true"><span id="rem-mon">NOV</span><b id="rem-num">7</b></div>
+    <div class="rem-when">
+      <strong><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span id="rem-day">Tomorrow, 9:00</span></strong>
+      <small>A reminder with the project link</small>
+    </div>
+  </div>
   <h3 id="rem-title">Remind me tomorrow at 9:00</h3>
   <p>We'll add a calendar event with the link, so you can open this project on your computer.</p>
   <div class="opts">
@@ -495,6 +539,33 @@
       sh.classList.add('open'); gtag('event', 'reminder_safari_handoff', P);
     }
     document.getElementById('rem-x').onclick = function () { sh.classList.remove('open'); };
+  })();
+</script>
+<script>
+  (function () {
+    var sh = document.getElementById('rem-sheet'), tip = document.getElementById('rem-tip');
+    var d = new Date(); d.setDate(d.getDate() + 1);
+    try {
+      document.getElementById('rem-mon').textContent = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+      document.getElementById('rem-day').textContent = 'Tomorrow, ' + d.toLocaleDateString('en-US', { weekday: 'short' }) + ' 9:00';
+    } catch (e) {}
+    document.getElementById('rem-num').textContent = d.getDate();
+    if (!window.matchMedia('(max-width: 768px)').matches) return;
+    var shown = false; try { shown = sessionStorage.getItem('vm_rem_tip') === '1'; } catch (e) {}
+    function hideTip() { tip.classList.remove('on'); }
+    function tryTip() {
+      if (shown || sh.classList.contains('open')) return;
+      var tut = document.getElementById('tut-overlay');
+      if (tut && tut.classList.contains('open')) { setTimeout(tryTip, 3000); return; }
+      shown = true; try { sessionStorage.setItem('vm_rem_tip', '1'); } catch (e) {}
+      tip.classList.add('on'); gtag('event', 'reminder_nudge_shown', P);
+      setTimeout(hideTip, 8000);
+    }
+    setTimeout(tryTip, 2500);
+    document.getElementById('rem-tip-go').onclick = function () {
+      hideTip(); sh.classList.add('open'); gtag('event', 'reminder_open', Object.assign({ source: 'nudge' }, P));
+    };
+    document.getElementById('rem-btn').addEventListener('click', hideTip);
   })();
 </script>
 </body>
