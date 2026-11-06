@@ -457,7 +457,9 @@
       'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(title), 'END:VALARM',
       'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
     var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    var main = document.getElementById(isIOS ? 'rem-apple' : 'rem-google');
+    var _blocked = isIOS && /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line\/|TikTok|Snapchat|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
+    if (_blocked) document.getElementById('rem-apple').textContent = 'Apple Calendar (open in Safari)';
+    var main = document.getElementById(isIOS && !_blocked ? 'rem-apple' : 'rem-google');
     main.classList.add('main'); main.parentNode.insertBefore(main, main.parentNode.firstChild);
     function done(provider) {
       gtag('event', 'reminder_add', Object.assign({ provider: provider }, P));
