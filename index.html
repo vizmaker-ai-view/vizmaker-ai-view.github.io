@@ -278,6 +278,21 @@
   @media (prefers-reduced-motion: reduce) {
     #rem-btn, #rem-btn::after, #rem-btn .ic svg, #rem-tip.on, .rem-cal, .rem-when svg { animation: none !important; }
   }
+  /* ---- przypomnienie: wybór godziny + wersja PC ---- */
+  .rem-times { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+  .rem-t { height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--vm-line); background: transparent;
+    color: #c9d6d7; font: 600 13px/1 Inter, system-ui, sans-serif; cursor: pointer; }
+  .rem-t[aria-checked="true"] { background: rgba(79,227,216,.14); border-color: var(--vm-teal); color: #ffffff; }
+  #rem-btn .ld { display: none; }
+  @media (min-width: 769px) {
+    #rem-btn { display: flex; left: 84px; bottom: 162px; padding: 7px 16px 7px 7px; font-size: 13.5px; }
+    #rem-btn .ic { width: 30px; height: 30px; }
+    #rem-btn .lm { display: none; } #rem-btn .ld { display: inline; }
+    #rem-sheet { left: 84px; right: auto; bottom: 214px; width: 380px; border-radius: 18px; border-bottom: 1px solid var(--vm-line);
+      padding: 18px 20px 20px; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+    #rem-sheet.open { animation: tipIn .35s cubic-bezier(.2,1.2,.4,1); }
+    #rem-sheet::before { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -447,9 +462,9 @@
     });
   })();
 </script>
-<button id="rem-btn" type="button" aria-label="Remind me to open this on my computer">
+<button id="rem-btn" type="button" aria-label="Get a calendar reminder to open this project later">
   <span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M12 13.5v3.5M10.25 15.25h3.5"/></svg></span>
-  <span>Open later on PC</span>
+  <span class="lm">Open later on PC</span><span class="ld">Remind me later</span>
 </button>
 <div id="rem-tip" role="status">
   <b>Not at your computer?</b> We'll remind you tomorrow at 9:00 with a link to this project.
@@ -465,56 +480,88 @@
     </div>
   </div>
   <h3 id="rem-title">Remind me tomorrow at 9:00</h3>
-  <p>We'll add a calendar event with the link, so you can open this project on your computer.</p>
+  <p id="rem-sub">We'll add a calendar event with the link, so you can open this project on your computer.</p>
+  <div class="rem-times" id="rem-times" role="radiogroup" aria-label="Reminder time"></div>
   <div class="opts">
     <a class="opt" id="rem-google" target="_blank" rel="noopener">Google Calendar</a>
     <a class="opt" id="rem-apple" href="#">Apple Calendar (iPhone)</a>
     <a class="opt" id="rem-outlook" target="_blank" rel="noopener">Outlook</a>
   </div>
-  <div id="rem-done">Added — see you tomorrow at 9:00</div>
+  <div id="rem-done"></div>
 </div>
 <script>
   (function () {
     var btn = document.getElementById('rem-btn'), sh = document.getElementById('rem-sheet');
     var p2 = function (n) { return (n < 10 ? '0' : '') + n; };
-    var start = new Date(); start.setDate(start.getDate() + 1); start.setHours(9, 0, 0, 0);
-    var end = new Date(start.getTime() + 15 * 60000);
     var loc = function (d) { return d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + 'T' + p2(d.getHours()) + p2(d.getMinutes()) + '00'; };
     var utc = function (d) { return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); };
-    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
-    var link = location.origin + location.pathname + '?p=' + encodeURIComponent(projectKey) +
-      '&utm_source=calendar&utm_medium=reminder&utm_campaign=' + encodeURIComponent(qs.get('utm_campaign') || projectKey);
-    var title = 'Open your VizMaker project';
-    var body = 'Open this project on your computer:\n' + link +
-      '\n\nNano Banana 2 · 4K — 7 days of unlimited rendering free:\nhttps://www.vizmaker.com/?src=viewer';
-    document.getElementById('rem-google').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
-      '&text=' + encodeURIComponent(title) + '&dates=' + loc(start) + '/' + loc(end) +
-      (tz ? '&ctz=' + encodeURIComponent(tz) : '') + '&details=' + encodeURIComponent(body);
-    document.getElementById('rem-outlook').href = 'https://outlook.live.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent' +
-      '&subject=' + encodeURIComponent(title) + '&startdt=' + encodeURIComponent(start.toISOString()) +
-      '&enddt=' + encodeURIComponent(end.toISOString()) + '&body=' + encodeURIComponent(body);
     var esc = function (t) { return t.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;'); };
-    var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//VizMaker//Viewer//EN', 'BEGIN:VEVENT',
-      'UID:' + Date.now() + '@vizmaker-ai-view', 'DTSTAMP:' + utc(new Date()),
-      'DTSTART:' + loc(start), 'DTEND:' + loc(end), 'SUMMARY:' + esc(title),
-      'DESCRIPTION:' + esc(body), 'URL:' + link,
-      'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(title), 'END:VALARM',
-      'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-    var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    var _blocked = isIOS && /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line\/|TikTok|Snapchat|CriOS|FxiOS|EdgiOS/i.test(navigator.userAgent);
-    if (_blocked) document.getElementById('rem-apple').textContent = 'Apple Calendar (open in Safari)';
-    var main = document.getElementById(isIOS && !_blocked ? 'rem-apple' : 'rem-google');
-    main.classList.add('main'); main.parentNode.insertBefore(main, main.parentNode.firstChild);
-    function done(provider) {
-      gtag('event', 'reminder_add', Object.assign({ provider: provider }, P));
-      document.getElementById('rem-done').style.display = 'block';
-    }
-    document.getElementById('rem-google').addEventListener('click', function () { done('google'); });
-    document.getElementById('rem-outlook').addEventListener('click', function () { done('outlook'); });
+    var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
     var ua = navigator.userAgent;
+    var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     var inApp = /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line\/|TikTok|Snapchat/i.test(ua);
     var iosOther = isIOS && /CriOS|FxiOS|EdgiOS/i.test(ua);
     var note = document.getElementById('rem-done');
+    var link = location.origin + location.pathname + '?p=' + encodeURIComponent(projectKey) +
+      '&utm_source=calendar&utm_medium=reminder&utm_campaign=' + encodeURIComponent(qs.get('utm_campaign') || projectKey);
+    var title = 'Open your VizMaker project';
+    var body = (isMobile ? 'Open this project on your computer:\n' : 'Your VizMaker project:\n') + link +
+      '\n\nNano Banana 2 · 4K — 7 days of unlimited rendering free:\nhttps://www.vizmaker.com/?src=viewer';
+    if (!isMobile) document.getElementById('rem-sub').textContent = "We'll add a calendar event with a link back to this project.";
+    if (!isIOS) document.getElementById('rem-apple').textContent = 'Apple Calendar (.ics)';
+    else if (inApp || iosOther) document.getElementById('rem-apple').textContent = 'Apple Calendar (open in Safari)';
+    var main = document.getElementById(isIOS && !inApp && !iosOther ? 'rem-apple' : 'rem-google');
+    main.classList.add('main'); main.parentNode.insertBefore(main, main.parentNode.firstChild);
+
+    // terminy: dziś 19:00 (tylko do 17:00), jutro 9:00 (domyślnie), jutro 19:00
+    var now = new Date(), opts = [];
+    var mk = function (addDays, h) { var d = new Date(); d.setDate(d.getDate() + addDays); d.setHours(h, 0, 0, 0); return d; };
+    if (now.getHours() < 17) opts.push({ key: 'today_19', label: 'Tonight 19:00', when: 'tonight at 19:00', start: mk(0, 19) });
+    opts.push({ key: 'tomorrow_9', label: 'Tomorrow 9:00', when: 'tomorrow at 9:00', start: mk(1, 9) });
+    opts.push({ key: 'tomorrow_19', label: 'Tomorrow 19:00', when: 'tomorrow at 19:00', start: mk(1, 19) });
+    var cur = opts.filter(function (o) { return o.key === 'tomorrow_9'; })[0], ics = '';
+
+    function build(o) {
+      cur = o;
+      var start = o.start, end = new Date(start.getTime() + 15 * 60000);
+      document.getElementById('rem-google').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+        '&text=' + encodeURIComponent(title) + '&dates=' + loc(start) + '/' + loc(end) +
+        (tz ? '&ctz=' + encodeURIComponent(tz) : '') + '&details=' + encodeURIComponent(body);
+      document.getElementById('rem-outlook').href = 'https://outlook.live.com/calendar/0/deeplink/compose?path=%2Fcalendar%2Faction%2Fcompose&rru=addevent' +
+        '&subject=' + encodeURIComponent(title) + '&startdt=' + encodeURIComponent(start.toISOString()) +
+        '&enddt=' + encodeURIComponent(end.toISOString()) + '&body=' + encodeURIComponent(body);
+      ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//VizMaker//Viewer//EN', 'BEGIN:VEVENT',
+        'UID:' + Date.now() + '@vizmaker-ai-view', 'DTSTAMP:' + utc(new Date()),
+        'DTSTART:' + loc(start), 'DTEND:' + loc(end), 'SUMMARY:' + esc(title),
+        'DESCRIPTION:' + esc(body), 'URL:' + link,
+        'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:' + esc(title), 'END:VALARM',
+        'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+      try {
+        document.getElementById('rem-mon').textContent = start.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+        document.getElementById('rem-day').textContent = (o.key === 'today_19' ? 'Tonight' : 'Tomorrow') + ', ' +
+          start.toLocaleDateString('en-US', { weekday: 'short' }) + ' ' + start.getHours() + ':00';
+      } catch (e) {}
+      document.getElementById('rem-num').textContent = start.getDate();
+      document.getElementById('rem-title').textContent = 'Remind me ' + o.when;
+      note.style.display = 'none';
+      [].forEach.call(document.querySelectorAll('.rem-t'), function (b) { b.setAttribute('aria-checked', b.dataset.k === o.key ? 'true' : 'false'); });
+    }
+    var box = document.getElementById('rem-times');
+    opts.forEach(function (o) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'rem-t'; b.setAttribute('role', 'radio'); b.dataset.k = o.key; b.textContent = o.label;
+      b.onclick = function () { build(o); gtag('event', 'reminder_time', Object.assign({ when: o.key }, P)); };
+      box.appendChild(b);
+    });
+    build(cur);
+
+    function done(provider) {
+      gtag('event', 'reminder_add', Object.assign({ provider: provider, when: cur.key }, P));
+      note.textContent = 'Added — see you ' + cur.when;
+      note.style.display = 'block';
+    }
+    document.getElementById('rem-google').addEventListener('click', function () { done('google'); });
+    document.getElementById('rem-outlook').addEventListener('click', function () { done('outlook'); });
     document.getElementById('rem-apple').addEventListener('click', function (e) {
       e.preventDefault();
       if (isIOS && (inApp || iosOther)) {
@@ -528,28 +575,22 @@
         return;
       }
       done('apple');
-      var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-      var url = URL.createObjectURL(blob);
+      var url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
       if (isIOS) { location.href = url; return; }
       var a = document.createElement('a'); a.href = url;
       a.download = 'vizmaker-reminder.ics'; document.body.appendChild(a); a.click(); a.remove();
     });
-    btn.onclick = function () { sh.classList.add('open'); gtag('event', 'reminder_open', P); };
-    if (qs.get('rem') === 'apple') {   // przyszedł z Instagrama do Safari: od razu pokaż kartę
-      sh.classList.add('open'); gtag('event', 'reminder_safari_handoff', P);
-    }
+    btn.onclick = function () {
+      if (sh.classList.contains('open')) { sh.classList.remove('open'); return; }
+      sh.classList.add('open'); gtag('event', 'reminder_open', P);
+    };
+    if (qs.get('rem') === 'apple') { sh.classList.add('open'); gtag('event', 'reminder_safari_handoff', P); }
     document.getElementById('rem-x').onclick = function () { sh.classList.remove('open'); };
   })();
 </script>
 <script>
   (function () {
     var sh = document.getElementById('rem-sheet'), tip = document.getElementById('rem-tip');
-    var d = new Date(); d.setDate(d.getDate() + 1);
-    try {
-      document.getElementById('rem-mon').textContent = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
-      document.getElementById('rem-day').textContent = 'Tomorrow, ' + d.toLocaleDateString('en-US', { weekday: 'short' }) + ' 9:00';
-    } catch (e) {}
-    document.getElementById('rem-num').textContent = d.getDate();
     if (!window.matchMedia('(max-width: 768px)').matches) return;
     var shown = false; try { shown = sessionStorage.getItem('vm_rem_tip') === '1'; } catch (e) {}
     function hideTip() { tip.classList.remove('on'); }
