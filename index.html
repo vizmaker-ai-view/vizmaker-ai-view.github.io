@@ -475,6 +475,8 @@
       e.preventDefault();
       if (isIOS && (inApp || iosOther)) {
         gtag('event', 'reminder_blocked', Object.assign({ provider: 'apple', browser: inApp ? 'in_app' : 'ios_other' }, P));
+        var u = new URL(location.href); u.searchParams.set('rem', 'apple');
+        location.href = 'x-safari-' + u.toString();   // próba otwarcia w Safari (iOS 17+)
         note.textContent = inApp
           ? 'Apple Calendar can\u2019t open inside this app. Tap \u2022\u2022\u2022 \u2192 Open in browser (Safari), or use Google Calendar.'
           : 'Apple Calendar works in Safari. Open this page in Safari, or use Google Calendar.';
@@ -489,6 +491,9 @@
       a.download = 'vizmaker-reminder.ics'; document.body.appendChild(a); a.click(); a.remove();
     });
     btn.onclick = function () { sh.classList.add('open'); gtag('event', 'reminder_open', P); };
+    if (qs.get('rem') === 'apple') {   // przyszedł z Instagrama do Safari: od razu pokaż kartę
+      sh.classList.add('open'); gtag('event', 'reminder_safari_handoff', P);
+    }
     document.getElementById('rem-x').onclick = function () { sh.classList.remove('open'); };
   })();
 </script>
