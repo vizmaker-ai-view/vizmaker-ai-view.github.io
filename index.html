@@ -465,11 +465,25 @@
     }
     document.getElementById('rem-google').addEventListener('click', function () { done('google'); });
     document.getElementById('rem-outlook').addEventListener('click', function () { done('outlook'); });
+    var ua = navigator.userAgent;
+    var inApp = /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line\/|TikTok|Snapchat/i.test(ua);
+    var iosOther = isIOS && /CriOS|FxiOS|EdgiOS/i.test(ua);
+    var note = document.getElementById('rem-done');
     document.getElementById('rem-apple').addEventListener('click', function (e) {
-      e.preventDefault(); done('apple');
-      var url = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+      e.preventDefault();
+      if (isIOS && (inApp || iosOther)) {
+        gtag('event', 'reminder_blocked', Object.assign({ provider: 'apple', browser: inApp ? 'in_app' : 'ios_other' }, P));
+        note.textContent = inApp
+          ? 'Apple Calendar can\u2019t open inside this app. Tap \u2022\u2022\u2022 \u2192 Open in browser (Safari), or use Google Calendar.'
+          : 'Apple Calendar works in Safari. Open this page in Safari, or use Google Calendar.';
+        note.style.display = 'block';
+        return;
+      }
+      done('apple');
+      var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
       if (isIOS) { location.href = url; return; }
-      var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+      var a = document.createElement('a'); a.href = url;
       a.download = 'vizmaker-reminder.ics'; document.body.appendChild(a); a.click(); a.remove();
     });
     btn.onclick = function () { sh.classList.add('open'); gtag('event', 'reminder_open', P); };
