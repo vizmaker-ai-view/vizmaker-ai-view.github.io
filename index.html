@@ -140,7 +140,7 @@
   .tut-yt:hover { background: var(--vm-teal-d); }
   .tut-yt svg { width: 18px; height: 18px; fill: currentColor; }
   @media (max-width: 768px) {
-    #tut-btn { left: 66px; bottom: calc(176px + env(safe-area-inset-bottom)); padding: 5px 12px 5px 5px; font-size: 12.5px; }
+    #tut-btn { left: 10px; bottom: calc(176px + env(safe-area-inset-bottom)); padding: 5px 12px 5px 5px; font-size: 12.5px; }
     #tut-btn .ic { width: 26px; height: 26px; }
     #tut-btn small { display: none; }
     /* telefon: karta wysuwana od dołu, viewer dalej klikalny */
@@ -243,7 +243,7 @@
     background: rgba(255,255,255,.04); color: #9fb2b4; font-size: 20px; line-height: 1; cursor: pointer; }
   #rem-done { display: none; margin-top: 12px; font-size: 13.5px; color: var(--vm-teal); text-align: center; }
   @media (max-width: 768px) {
-    #rem-btn { display: flex; left: 66px; bottom: calc(224px + env(safe-area-inset-bottom)); }
+    #rem-btn { display: flex; left: 10px; bottom: calc(224px + env(safe-area-inset-bottom)); }
   }
   /* ---- animacje przypomnienia ---- */
   #rem-btn { overflow: hidden; border-color: rgba(79,227,216,.5); box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 0 0 rgba(79,227,216,.5); animation: remGlow 2.4s ease-out infinite; }
@@ -253,7 +253,7 @@
   @keyframes remGlow { 0% { box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 0 0 rgba(79,227,216,.55); } 70%,100% { box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 0 10px rgba(79,227,216,0); } }
   @keyframes remShine { 0%,55% { left: -60%; } 100% { left: 130%; } }
   @keyframes remRing { 0%,78%,100% { transform: rotate(0); } 82% { transform: rotate(16deg); } 86% { transform: rotate(-14deg); } 90% { transform: rotate(10deg); } 94% { transform: rotate(-6deg); } }
-  #rem-tip { position: fixed; z-index: 11; left: 60px; bottom: calc(272px + env(safe-area-inset-bottom)); width: 240px; display: none;
+  #rem-tip { position: fixed; z-index: 11; left: 6px; bottom: calc(272px + env(safe-area-inset-bottom)); width: 240px; display: none;
     padding: 12px 14px; border-radius: 14px; background: #111c21; border: 1px solid rgba(79,227,216,.45);
     box-shadow: 0 14px 36px rgba(0,0,0,.55), 0 0 24px rgba(79,227,216,.18); color: #e9f4f3; font: 500 13px/1.4 Inter, system-ui, sans-serif; }
   #rem-tip.on { display: block; animation: tipIn .45s cubic-bezier(.2,1.4,.4,1); }
@@ -561,7 +561,7 @@
       tip.classList.add('on'); gtag('event', 'reminder_nudge_shown', P);
       setTimeout(hideTip, 8000);
     }
-    setTimeout(tryTip, 2500);
+    setTimeout(tryTip, 1250);
     document.getElementById('rem-tip-go').onclick = function () {
       hideTip(); sh.classList.add('open'); gtag('event', 'reminder_open', Object.assign({ source: 'nudge' }, P));
     };
