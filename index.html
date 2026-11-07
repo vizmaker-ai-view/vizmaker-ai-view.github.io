@@ -8,7 +8,8 @@
 <!-- ====== KONFIGURACJA ====== -->
 <script>
   var GA_ID = 'G-00QC63JGWS';   // GA4: VizMaker Viewer (Ads)
-  var FB_PIXEL_ID = '1432323734761249';   // Meta Pixel: dataset VizMaker Websites
+  var FB_PIXEL_ID = '1874148790429212';   // Meta Pixel: VizMaker Viewer (VizAcademy UK)
+  var FB_ENGAGED_SEC = 15;   // po ilu s oglądania leci ViewerEngaged do Meta (15/30/60/120)
 
   // Tutorial (popup): ID filmu YouTube + teksty
   var TUTORIAL = {
@@ -75,7 +76,7 @@
   s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
   document.head.appendChild(s);
 
-  // Meta Pixel (VizMaker Websites): PageView na starcie + wybrane eventy GA4 -> Meta
+  // Meta Pixel (VizMaker Viewer): PageView na starcie + wybrane eventy GA4 -> Meta
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
   n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
@@ -92,6 +93,7 @@
   };
   function fbEvent(name, params) {
     var m = FB_MAP[name]; if (!m || !window.fbq) return;
+    if (name === 'viewer_engaged' && (params || {}).seconds !== FB_ENGAGED_SEC) return;   // 1 konwersja na wizytę
     fbq(m[0], m[1], Object.assign({ content_name: projectKey, content_category: device }, params || {}));
   }
   fbEvent('viewer_open');   // viewer_open poszedł do GA4 wyżej, zanim był wrapper
