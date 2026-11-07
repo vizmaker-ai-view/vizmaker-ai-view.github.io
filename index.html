@@ -117,21 +117,25 @@
   })(window, document, 'script', 'https://bzrcdn.openai.com/sdk/oaiq.min.js');
   oaiq('init', { pixelId: OAI_PIXEL_ID });
 
-  var OAI_MAP = {   // event GA4 -> [event OpenAI, dane, nazwa custom]
-    viewer_open:    ['contents_viewed',       { type: 'contents' }],
-    viewer_engaged: ['custom',                { type: 'custom' }, 'viewer_engaged'],   // cel optymalizacji
-    reminder_add:   ['appointment_scheduled', { type: 'customer_action' }],
-    promo_click:    ['lead_created',          { type: 'customer_action' }]
+  // event GA4 -> lista [event OpenAI, dane, nazwa custom]
+  // UWAGA: kampanie "Conversions" w OpenAI optymalizują tylko pod eventy standardowe,
+  // dlatego oglądanie 15 s+ leci jako standardowe contents_viewed (cel optymalizacji)
+  var OAI_MAP = {
+    viewer_engaged: [['contents_viewed', { type: 'contents' }],
+                     ['custom',          { type: 'custom' }, 'viewer_engaged']],
+    reminder_add:   [['appointment_scheduled', { type: 'customer_action' }]],
+    promo_click:    [['lead_created',          { type: 'customer_action' }]]
   };
   var oaiVisit = Date.now().toString(36) + Math.random().toString(36).slice(2, 8), oaiSeq = 0;
   function oaiEvent(name, params) {
-    var m = OAI_MAP[name]; if (!m || !window.oaiq) return;
+    var list = OAI_MAP[name]; if (!list || !window.oaiq) return;
     if (name === 'viewer_engaged' && (params || {}).seconds !== FB_ENGAGED_SEC) return;   // 1 konwersja na wizytę
-    var opts = { event_id: oaiVisit + '_' + name + '_' + (++oaiSeq) };
-    if (m[2]) opts.custom_event_name = m[2];
-    oaiq('measure', m[0], m[1], opts);
+    list.forEach(function (m) {
+      var opts = { event_id: oaiVisit + '_' + m[0] + '_' + (++oaiSeq) };
+      if (m[2]) opts.custom_event_name = m[2];
+      oaiq('measure', m[0], m[1], opts);
+    });
   }
-  oaiEvent('viewer_open');
 
   var _gtag = gtag;
   gtag = function (type, name, params) {
