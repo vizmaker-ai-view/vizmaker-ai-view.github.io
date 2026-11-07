@@ -67,7 +67,11 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  var P = { project: projectKey, device_layout: device };   // dołączane do każdego eventu
+  // Źródło reklamy z linku - dołączane do każdego eventu (obejście "(not set)" w GA)
+  var adSource = qs.get('utm_source') || (qs.get('fbclid') ? 'facebook' : qs.get('oppref') ? 'chatgpt' :
+                 (qs.get('gclid') || qs.get('gbraid') || qs.get('wbraid')) ? 'google' : qs.get('li_fat_id') ? 'linkedin' : 'direct');
+  var P = { project: projectKey, device_layout: device, ad_source: adSource,
+            ad_campaign: qs.get('utm_campaign') || '(none)', ad_content: qs.get('utm_content') || '(none)' };   // dołączane do każdego eventu
   gtag('config', GA_ID);
   gtag('event', 'viewer_open', P);   // otwarcie viewera z projektem i urządzeniem
 
@@ -532,11 +536,16 @@
     var inApp = /Instagram|FBAN|FBAV|FB_IAB|Messenger|Line\/|TikTok|Snapchat/i.test(ua);
     var iosOther = isIOS && /CriOS|FxiOS|EdgiOS/i.test(ua);
     var note = document.getElementById('rem-done');
+    var origSrc = adSource;
     var link = location.origin + location.pathname + '?p=' + encodeURIComponent(projectKey) +
-      '&utm_source=calendar&utm_medium=reminder&utm_campaign=' + encodeURIComponent(qs.get('utm_campaign') || projectKey);
+      '&utm_source=calendar&utm_medium=reminder&utm_campaign=' + encodeURIComponent(qs.get('utm_campaign') || projectKey) +
+      '&utm_term=' + encodeURIComponent(origSrc);
     var title = 'Open your VizMaker project';
+    var promoLink = 'https://www.vizmaker.com/?src=viewer&utm_source=calendar&utm_medium=reminder' +
+      '&utm_campaign=' + encodeURIComponent(qs.get('utm_campaign') || projectKey) +
+      '&utm_content=' + encodeURIComponent(projectKey) + '&utm_term=' + encodeURIComponent(origSrc);
     var body = (isMobile ? 'Open this project on your computer:\n' : 'Your VizMaker project:\n') + link +
-      '\n\nNano Banana 2 · 4K — 7 days of unlimited rendering free:\nhttps://www.vizmaker.com/?src=viewer';
+      '\n\nNano Banana 2 · 4K — 7 days of unlimited rendering free:\n' + promoLink;
     if (!isMobile) document.getElementById('rem-sub').textContent = "We'll add a calendar event with a link back to this project.";
     if (!isIOS) document.getElementById('rem-apple').textContent = 'Apple Calendar (.ics)';
     else if (inApp || iosOther) document.getElementById('rem-apple').textContent = 'Apple Calendar (open in Safari)';
