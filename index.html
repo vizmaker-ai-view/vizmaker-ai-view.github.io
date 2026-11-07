@@ -10,6 +10,7 @@
   var GA_ID = 'G-00QC63JGWS';   // GA4: VizMaker Viewer (Ads)
   var FB_PIXEL_ID = '1874148790429212';   // Meta Pixel: VizMaker Viewer (VizAcademy UK)
   var FB_ENGAGED_SEC = 15;   // po ilu s oglądania leci ViewerEngaged do Meta (15/30/60/120)
+  var OAI_PIXEL_ID = '85BQD8fTsdq6memDy6j4jS';   // OpenAI Ads (ChatGPT) Measurement Pixel
 
   // Tutorial (popup): ID filmu YouTube + teksty
   var TUTORIAL = {
@@ -102,10 +103,40 @@
   }
   fbEvent('viewer_open');   // viewer_open poszedł do GA4 wyżej, zanim był wrapper
 
+  // OpenAI Ads (ChatGPT) Measurement Pixel: sam łapie oppref z linku reklamy
+  (function (w, d, s, u) {
+    if (w.oaiq) return;
+    var q = function () { q.q.push(arguments); };
+    q.q = [];
+    w.oaiq = q;
+    var js = d.createElement(s);
+    js.async = true;
+    js.src = u;
+    var f = d.getElementsByTagName(s)[0];
+    f.parentNode.insertBefore(js, f);
+  })(window, document, 'script', 'https://bzrcdn.openai.com/sdk/oaiq.min.js');
+  oaiq('init', { pixelId: OAI_PIXEL_ID });
+
+  var OAI_MAP = {   // event GA4 -> [event OpenAI, dane, nazwa custom]
+    viewer_open:    ['contents_viewed',       { type: 'contents' }],
+    viewer_engaged: ['custom',                { type: 'custom' }, 'viewer_engaged'],   // cel optymalizacji
+    reminder_add:   ['appointment_scheduled', { type: 'customer_action' }],
+    promo_click:    ['lead_created',          { type: 'customer_action' }]
+  };
+  var oaiVisit = Date.now().toString(36) + Math.random().toString(36).slice(2, 8), oaiSeq = 0;
+  function oaiEvent(name, params) {
+    var m = OAI_MAP[name]; if (!m || !window.oaiq) return;
+    if (name === 'viewer_engaged' && (params || {}).seconds !== FB_ENGAGED_SEC) return;   // 1 konwersja na wizytę
+    var opts = { event_id: oaiVisit + '_' + name + '_' + (++oaiSeq) };
+    if (m[2]) opts.custom_event_name = m[2];
+    oaiq('measure', m[0], m[1], opts);
+  }
+  oaiEvent('viewer_open');
+
   var _gtag = gtag;
   gtag = function (type, name, params) {
     _gtag.apply(this, arguments);
-    if (type === 'event') fbEvent(name, params);
+    if (type === 'event') { fbEvent(name, params); oaiEvent(name, params); }
   };
 </script>
 
@@ -336,7 +367,7 @@
   // żeby rejestracja w VizMaker też wiedziała, z jakiej reklamy przyszedł user.
   var src = new URL(PROJECTS[projectKey][device]);
   qs.forEach(function (v, k) {
-    if (/^(utm_|gclid|gbraid|wbraid|fbclid|ttclid|msclkid)/.test(k)) src.searchParams.set(k, v);
+    if (/^(utm_|gclid|gbraid|wbraid|fbclid|ttclid|msclkid|oppref|olref)/.test(k)) src.searchParams.set(k, v);
   });
   document.getElementById('viewer').src = src.toString();
 
@@ -458,7 +489,7 @@
     // link: src=viewer + parametry reklamy (żeby główne GA wiedziało, z jakiej kampanii i projektu)
     var u = new URL(PROMO.url), hasUtm = false;
     qs.forEach(function (v, k) {
-      if (/^(utm_|gclid|gbraid|wbraid|fbclid|ttclid|msclkid)/.test(k)) { u.searchParams.set(k, v); if (k === 'utm_source') hasUtm = true; }
+      if (/^(utm_|gclid|gbraid|wbraid|fbclid|ttclid|msclkid|oppref|olref)/.test(k)) { u.searchParams.set(k, v); if (k === 'utm_source') hasUtm = true; }
     });
     if (hasUtm && !u.searchParams.get('utm_content')) u.searchParams.set('utm_content', projectKey);
     var go = document.getElementById('promo-go');
