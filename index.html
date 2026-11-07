@@ -8,6 +8,7 @@
 <!-- ====== KONFIGURACJA ====== -->
 <script>
   var GA_ID = 'G-00QC63JGWS';   // GA4: VizMaker Viewer (Ads)
+  var FB_PIXEL_ID = '1874148790429212';   // Meta Pixel: VizMaker Viewer (VizAcademy UK)
 
   // Tutorial (popup): ID filmu YouTube + teksty
   var TUTORIAL = {
@@ -73,6 +74,22 @@
   s.async = true;
   s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
   document.head.appendChild(s);
+
+  // Meta Pixel: PageView + ViewContent na starcie, a każdy event GA4 leci też do Meta jako custom event
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', FB_PIXEL_ID);
+  fbq('track', 'PageView');
+  fbq('track', 'ViewContent', { content_name: projectKey, content_category: device });
+
+  var _gtag = gtag;
+  gtag = function (type, name, params) {
+    _gtag.apply(this, arguments);
+    if (type === 'event' && window.fbq) fbq('trackCustom', name, params || {});
+  };
 </script>
 
 <style>
