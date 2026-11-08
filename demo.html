@@ -61,10 +61,10 @@
   // Intro: mini okno "Rendering..." -> start przybliżony na renderze -> płynny zoom-out do całego workflow
   var INTRO = {
     on:        true,
-    minLoadMs: 1500,     // okno ładowania min. tyle; przy szybkim necie viewer zdąży, przy wolnym czekamy dłużej
+    minLoadMs: 800,      // okno ładowania min. tyle; przy szybkim necie viewer zdąży, przy wolnym czekamy dłużej
     maxLoadMs: 6500,     // i max. tyle, nawet jeśli viewer nie zgłosi "load"
-    holdMs:    1100,     // ile trzymamy przybliżenie na renderze
-    zoomMs:    1400,     // jak długo trwa oddalanie
+    holdMs:    700,      // ile trzymamy przybliżenie na renderze
+    zoomMs:    1100,     // jak długo trwa oddalanie
     scale:     { desktop: 7, mobile: 5 },
     // punkt przybliżenia jako ułamek ekranu [x, y] (viewer sam dopasowuje graf do ekranu, więc osobno PC / telefon)
     focus: {
