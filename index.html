@@ -47,6 +47,16 @@
     directUrl:   'https://vizmaker.com/direct-download'
   };
 
+  // Licznik renderów (lewy pasek, pod "Later"): ta sama liczba dla wszystkich w danej chwili, bez zapisywania
+  var RENDERS = {
+    on:       true,
+    base:     3184000,                         // ile renderów pokazujemy w chwili baseDate
+    baseDate: Date.UTC(2026, 10, 8, 22, 0, 0), // 8.11.2026 23:00 czasu PL
+    perDay:   25000,                           // średnio renderów na dobę
+    swing:    0.7,                             // dzień szybciej / noc wolniej (0 = równo)
+    peakUTC:  14                               // szczyt o 14:00 UTC (EU popołudnie + USA rano)
+  };
+
   // Projekty pokazowe pod reklamy. W linku reklamy: ?p=kuchnia (bez ?p = 'default')
   var PROJECTS = {
     'default': {
@@ -485,9 +495,37 @@
       border: 2px solid #0b1114; animation: badgePop .5s cubic-bezier(.2,1.6,.4,1) 1s both, badgePulse 2s ease-out 1.6s infinite; }
     @keyframes badgePop { from { transform: scale(0); } to { transform: scale(1); } }
     @keyframes badgePulse { 0% { box-shadow: 0 0 0 0 rgba(255,77,94,.6); } 70%,100% { box-shadow: 0 0 0 8px rgba(255,77,94,0); } }
-    #rem-tip { width: 190px; padding: 10px 12px; font-size: 12.5px; }
-    #rem-tip button { height: 32px; margin-top: 8px; font-size: 12.5px; }
+    #rem-tip { width: 104px; padding: 10px; font-size: 12px; line-height: 1.35; }   /* wąski i wysoki - mniej zasłania projekt */
+    #rem-tip button { height: 32px; margin-top: 10px; font-size: 12px; }
   }
+  /* ---- licznik renderów w lewym pasku viewera ---- */
+  #rc { position: fixed; z-index: 10; left: 0; width: 64px; top: calc(var(--promo-h) + 150px); display: flex; flex-direction: column;
+    align-items: center; gap: 4px; padding: 6px 0; color: #8fa3a6; font: 500 9.5px/1.1 Inter, system-ui, -apple-system, sans-serif;
+    text-align: center; cursor: default; transition: top .35s ease; -webkit-tap-highlight-color: transparent; }
+  #rc .ring { position: relative; width: 30px; height: 30px; }
+  #rc svg { width: 30px; height: 30px; transform: rotate(-90deg); }
+  #rc .bg { fill: none; stroke: rgba(79,227,216,.15); stroke-width: 2.5; }
+  #rc .fg { fill: none; stroke: var(--vm-teal); stroke-width: 2.5; stroke-linecap: round; transition: stroke-dashoffset .1s linear; }
+  #rc .ico { position: absolute; inset: 0; display: grid; place-items: center; }
+  #rc .ico svg { width: 13px; height: 13px; transform: none; stroke: var(--vm-teal); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  #rc .n { color: #e9f4f3; font-weight: 700; font-size: 9.5px; letter-spacing: -.2px; font-variant-numeric: tabular-nums; }
+  #rc .l { display: flex; align-items: center; gap: 3px; }
+  #rc .l i { width: 5px; height: 5px; border-radius: 50%; background: #39d98a; animation: rcLive 1.6s ease-in-out infinite; }
+  @keyframes rcLive { 50% { opacity: .3; } }
+  #rc.tick .ring { animation: rcPop .45s ease; }
+  #rc.tick .n { animation: rcFlash .6s ease; }
+  @keyframes rcPop { 40% { transform: scale(1.15); } }
+  @keyframes rcFlash { 0% { color: var(--vm-teal); } 100% { color: #e9f4f3; } }
+  #rc-tip { position: fixed; z-index: 11; left: 70px; top: calc(var(--promo-h) + 154px); display: none; padding: 8px 11px; border-radius: 10px;
+    background: #111c21; border: 1px solid rgba(79,227,216,.35); color: #c9d6d7; font: 500 12px/1.35 Inter, system-ui, sans-serif;
+    box-shadow: 0 10px 28px rgba(0,0,0,.5); white-space: nowrap; }
+  #rc-tip b { color: #fff; }
+  #rc-tip.on { display: block; animation: tipIn .3s ease; }
+  @media (max-width: 768px) {
+    #rc { width: 58px; top: calc(var(--promo-h) + 266px); }
+    #rc-tip { left: 64px; top: calc(var(--promo-h) + 270px); }
+  }
+  @media (prefers-reduced-motion: reduce) { #rc .l i, #rc.tick .ring, #rc.tick .n { animation: none !important; } }
 </style>
 </head>
 <body>
@@ -941,6 +979,43 @@
         })
         .then(function () { busy = false; go.disabled = false; go.textContent = COPY[os].btn; });
     };
+  })();
+</script>
+<div id="rc" role="status" aria-live="off" hidden>
+  <div class="ring">
+    <svg viewBox="0 0 30 30"><circle class="bg" cx="15" cy="15" r="12"/><circle class="fg" id="rc-fg" cx="15" cy="15" r="12"/></svg>
+    <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.5"/></svg></span>
+  </div>
+  <span class="n" id="rc-n"></span>
+  <span class="l"><i></i>renders</span>
+</div>
+<div id="rc-tip"><b id="rc-tip-n"></b> renders made with VizMaker<br>by designers worldwide · live</div>
+<script>
+  (function () {
+    if (!RENDERS.on) return;
+    var D = 864e5, C = 2 * Math.PI * 12, W = 2 * Math.PI / D, pk = RENDERS.peakUTC * 36e5;
+    function total(t) {   // całka z tempa (szybciej w dzień, wolniej w nocy), średnio perDay na dobę
+      return RENDERS.base + RENDERS.perDay * ((t - RENDERS.baseDate) / D +
+        RENDERS.swing / (2 * Math.PI) * (Math.sin(W * (t - pk)) - Math.sin(W * (RENDERS.baseDate - pk))));
+    }
+    var el = document.getElementById('rc'), n = document.getElementById('rc-n'), fg = document.getElementById('rc-fg');
+    var tip = document.getElementById('rc-tip'), tipN = document.getElementById('rc-tip-n'), last = -1, tt;
+    fg.style.strokeDasharray = C;
+    function fmt(x) { return x.toLocaleString('en-US'); }
+    function draw() {
+      var v = total(Date.now()), whole = Math.floor(v);
+      fg.style.strokeDashoffset = C * (1 - (v - whole));   // kółko "ładuje" kolejny render w realnym tempie
+      if (whole !== last) {
+        if (last !== -1) { el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+        last = whole; n.textContent = fmt(whole); tipN.textContent = fmt(whole);
+      }
+    }
+    el.hidden = false; draw(); setInterval(function () { if (document.visibilityState === 'visible') draw(); }, 100);
+    el.addEventListener('click', function () {
+      gtag('event', 'render_counter_click', P);
+      if (!isMobile) return;   // PC: bez dymka
+      tip.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { tip.classList.remove('on'); }, 3000);
+    });
   })();
 </script>
 </body>
