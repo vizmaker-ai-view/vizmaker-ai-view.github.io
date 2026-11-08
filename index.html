@@ -34,6 +34,19 @@
     hideDays: 1             // po zamknięciu (×) wraca po X dniach
   };
 
+  // Przycisk "Get VizMaker free" + okienko pobierania (to samo co na vizmaker.com: mail -> Zapier -> link do pobrania)
+  var DOWNLOAD = {
+    on:        true,
+    btn:       'Get VizMaker free',
+    btnSub:    'Free trial · Windows app',
+    promoOpensModal: true,   // CTA w pasku promo otwiera okienko zamiast przenosić na vizmaker.com
+    src:       'viewer',     // pole "src" w Zapierze (tak jak ?src= na stronie głównej)
+    windowsHook: 'https://hooks.zapier.com/hooks/catch/4692325/u4nzuft/',
+    macHook:     'https://hooks.zapier.com/hooks/catch/4692325/46yeyc8/',
+    storeUrl:    'https://apps.microsoft.com/detail/xpff8rp91vz0fm',
+    directUrl:   'https://vizmaker.com/direct-download'
+  };
+
   // Projekty pokazowe pod reklamy. W linku reklamy: ?p=kuchnia (bez ?p = 'default')
   var PROJECTS = {
     'default': {
@@ -94,7 +107,9 @@
     viewer_open:    ['track',       'ViewContent'],
     viewer_engaged: ['trackCustom', 'ViewerEngaged'],   // główny cel optymalizacji
     reminder_add:   ['track',       'Schedule'],
-    promo_click:    ['track',       'Lead']
+    promo_click:    ['track',       'Lead'],
+    download_link_requested:  ['track', 'CompleteRegistration'],   // mail podany -> link do pobrania
+    macos_waitlist_requested: ['trackCustom', 'MacWaitlist']
   };
   function fbEvent(name, params) {
     var m = FB_MAP[name]; if (!m || !window.fbq) return;
@@ -124,7 +139,9 @@
     viewer_engaged: [['contents_viewed', { type: 'contents' }],
                      ['custom',          { type: 'custom' }, 'viewer_engaged']],
     reminder_add:   [['appointment_scheduled', { type: 'customer_action' }]],
-    promo_click:    [['lead_created',          { type: 'customer_action' }]]
+    promo_click:    [['lead_created',          { type: 'customer_action' }]],
+    download_link_requested: [['lead_created', { type: 'customer_action' }],
+                              ['custom', { type: 'custom' }, 'download_link_requested']]
   };
   var oaiVisit = Date.now().toString(36) + Math.random().toString(36).slice(2, 8), oaiSeq = 0;
   function oaiEvent(name, params) {
@@ -362,6 +379,63 @@
     #rem-sheet.open { animation: tipIn .35s cubic-bezier(.2,1.2,.4,1); }
     #rem-sheet::before { display: none; }
   }
+  /* ---- przycisk "Get VizMaker free" + okienko pobierania (jak na vizmaker.com) ---- */
+  #dl-btn { position: fixed; z-index: 10; left: 84px; bottom: 212px; display: flex; align-items: center; gap: 10px;
+    padding: 7px 18px 7px 7px; border-radius: 999px; border: 0; cursor: pointer;
+    background: linear-gradient(90deg, #2bc6d6, #4fe3d8); color: #061316;
+    font: 700 13.5px/1 Inter, system-ui, -apple-system, sans-serif;
+    box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 26px rgba(79,227,216,.35); transition: transform .15s ease; }
+  #dl-btn:hover { transform: translateY(-1px); }
+  #dl-btn .ic { width: 30px; height: 30px; border-radius: 50%; background: rgba(6,19,22,.14); display: grid; place-items: center; }
+  #dl-btn .ic svg { width: 15px; height: 15px; stroke: #061316; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  #dl-btn small { display: block; font-weight: 500; font-size: 11px; color: rgba(6,19,22,.7); margin-top: 3px; }
+  @media (max-width: 768px) {
+    #dl-btn { left: 10px; bottom: calc(224px + env(safe-area-inset-bottom)); padding: 5px 14px 5px 5px; font-size: 12.5px; }
+    #dl-btn .ic { width: 26px; height: 26px; }
+    #dl-btn small { display: none; }
+    #rem-btn { bottom: calc(272px + env(safe-area-inset-bottom)); }
+    #rem-tip { bottom: calc(320px + env(safe-area-inset-bottom)); }
+  }
+  #dl-layer { position: fixed; inset: 0; z-index: 30; display: none; align-items: center; justify-content: center; padding: 20px;
+    background: rgba(3,8,10,.72); backdrop-filter: blur(6px); }
+  #dl-layer.open { display: flex; animation: tutFade .2s ease; }
+  #dl-box { position: relative; width: min(420px, 100%); box-sizing: border-box; padding: 26px 26px 20px; border-radius: 20px;
+    background: linear-gradient(180deg, rgba(18,30,34,.98), rgba(10,18,21,.98)); border: 1px solid rgba(79,227,216,.28);
+    box-shadow: 0 30px 80px rgba(0,0,0,.65), 0 0 60px rgba(79,227,216,.08); color: #e9f4f3;
+    font-family: Inter, system-ui, -apple-system, sans-serif; animation: tutPop .25s cubic-bezier(.2,.9,.3,1.2); }
+  #dl-box .hd { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  #dl-box .logo { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--vm-line); background: rgba(255,255,255,.03);
+    display: grid; place-items: center; }
+  #dl-box .logo img { width: 20px; height: 20px; }
+  #dl-box .brand { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #cfdcdd; }
+  #dl-x { margin-left: auto; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--vm-line);
+    background: rgba(255,255,255,.04); color: #9fb2b4; font-size: 18px; line-height: 1; cursor: pointer; }
+  #dl-x:hover { color: #fff; }
+  #dl-box h2 { margin: 0 0 8px; font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -.3px; }
+  #dl-box p { margin: 0 0 18px; font-size: 13.5px; line-height: 1.5; color: #93a7aa; }
+  #dl-box .os { display: flex; gap: 8px; margin-bottom: 12px; }
+  #dl-box .os button { flex: 1; height: 40px; border-radius: 9px; border: 1px solid var(--vm-line); background: transparent;
+    color: #a9bcbe; font: 600 13.5px/1 Inter, system-ui, sans-serif; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  #dl-box .os button svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+  #dl-box .os button[aria-pressed="true"] { border-color: var(--vm-teal); background: rgba(79,227,216,.1); color: var(--vm-teal); }
+  #dl-box input { width: 100%; box-sizing: border-box; height: 44px; padding: 0 14px; margin-bottom: 10px; border-radius: 9px;
+    border: 1px solid var(--vm-line); background: rgba(0,0,0,.25); color: #fff; font: 500 14px Inter, system-ui, sans-serif; outline: none; }
+  #dl-box input:focus { border-color: rgba(79,227,216,.6); }
+  #dl-box .go, #dl-box .act { width: 100%; height: 44px; border: 0; border-radius: 9px; cursor: pointer; text-decoration: none;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: linear-gradient(90deg, #2bc6d6, #4fe3d8); color: #061316; font: 700 14px/1 Inter, system-ui, sans-serif; }
+  #dl-box .go:disabled { opacity: .6; cursor: default; }
+  #dl-box .alt { display: block; margin-top: 12px; text-align: center; color: #93a7aa; font-size: 13px; }
+  #dl-box .note { margin-top: 14px; text-align: center; font-size: 12px; color: #6f8487; }
+  #dl-err { display: none; margin: 0 0 10px; font-size: 13px; color: #ff8a8a; }
+  #dl-done { display: none; }
+  #dl-box.ok #dl-form { display: none; }
+  #dl-box.ok #dl-done { display: block; }
+  @media (max-width: 768px) {
+    #dl-layer { align-items: flex-end; padding: 0; }
+    #dl-box { width: 100%; border-radius: 20px 20px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom)); animation: tutUp .3s cubic-bezier(.2,.9,.3,1); }
+    #dl-box h2 { font-size: 20px; }
+  }
 </style>
 </head>
 <body>
@@ -498,7 +572,10 @@
     if (hasUtm && !u.searchParams.get('utm_content')) u.searchParams.set('utm_content', projectKey);
     var go = document.getElementById('promo-go');
     go.href = u.toString();
-    go.onclick = function () { gtag('event', 'promo_click', P); };
+    go.onclick = function (e) {
+      gtag('event', 'promo_click', P);
+      if (DOWNLOAD.on && DOWNLOAD.promoOpensModal && window.vmOpenDownload) { e.preventDefault(); window.vmOpenDownload('promo'); }
+    };
     document.getElementById('promo-x').onclick = function () {
       document.body.classList.remove('has-promo');
       try { localStorage.setItem(KEY, Date.now()); } catch (e) {}
@@ -681,6 +758,117 @@
       hideTip(); sh.classList.add('open'); gtag('event', 'reminder_open', Object.assign({ source: 'nudge' }, P));
     };
     document.getElementById('rem-btn').addEventListener('click', hideTip);
+  })();
+</script>
+<button id="dl-btn" type="button" hidden>
+  <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span>
+  <span><span id="dl-btn-t"></span><small id="dl-btn-s"></small></span>
+</button>
+<div id="dl-layer">
+  <section id="dl-box" role="dialog" aria-modal="true" aria-labelledby="dl-title">
+    <div class="hd">
+      <span class="logo"><img src="https://www.vizmaker.com/vizmaker-logo-line-white.png" alt=""></span>
+      <span class="brand">VizMaker</span>
+      <button id="dl-x" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div id="dl-form">
+      <h2 id="dl-title"></h2>
+      <p id="dl-sub"></p>
+      <div class="os" role="group" aria-label="Choose your operating system">
+        <button type="button" data-os="windows"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg>Windows</button>
+        <button type="button" data-os="macos"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>macOS</button>
+      </div>
+      <form id="dl-f" novalidate>
+        <input id="dl-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send" required>
+        <div id="dl-err"></div>
+        <button class="go" id="dl-go" type="submit"></button>
+      </form>
+      <div class="note">No spam. Unsubscribe anytime.</div>
+    </div>
+    <div id="dl-done">
+      <h2 id="dl-done-t"></h2>
+      <p id="dl-done-m"></p>
+      <a class="act" id="dl-store" target="_blank" rel="noopener">Microsoft Store</a>
+      <a class="alt" id="dl-direct" target="_blank" rel="noopener">Alternative download</a>
+      <button class="act" id="dl-ok" type="button" style="margin-top:10px;background:transparent;color:#cfdcdd;border:1px solid var(--vm-line)">Back to the project</button>
+    </div>
+  </section>
+</div>
+<script>
+  (function () {
+    if (!DOWNLOAD.on) return;
+    var $ = function (id) { return document.getElementById(id); };
+    var layer = $('dl-layer'), box = $('dl-box'), email = $('dl-email'), go = $('dl-go'), err = $('dl-err');
+    var isMac = /Mac/i.test(navigator.platform || navigator.userAgent) && !isMobile;
+    var COPY = {
+      windows: { title: 'Get the desktop app',
+                 sub: isMobile ? "On your phone? Leave your email and we'll send the download link — open it on your PC and start your free trial."
+                               : 'Download VizMaker for desktop, optimized for maximum performance. Start creating in minutes.',
+                 btn: isMobile ? 'Email me the download link' : 'Get my download link',
+                 doneT: isMobile ? 'Check your inbox' : 'Your download is ready',
+                 doneM: isMobile ? "We've sent the download link to your email. Open it on your Windows PC to install VizMaker."
+                                 : "Your Windows download is ready. We've also sent the download link to your email." },
+      macos:   { title: 'Waiting list', sub: 'Get notification when macOS app will be released', btn: 'Notify me',
+                 doneT: "You're on the list", doneM: "We'll email you as soon as VizMaker for macOS is available." }
+    };
+    var os = isMac ? 'macos' : 'windows', busy = false;
+
+    $('dl-btn-t').textContent = DOWNLOAD.btn; $('dl-btn-s').textContent = DOWNLOAD.btnSub;
+    $('dl-btn').hidden = false;
+    $('dl-store').href = DOWNLOAD.storeUrl; $('dl-direct').href = DOWNLOAD.directUrl;
+
+    function setOs(o, user) {
+      os = o; var c = COPY[o];
+      $('dl-title').textContent = c.title; $('dl-sub').textContent = c.sub; go.textContent = c.btn; err.style.display = 'none';
+      [].forEach.call(document.querySelectorAll('#dl-box .os button'), function (b) { b.setAttribute('aria-pressed', b.dataset.os === o ? 'true' : 'false'); });
+      if (user) gtag('event', 'download_os_select', Object.assign({ os: o }, P));
+    }
+    [].forEach.call(document.querySelectorAll('#dl-box .os button'), function (b) { b.onclick = function () { setOs(b.dataset.os, true); }; });
+
+    function open(source) {
+      box.classList.remove('ok'); setOs(os); layer.classList.add('open');
+      var t = $('tut-overlay'); if (t && t.classList.contains('open')) $('tut-close').click();
+      // fokus od razu (w tym samym kliknięciu) -> na telefonie wyskakuje klawiatura z podpowiedzią maila (autofill iOS/Android)
+      try { if (!email.value) email.value = localStorage.getItem('vm_dl_email') || ''; } catch (e) {}
+      if (source !== 'auto') { try { email.focus({ preventScroll: true }); } catch (e) { email.focus(); } }
+      gtag('event', 'download_modal_open', Object.assign({ source: source }, P));
+    }
+    function close(how) { layer.classList.remove('open'); gtag('event', 'download_modal_close', Object.assign({ how: how }, P)); }
+    window.vmOpenDownload = open;
+
+    $('dl-btn').onclick = function () { open('button'); };
+    $('dl-x').onclick = function () { close('x'); };
+    $('dl-ok').onclick = function () { close('done'); };
+    layer.addEventListener('click', function (e) { if (e.target === layer) close('backdrop'); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && layer.classList.contains('open')) close('esc'); });
+    $('dl-store').onclick = function () { gtag('event', 'download_store_click', P); };
+    $('dl-direct').onclick = function () { gtag('event', 'download_direct_click', P); };
+
+    $('dl-f').onsubmit = function (e) {
+      e.preventDefault(); if (busy) return;
+      var v = email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { err.textContent = 'Please enter a valid email address.'; err.style.display = 'block'; return; }
+      busy = true; go.disabled = true; go.textContent = 'Sending...'; err.style.display = 'none';
+      // to samo co formularz na vizmaker.com (your-email + src) + skąd przyszedł user
+      var body = new URLSearchParams({ 'your-email': v, src: DOWNLOAD.src, project: projectKey, device: device,
+        ad_source: adSource, utm_campaign: qs.get('utm_campaign') || '', utm_content: qs.get('utm_content') || '' });
+      fetch(os === 'macos' ? DOWNLOAD.macHook : DOWNLOAD.windowsHook, { method: 'POST', body: body })
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.status);
+          try { localStorage.setItem('vm_dl_email', v); } catch (e) {}
+          gtag('event', os === 'macos' ? 'macos_waitlist_requested' : 'download_link_requested', Object.assign({ os: os }, P));
+          var c = COPY[os];
+          $('dl-done-t').textContent = c.doneT; $('dl-done-m').textContent = c.doneM;
+          var showDl = os === 'windows' && !isMobile;
+          $('dl-store').style.display = $('dl-direct').style.display = showDl ? '' : 'none';
+          box.classList.add('ok');
+        })
+        .catch(function () {
+          err.textContent = 'Something went wrong. Please try again.'; err.style.display = 'block';
+          gtag('event', 'download_error', Object.assign({ os: os }, P));
+        })
+        .then(function () { busy = false; go.disabled = false; go.textContent = COPY[os].btn; });
+    };
   })();
 </script>
 </body>
