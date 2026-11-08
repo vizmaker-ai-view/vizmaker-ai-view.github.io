@@ -61,10 +61,10 @@
   // Intro: mini okno "Rendering..." -> start przybliżony na renderze -> płynny zoom-out do całego workflow
   var INTRO = {
     on:        true,
-    minLoadMs: 2800,     // okno ładowania min. tyle (viewer wczytuje obrazki)
+    minLoadMs: 1500,     // okno ładowania min. tyle; przy szybkim necie viewer zdąży, przy wolnym czekamy dłużej
     maxLoadMs: 6500,     // i max. tyle, nawet jeśli viewer nie zgłosi "load"
-    holdMs:    1500,     // ile trzymamy przybliżenie na renderze
-    zoomMs:    1800,     // jak długo trwa oddalanie
+    holdMs:    1100,     // ile trzymamy przybliżenie na renderze
+    zoomMs:    1400,     // jak długo trwa oddalanie
     scale:     { desktop: 7, mobile: 5 },
     // punkt przybliżenia jako ułamek ekranu [x, y] (viewer sam dopasowuje graf do ekranu, więc osobno PC / telefon)
     focus: {
@@ -572,11 +572,6 @@
   #rem-btn, #rc { transition: top .35s ease, opacity .6s ease; }
   #dl-rem { display: none; width: 100%; margin-top: 10px; padding: 6px; border: 0; background: none; cursor: pointer;
     color: #93a7aa; font: 500 13px Inter, system-ui, sans-serif; text-decoration: underline; text-underline-offset: 3px; }
-  /* PC: bez "Remind me later" (człowiek już siedzi przy komputerze) */
-  @media (min-width: 769px) {
-    #rem-btn, #rem-sheet { display: none !important; }
-    #dl-btn { bottom: 162px; }
-  }
   /* telefon: jedna akcja "Send to my PC"; Later/plakietka/dymek znikają, przypomnienie jest w okienku */
   @media (max-width: 768px) {
     #rem-btn, #rem-tip { display: none !important; }
