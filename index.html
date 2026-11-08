@@ -433,7 +433,8 @@
   #dl-box.ok #dl-done { display: block; }
   @media (max-width: 768px) {
     /* telefon: karta u góry ekranu, żeby klawiatura iOS/Android jej nie zasłaniała */
-    #dl-layer { align-items: flex-start; padding: calc(env(safe-area-inset-top) + 10px) 10px 0; backdrop-filter: none; background: rgba(3,8,10,.88); }
+    #dl-layer { align-items: flex-start; padding: calc(env(safe-area-inset-top) + 10px) 10px 0; backdrop-filter: none; background: rgba(3,8,10,.88);
+      overflow-y: auto; -webkit-overflow-scrolling: touch; }
     #dl-box { width: 100%; padding: 16px 16px 14px; border-radius: 18px; animation: dlDown .25s cubic-bezier(.2,.9,.3,1); }
     @keyframes dlDown { from { transform: translateY(-16px); opacity: 0; } to { transform: none; opacity: 1; } }
     #dl-box .hd { margin-bottom: 10px; }
@@ -857,10 +858,20 @@
       var t = $('tut-overlay'); if (t && t.classList.contains('open')) $('tut-close').click();
       // fokus od razu (w tym samym kliknięciu) -> na telefonie wyskakuje klawiatura z podpowiedzią maila (autofill iOS/Android)
       try { if (!email.value) email.value = localStorage.getItem('vm_dl_email') || ''; } catch (e) {}
-      if (source !== 'auto') { try { email.focus({ preventScroll: true }); } catch (e) { email.focus(); } }
+      // PC: kursor od razu w polu. Telefon: bez auto-fokusu (klawiatura nie wyskakuje od razu), user tapnie pole
+      if (!isMobile && source !== 'auto') { try { email.focus({ preventScroll: true }); } catch (e) { email.focus(); } }
+      fitVV();
       gtag('event', 'download_modal_open', Object.assign({ source: source }, P));
     }
-    function close(how) { layer.classList.remove('open'); gtag('event', 'download_modal_close', Object.assign({ how: how }, P)); }
+    // iPhone/Android: przy klawiaturze dopasuj warstwę do widocznej części ekranu (visualViewport)
+    var vv = window.visualViewport;
+    function fitVV() {
+      if (!vv || !isMobile || !layer.classList.contains('open')) return;
+      layer.style.top = vv.offsetTop + 'px'; layer.style.height = vv.height + 'px'; layer.style.bottom = 'auto';
+    }
+    if (vv) { vv.addEventListener('resize', fitVV); vv.addEventListener('scroll', fitVV); }
+    email.addEventListener('blur', function () { if (isMobile) setTimeout(function () { window.scrollTo(0, 0); fitVV(); }, 50); });
+    function close(how) { layer.classList.remove('open'); layer.style.top = layer.style.height = layer.style.bottom = ''; gtag('event', 'download_modal_close', Object.assign({ how: how }, P)); }
     window.vmOpenDownload = open;
 
     $('dl-btn').onclick = function () { open('button'); };
