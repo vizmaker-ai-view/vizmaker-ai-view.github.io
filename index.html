@@ -432,9 +432,17 @@
   #dl-box.ok #dl-form { display: none; }
   #dl-box.ok #dl-done { display: block; }
   @media (max-width: 768px) {
-    #dl-layer { align-items: flex-end; padding: 0; }
-    #dl-box { width: 100%; border-radius: 20px 20px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom)); animation: tutUp .3s cubic-bezier(.2,.9,.3,1); }
-    #dl-box h2 { font-size: 20px; }
+    /* telefon: karta u góry ekranu, żeby klawiatura iOS/Android jej nie zasłaniała */
+    #dl-layer { align-items: flex-start; padding: calc(env(safe-area-inset-top) + 10px) 10px 0; backdrop-filter: none; background: rgba(3,8,10,.88); }
+    #dl-box { width: 100%; padding: 16px 16px 14px; border-radius: 18px; animation: dlDown .25s cubic-bezier(.2,.9,.3,1); }
+    @keyframes dlDown { from { transform: translateY(-16px); opacity: 0; } to { transform: none; opacity: 1; } }
+    #dl-box .hd { margin-bottom: 10px; }
+    #dl-box h2 { font-size: 19px; margin-bottom: 4px; }
+    #dl-box p { font-size: 13px; margin-bottom: 12px; }
+    #dl-box .os { margin-bottom: 10px; }
+    #dl-box .os button { height: 36px; }
+    #dl-box input { font-size: 16px; }   /* 16px = iOS nie robi auto-zoomu przy kliknięciu w pole */
+    #dl-box .note { margin-top: 10px; }
   }
   /* ---- telefon: Tutorial + Later jako ikonki w lewym pasku viewera, pływa tylko "Get VizMaker free" ---- */
   .rl { display: none; }
