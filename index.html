@@ -459,11 +459,21 @@
     #tut-btn .ic svg { width: 11px; height: 11px; }
     #rem-btn .ic { background: rgba(79,227,216,.16); }
     #rem-btn .ic svg { width: 15px; height: 15px; }
-    #dl-btn { left: 70px; bottom: calc(184px + env(safe-area-inset-bottom)); }
+    #dl-btn { left: 70px; bottom: 174px; }   /* tuż nad panelem promptu viewera (bez safe-area: viewer w ramce jej nie dolicza) */
     #rem-tip { left: 66px; top: calc(var(--promo-h) + 196px); bottom: auto; width: 220px; }
     #rem-tip::after { left: -7px; top: 22px; bottom: auto; border-right: 0; border-bottom: 1px solid rgba(79,227,216,.45);
       border-left: 1px solid rgba(79,227,216,.45); }
   }
+  /* ---- animacja przycisku "Get VizMaker free": lekki puls poświaty, błysk, strzałka w dół ---- */
+  #dl-btn { overflow: hidden; animation: dlGlow 2.6s ease-in-out infinite; }
+  #dl-btn::after { content: ''; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent); animation: dlShine 3.6s ease-in-out 1s infinite; }
+  #dl-btn .ic svg { animation: dlArrow 1.8s ease-in-out infinite; }
+  @keyframes dlGlow { 0%,100% { box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 18px rgba(79,227,216,.28); }
+                      50% { box-shadow: 0 8px 28px rgba(0,0,0,.45), 0 0 34px rgba(79,227,216,.6); } }
+  @keyframes dlShine { 0%,60% { left: -60%; } 100% { left: 130%; } }
+  @keyframes dlArrow { 0%,100% { transform: translateY(-1px); } 50% { transform: translateY(2px); } }
+  @media (prefers-reduced-motion: reduce) { #dl-btn, #dl-btn::after, #dl-btn .ic svg { animation: none !important; } }
 </style>
 </head>
 <body>
