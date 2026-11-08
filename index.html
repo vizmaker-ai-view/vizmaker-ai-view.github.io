@@ -436,6 +436,25 @@
     #dl-box { width: 100%; border-radius: 20px 20px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom)); animation: tutUp .3s cubic-bezier(.2,.9,.3,1); }
     #dl-box h2 { font-size: 20px; }
   }
+  /* ---- telefon: Tutorial + Later jako ikonki w lewym pasku viewera, pływa tylko "Get VizMaker free" ---- */
+  .rl { display: none; }
+  @media (max-width: 768px) {
+    #tut-btn, #rem-btn { left: 0; bottom: auto; width: 58px; flex-direction: column; gap: 5px; padding: 8px 0 6px;
+      border: 0; border-radius: 0; background: transparent; backdrop-filter: none; box-shadow: none; animation: none;
+      color: #8fa3a6; font: 500 10.5px/1.1 Inter, system-ui, -apple-system, sans-serif; transition: top .35s ease; }
+    #tut-btn { top: calc(var(--promo-h) + 146px); }
+    #rem-btn { top: calc(var(--promo-h) + 206px); }
+    #tut-btn .full, #rem-btn .lm, #rem-btn::after { display: none; }
+    #tut-btn .rl, #rem-btn .rl { display: block; }
+    #tut-btn .ic, #rem-btn .ic { width: 30px; height: 30px; }
+    #tut-btn .ic svg { width: 11px; height: 11px; }
+    #rem-btn .ic { background: rgba(79,227,216,.16); }
+    #rem-btn .ic svg { width: 15px; height: 15px; }
+    #dl-btn { left: 70px; bottom: calc(184px + env(safe-area-inset-bottom)); }
+    #rem-tip { left: 66px; top: calc(var(--promo-h) + 196px); bottom: auto; width: 220px; }
+    #rem-tip::after { left: -7px; top: 22px; bottom: auto; border-right: 0; border-bottom: 1px solid rgba(79,227,216,.45);
+      border-left: 1px solid rgba(79,227,216,.45); }
+  }
 </style>
 </head>
 <body>
@@ -468,7 +487,7 @@
 </script>
 <button id="tut-btn" type="button" aria-label="Watch the video tutorial">
   <span class="ic"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
-  <span>Watch tutorial<small>Step-by-step video</small></span>
+  <span class="full">Watch tutorial<small>Step-by-step video</small></span><span class="rl">Tutorial</span>
 </button>
 <div id="tut-overlay" role="dialog" aria-modal="true" aria-labelledby="tut-title">
   <div id="tut-box">
@@ -610,7 +629,7 @@
 </script>
 <button id="rem-btn" type="button" aria-label="Get a calendar reminder to open this project later">
   <span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17M12 13.5v3.5M10.25 15.25h3.5"/></svg></span>
-  <span class="lm">Open later on PC</span><span class="ld">Remind me later</span>
+  <span class="lm">Open later on PC</span><span class="ld">Remind me later</span><span class="rl">Later</span>
 </button>
 <div id="rem-tip" role="status">
   <b>Not at your computer?</b> We'll remind you tomorrow at 9:00 with a link to this project.
