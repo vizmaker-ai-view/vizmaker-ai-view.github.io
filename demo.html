@@ -61,16 +61,20 @@
   // Intro: mini okno "Rendering..." -> start przybliżony na renderze -> płynny zoom-out do całego workflow
   var INTRO = {
     on:        true,
-    minLoadMs: 800,      // okno ładowania min. tyle; przy szybkim necie viewer zdąży, przy wolnym czekamy dłużej
+    minLoadMs: 1500,     // okno ładowania min. tyle (duża ramka musi wczytać ostre obrazki)
     maxLoadMs: 6500,     // i max. tyle, nawet jeśli viewer nie zgłosi "load"
     holdMs:    1200,     // ile trzymamy przybliżenie na renderze
     zoomMs:    1600,     // jak długo trwa oddalanie
-    scale:     { desktop: 7, mobile: 5 },
-    // punkt przybliżenia jako ułamek ekranu [x, y] (viewer sam dopasowuje graf do ekranu, więc osobno PC / telefon)
+    hiresK:    8,        // druga, 8x większa ramka viewera: viewer sam renderuje node ostro (prawdziwy zoom, nie lupa)
+    // punkt startu (środek noda z obrazkiem) jako ułamek ekranu [x, y] w domyślnym widoku viewera
+    // (pozycja w DUŻEJ ramce - tam projekt wypełnia prawie cały ekran)
     focus: {
-      'default': { desktop: [0.537, 0.627], mobile: [0.485, 0.426] },
-      'live':    { desktop: [0.537, 0.627], mobile: [0.485, 0.426] }
-    }
+      'default': { mobile: [0.533, 0.754] },
+      'live':    { mobile: [0.533, 0.754] }
+    },
+    // dopasowanie końca animacji do normalnego viewera (on zostawia margines na swoje przyciski):
+    // [środek grafu x,y w normalnym widoku, środek grafu x,y w dużej ramce, skala normalny/duży]
+    land: { mobile: [0.569, 0.365, 0.510, 0.488, 0.577] }
   };
   var _introQ = [], _introDone = false;
   function vmAfterIntro(fn) { if (_introDone) fn(); else _introQ.push(fn); }
@@ -592,7 +596,8 @@
   qs.forEach(function (v, k) {
     if (/^(utm_|gclid|gbraid|wbraid|fbclid|ttclid|msclkid|oppref|olref)/.test(k)) src.searchParams.set(k, v);
   });
-  document.getElementById('viewer').src = src.toString();
+  if (INTRO.on && isMobile) window._mainSrc = src.toString();   // telefon: normalny viewer ładujemy po dużej ramce (nie naraz)
+  else document.getElementById('viewer').src = src.toString();
 </script>
 <div id="intro" role="status" aria-live="polite">
   <div class="card">
@@ -610,16 +615,28 @@
     var ov = document.getElementById('intro');
     if (!INTRO.on || !isMobile) { ov.remove(); vmIntroDone(); return; }   // PC: bez intro (od razu viewer)
     document.body.classList.add('intro');
-    var f = document.getElementById('viewer'), fg = document.getElementById('intro-fg');
+    var main = document.getElementById('viewer'), fg = document.getElementById('intro-fg');
     var pctEl = document.getElementById('intro-pct'), stepEl = document.getElementById('intro-step'), tEl = document.getElementById('intro-t');
     var C = 2 * Math.PI * 36; fg.style.strokeDasharray = C; fg.style.strokeDashoffset = C;
-    var fp = ((INTRO.focus[projectKey] || INTRO.focus['default'])[device]), sc = INTRO.scale[device];
-    var r = f.getBoundingClientRect();
-    f.style.pointerEvents = 'none'; f.style.transition = 'none';
-    f.style.transformOrigin = (fp[0] * r.width) + 'px ' + (fp[1] * r.height) + 'px';
-    f.style.transform = 'scale(' + sc + ')';
+    var fp = ((INTRO.focus[projectKey] || INTRO.focus['default'])[device]), K = INTRO.hiresK;
+    var W = window.innerWidth, H = window.innerHeight;
+    // druga ramka: K razy większa -> viewer "dopasowuje" projekt do dużej powierzchni = wysoki zoom = ostre obrazki
+    var hi = document.createElement('iframe');
+    hi.src = window._mainSrc; hi.setAttribute('aria-hidden', 'true'); hi.tabIndex = -1;
+    hi.style.cssText = 'position:fixed;left:0;top:0;border:0;z-index:5;pointer-events:none;background:#0b0f14;' +
+      'transform-origin:0 0;width:' + (W * K) + 'px;height:' + (H * K) + 'px;transition:opacity .35s ease;';
+    var O = [fp[0] * W * K, fp[1] * H * K];                 // punkt noda w dużej ramce
+    function place(s, px, py) { hi.style.transform = 'translate(' + (px - s * O[0]) + 'px,' + (py - s * O[1]) + 'px) scale(' + s + ')'; }
+    place(1, W / 2, H / 2);                                  // start: node na środku w 100% (ostro)
+    document.body.appendChild(hi);
     var t0 = Date.now(), loaded = false, finished = false, zooming = false, pct = 0;
-    f.addEventListener('load', function () { loaded = true; });
+    var mainLoaded = false;
+    main.addEventListener('load', function () { mainLoaded = true; });
+    hi.addEventListener('load', function () {
+      loaded = true;
+      setTimeout(function () { main.src = window._mainSrc; }, 600);   // normalny viewer w tle, pod dużą ramką
+    });
+    setTimeout(function () { if (!main.src || main.src === 'about:blank' || !/projectviewer/.test(main.src)) main.src = window._mainSrc; }, INTRO.maxLoadMs);
     function setPct(p) {
       pct = p; pctEl.textContent = Math.round(p) + '%'; fg.style.strokeDashoffset = C * (1 - p / 100);
       stepEl.textContent = p >= 100 ? 'Ready' : p < 35 ? 'Loading project…' : p < 70 ? 'Rendering previews…' : 'Almost ready…';
@@ -633,20 +650,35 @@
       setPct(100); clearInterval(iv);
       setTimeout(function () { ov.classList.add('out'); }, 250);
       var hold = setTimeout(zoomOut, 250 + INTRO.holdMs);
-      document.addEventListener('pointerdown', function skip() {   // tap/klik w trakcie = od razu oddal
+      document.addEventListener('pointerdown', function skip() {   // tap w trakcie = od razu oddal
         document.removeEventListener('pointerdown', skip); clearTimeout(hold); zoomOut();
       });
     }
+    function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
     function zoomOut() {
       if (zooming) return; zooming = true;
-      f.style.transition = 'transform ' + INTRO.zoomMs + 'ms cubic-bezier(.65,0,.35,1)';
-      f.style.transform = 'scale(1)';
-      setTimeout(function () {
-        f.style.transform = ''; f.style.transition = ''; f.style.transformOrigin = ''; f.style.pointerEvents = '';
-        ov.remove(); document.body.classList.remove('intro');
-        gtag('event', 'intro_done', Object.assign({ ms: Date.now() - t0 }, P));
-        vmIntroDone();
-      }, INTRO.zoomMs + 50);
+      var L = INTRO.land[device], r = L[4];
+      var ex = (L[0] + r * (fp[0] - L[2])) * W, ey = (L[1] + r * (fp[1] - L[3])) * H;   // gdzie node ląduje w normalnym widoku
+      var a = Date.now(), s0 = Math.log(1), s1 = Math.log(r / K);
+      (function frame() {
+        var t = Math.min(1, (Date.now() - a) / INTRO.zoomMs), e = ease(t);
+        var s = Math.exp(s0 + (s1 - s0) * e);                  // płynny zoom (logarytmicznie, jak w prawdziwym viewerze)
+        place(s, W / 2 + (ex - W / 2) * e, H / 2 + (ey - H / 2) * e);
+        if (t < 1) return requestAnimationFrame(frame);
+        var waited = Date.now();
+        (function swap() {                                     // podmiana na normalny viewer, gdy już się wczytał
+          if (!mainLoaded && Date.now() - waited < 4000) return setTimeout(swap, 100);
+          setTimeout(function () { hi.style.opacity = '0'; }, mainLoaded ? 500 : 0);
+          setTimeout(fin, (mainLoaded ? 500 : 0) + 380);
+        })();
+      })();
+    }
+    function fin() {
+        {
+          hi.remove(); ov.remove(); document.body.classList.remove('intro');
+          gtag('event', 'intro_done', Object.assign({ ms: Date.now() - t0 }, P));
+          vmIntroDone();
+        }
     }
   })();
 
