@@ -608,7 +608,7 @@
 <script>
   (function () {
     var ov = document.getElementById('intro');
-    if (!INTRO.on) { ov.remove(); vmIntroDone(); return; }
+    if (!INTRO.on || !isMobile) { ov.remove(); vmIntroDone(); return; }   // PC: bez intro (od razu viewer)
     document.body.classList.add('intro');
     var f = document.getElementById('viewer'), fg = document.getElementById('intro-fg');
     var pctEl = document.getElementById('intro-pct'), stepEl = document.getElementById('intro-step'), tEl = document.getElementById('intro-t');
