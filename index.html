@@ -1013,7 +1013,7 @@
     el.hidden = false; draw(); setInterval(function () { if (document.visibilityState === 'visible') draw(); }, 100);
     el.addEventListener('click', function () {
       gtag('event', 'render_counter_click', P);
-      if (!isMobile) return;   // PC: bez dymka
+      return;   // bez dymka (PC i telefon)
       tip.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { tip.classList.remove('on'); }, 3000);
     });
   })();
