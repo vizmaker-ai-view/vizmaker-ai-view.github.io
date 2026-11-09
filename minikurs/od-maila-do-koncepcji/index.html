@@ -770,7 +770,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 
 <!-- ZGODA NA COOKIES (analityka ładuje się dopiero po akceptacji) -->
 <div class="consent" id="consent" hidden role="dialog" aria-label="Zgoda na cookies">
-  <p>Używamy cookies analitycznych i marketingowych (Google Analytics, Meta), żeby mierzyć skuteczność kursu i reklam. <a href="https://www.vizmaker.com/privacy-policy">Polityka prywatności</a></p>
+  <p>Używamy cookies analitycznych i marketingowych (Google Analytics, Meta, OpenAI Ads), żeby mierzyć skuteczność kursu i reklam. <a href="https://www.vizmaker.com/privacy-policy">Polityka prywatności</a></p>
   <div><button type="button" class="btn-ghost" data-consent="0">Tylko niezbędne</button><button type="button" class="btn" data-consent="1">Akceptuję</button></div>
 </div>
 
@@ -784,8 +784,9 @@ footer.vmf{background:var(--bg);margin-top:20px}
 const TRACK={
   course:'minikurs_od_maila',   // id kursu (inny dla każdego minikursu)
   lang:'pl',
-  GA4_ID:'',                    // np. 'G-XXXXXXXXXX' (wspólna usługa GA4 „VizMaker Mini Kursy”)
-  META_PIXEL_ID:''              // piksel „VizMaker Mini Kursy” (portfolio VizAcademy UK)
+  GA4_ID:'G-M4JT8D4NNC',        // GA4 „VizMaker Mini Course” (wspólna dla wszystkich minikursów)
+  META_PIXEL_ID:'1335493635334924', // piksel Meta „VizMaker Mini Kursy” (portfolio VizAcademy UK)
+  OAI_PIXEL_ID:'6msDXFx25TWabFByppdNTg' // OpenAI Ads piksel „VizMaker Mini Course”
 };
 const track=(function(){
   let on=false;const q=[];
@@ -796,17 +797,20 @@ const track=(function(){
       gtag('config',TRACK.GA4_ID,{course_id:TRACK.course,course_lang:TRACK.lang,content_group:'mini_kurs'});}
     if(TRACK.META_PIXEL_ID){!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
       fbq('init',TRACK.META_PIXEL_ID);fbq('track','PageView');fbq('track','ViewContent',{content_name:TRACK.course,content_category:'mini_kurs',language:TRACK.lang});}
+    if(TRACK.OAI_PIXEL_ID){!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+      oaiq('init',{pixelId:TRACK.OAI_PIXEL_ID});}
     q.splice(0).forEach(f=>f());
   }
   function ev(name,meta,params){
     const p=Object.assign({course_id:TRACK.course,course_lang:TRACK.lang},params||{});
     const run=()=>{if(window.gtag&&TRACK.GA4_ID)gtag('event',name,p);
+      if(window.oaiq&&TRACK.OAI_PIXEL_ID&&meta&&meta.oai){oaiq('measure',meta.oai,{type:'customer_action'},{event_id:TRACK.course+'_'+meta.oai+'_'+Date.now()});}
       if(window.fbq&&TRACK.META_PIXEL_ID&&meta){meta.std?fbq('track',meta.name,{content_name:TRACK.course,content_category:'mini_kurs',language:TRACK.lang}):fbq('trackCustom',meta.name,p);}};
     on?run():q.push(run);
   }
   const box=document.getElementById('consent');let c=null;
   try{c=localStorage.getItem('vm_consent');}catch(_){}
-  if(!TRACK.GA4_ID&&!TRACK.META_PIXEL_ID){}           // brak ID = brak analityki i banera
+  if(!TRACK.GA4_ID&&!TRACK.META_PIXEL_ID&&!TRACK.OAI_PIXEL_ID){}           // brak ID = brak analityki i banera
   else if(c==='1')load();else if(c!=='0')box.hidden=false;
   box.addEventListener('click',e=>{const v=e.target.dataset.consent;if(v==null)return;try{localStorage.setItem('vm_consent',v);}catch(_){}box.hidden=true;if(v==='1')load();else q.length=0;});
   return {ev};
@@ -1025,7 +1029,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.con
 // ===== signup → Zapier → Mailchimp (Kontakty UK + tag Julia Mini kurs) =====
 const HOOK='https://hooks.zapier.com/hooks/catch/4692325/49j6zdm/';
 function unlock(){
-track.ev('generate_lead',{std:true,name:'Lead'},{method:'minikurs_form'});
+track.ev('generate_lead',{std:true,name:'Lead',oai:'lead_created'},{method:'minikurs_form'});
 document.getElementById('signup').hidden=true;document.getElementById('ok').hidden=false;
 const u=document.getElementById('odblokowane');u.hidden=false;const fr=u.querySelector('iframe');fr.src=fr.dataset.src;
 renderProgram(true);
