@@ -502,15 +502,28 @@ function closeM(){modal.classList.remove('on');mframe.innerHTML='';}
 document.getElementById('mclose').onclick=closeM;modal.addEventListener('click',e=>{if(e.target===modal)closeM();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('on'))closeM();});
 
-// ===== signup (podłącz Mailchimp: wyślij e-mail, potem pokaż sukces) =====
-document.getElementById('signup').addEventListener('submit',async e=>{
-  e.preventDefault();const em=document.getElementById('email');const err=document.getElementById('err');
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())){err.textContent='Podaj poprawny adres e-mail.';em.focus();return;}
-  err.textContent='';
-  // TODO Mailchimp: await fetch('/api/subscribe',{method:'POST',body:JSON.stringify({email:em.value,tag:'minikurs_od_maila'})});
-  e.target.hidden=true;document.getElementById('ok').hidden=false;
-  const u=document.getElementById('odblokowane');u.hidden=false;const fr=u.querySelector('iframe');fr.src=fr.dataset.src;
-  try{localStorage.setItem('mk_od_maila','1');}catch(_){}
+// ===== signup → Mailchimp (Kontakty UK + tag "[VizMaker] - PL - Julia Mini kurs - Skp + Claude - 11-2026") =====
+const MC={url:'https://vizacademy.us3.list-manage.com/subscribe/post-json',u:'692cbed49d5d0db2085fb0a69',id:'b918cc9c01',tag:'10814991'};
+function unlock(){
+document.getElementById('signup').hidden=true;document.getElementById('ok').hidden=false;
+const u=document.getElementById('odblokowane');u.hidden=false;const fr=u.querySelector('iframe');fr.src=fr.dataset.src;
+try{localStorage.setItem('mk_od_maila','1');}catch(_){}
+}
+document.getElementById('signup').addEventListener('submit',e=>{
+e.preventDefault();const em=document.getElementById('email');const err=document.getElementById('err');const btn=e.target.querySelector('button');
+const val=em.value.trim();
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){err.textContent='Podaj poprawny adres e-mail.';em.focus();return;}
+err.textContent='';const label=btn.textContent;btn.disabled=true;btn.textContent='Wysyłam…';
+const cb='mc_cb_'+Date.now();const s=document.createElement('script');let done=false;
+const fail=m=>{btn.disabled=false;btn.textContent=label;err.textContent=m||'Coś poszło nie tak. Spróbuj ponownie.';};
+window[cb]=res=>{if(done)return;done=true;delete window[cb];s.remove();
+if(res.result==='success'||/already subscribed/i.test(res.msg||'')){unlock();}
+else{fail(String(res.msg||'').replace(/<[^>]*>/g,'').replace(/^\d+ - /,''));}
+};
+s.onerror=()=>{if(!done){done=true;fail();}};
+setTimeout(()=>{if(!done){done=true;fail();}},12000);
+s.src=MC.url+'?u='+MC.u+'&id='+MC.id+'&tags='+MC.tag+'&EMAIL='+encodeURIComponent(val)+'&c='+cb;
+document.body.appendChild(s);
 });
 try{if(localStorage.getItem('mk_od_maila')==='1'){/* returning user: keep unlocked */}}catch(_){}
 </script>
