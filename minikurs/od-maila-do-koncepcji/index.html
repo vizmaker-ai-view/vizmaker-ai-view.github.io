@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Darmowy minikurs: Od maila do koncepcji wnętrza | VizMaker × VizMasters</title>
+<meta name="description" content="Bezpłatny minikurs: brief z maila w Claude, model w SketchUpie i 3 warianty wnętrza w VizMakerze. 10 lekcji, plik projektu i 4 prompty. 0 zł zamiast 199 zł.">
+<link rel="canonical" href="https://www.vizmaker.com/pl/minikurs/od-maila-do-koncepcji">
+<meta property="og:title" content="Od maila do koncepcji wnętrza – darmowy minikurs">
+<meta property="og:description" content="10 lekcji, plik projektu VizMaker i 4 prompty. 0 zł zamiast 199 zł.">
+<meta property="og:image" content="https://i.ytimg.com/vi/D5GahPW53CU/maxresdefault.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Course","name":"Od maila do koncepcji wnętrza","description":"Brief z maila w Claude, model w SketchUpie, warianty wizualizacji w VizMakerze i prezentacja na pierwsze spotkanie z klientem.","inLanguage":"pl","isAccessibleForFree":true,"provider":{"@type":"Organization","name":"VizAcademy","sameAs":"https://www.vizmaker.com"},"instructor":{"@type":"Person","name":"Julia Cierniak"},"offers":{"@type":"Offer","price":"0","priceCurrency":"PLN","category":"Free"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online","courseWorkload":"PT1H21M"}}
+</script>
+<style>
+:root{--bg:#010713;--s1:#020a13;--s2:#04131d;--s3:#061c27;--t:#eafcff;--h:#f4f8fa;--t2:#c8dee2;--t3:#b8cfd3;--b:#00e4f0;--b2:#19cada;--b3:#8af6fb;--line:rgba(82,205,220,.16);--red:#FF6B6B}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--t);font-family:Inter,Avenir,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--b2)}
+img{max-width:100%;display:block}
+.wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+.eyebrow{font-size:14px;font-weight:750;letter-spacing:.08em;color:var(--b2);text-transform:uppercase}
+h1,h2,h3{color:var(--h);margin:0}
+h2{font-size:clamp(30px,4vw,48px);line-height:1.07;font-weight:750;letter-spacing:-.02em;margin-top:12px}
+.lead{color:var(--t2);font-size:18px;line-height:1.6}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--b);color:#001117;font-weight:800;font-size:18px;padding:19px 30px;border-radius:12px;text-decoration:none;border:0;cursor:pointer;font-family:inherit;position:relative;overflow:hidden;min-height:48px}
+.btn:hover{background:#5ff0f7;color:#001117}
+.btn-ghost{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(19,204,224,.78);color:var(--h);font-weight:650;font-size:17px;padding:17px 24px;border-radius:10px;text-decoration:none;background:rgba(0,13,22,.28);cursor:pointer;font-family:inherit;min-height:48px}
+.card{background:var(--s2);border:1px solid var(--line);border-radius:16px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--s2);border:1px solid rgba(82,205,220,.22);border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;color:var(--h)}
+.tag{font-size:12px;font-weight:800;letter-spacing:.05em;color:#001117;background:var(--b3);padding:5px 10px;border-radius:6px}
+section{scroll-margin-top:70px}
+
+/* animations */
+@keyframes strike{0%,8%{transform:scaleX(0)}22%,100%{transform:scaleX(1)}}
+@keyframes oldfade{0%,20%{opacity:1}35%,100%{opacity:.45}}
+@keyframes pop{0%,25%{transform:scale(.4);opacity:0}38%{transform:scale(1.18);opacity:1}46%,100%{transform:scale(1);opacity:1}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(24,188,210,.55)}50%{box-shadow:0 0 0 14px rgba(24,188,210,0)}}
+@keyframes shine{0%{transform:translateX(-120%)}60%,100%{transform:translateX(260%)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.old{position:relative;display:inline-block;animation:oldfade 5s ease-out infinite;color:var(--t3);font-weight:700}
+.old::after{content:"";position:absolute;left:-6%;right:-6%;top:50%;height:4px;margin-top:-2px;border-radius:2px;background:var(--red);transform-origin:left;animation:strike 5s ease-out infinite}
+.zero{display:inline-block;animation:pop 5s cubic-bezier(.2,.9,.3,1.3) infinite;color:var(--b);font-weight:800;letter-spacing:-.02em}
+.glow{animation:glow 2.2s ease-out infinite}
+.shine::after{content:"";position:absolute;top:0;bottom:0;left:0;width:40%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);animation:shine 3.2s ease-in-out infinite;pointer-events:none}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--b);animation:blink 1.4s infinite;display:inline-block}
+@media (prefers-reduced-motion:reduce){.old,.old::after,.zero,.glow,.shine::after,.dot{animation:none}.old{opacity:.5}.old::after{transform:none}}
+
+/* header 1:1 vizmaker.com */
+.promo{background:#03141d;border-bottom:1px solid rgba(82,205,220,.14);font-size:13px}
+.promo .in{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 18px;padding:8px 16px}
+.promo b{color:var(--b2)}
+.promo a{background:var(--b);color:#001117;font-weight:700;font-size:12px;padding:7px 14px;border-radius:6px;text-decoration:none}
+header.vm{position:sticky;top:0;z-index:40;background:rgba(1,7,13,.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(82,205,220,.07)}
+header.vm .in{max-width:1440px;margin:0 auto;padding:0 56px;height:86px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+header.vm nav{display:flex;gap:34px;font-size:13px}
+header.vm nav a{color:rgba(225,235,239,.62);text-decoration:none}
+header.vm nav a:hover{color:var(--h)}
+.dl{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:8px;border:1px solid rgba(19,204,224,.78);background:rgba(0,13,22,.28);color:var(--b2);font-size:12px;font-weight:600;text-decoration:none}
+.lang{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:8px;border:1px solid rgba(82,205,220,.14);color:rgba(225,235,239,.62);font-size:12px}
+.subnav{background:var(--s1);border-bottom:1px solid rgba(82,205,220,.12)}
+.subnav .in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 32px;max-width:1240px;margin:0 auto}
+.subnav nav{display:flex;gap:26px;font-size:14px;align-items:center}
+.subnav nav a{color:var(--t2);text-decoration:none}
+.subnav .cta{background:#18BCD2;color:#001117;font-weight:750;font-size:14px;padding:10px 16px;border-radius:8px;text-decoration:none;white-space:nowrap}
+
+/* hero */
+.hero{background:radial-gradient(1100px 600px at 50% 0%,rgba(0,120,160,.22),rgba(1,7,19,0) 70%);text-align:center;padding:64px 0 24px}
+.pill{display:inline-flex;align-items:center;gap:10px;background:rgba(24,188,210,.12);border:1px solid rgba(24,188,210,.5);border-radius:999px;padding:9px 18px;font-size:15px;font-weight:700;letter-spacing:.05em;color:var(--h)}
+.hero h1{margin:22px auto 0;font-size:clamp(40px,7vw,78px);line-height:1;font-weight:780;letter-spacing:-.035em;max-width:1000px}
+.hero h1 em{font-style:normal;color:var(--b)}
+.hero .lead{margin:22px auto 0;font-size:clamp(17px,2vw,21px);max-width:760px}
+.sig{margin:26px auto 0;display:inline-flex;align-items:center;gap:12px;font-size:15px;color:var(--t2);text-align:left}
+.sig img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid #18BCD2}
+.sig b{color:var(--h)}
+.chips{margin:26px auto 0;display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.price-row{margin:34px auto 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:18px 22px}
+.price{display:flex;align-items:baseline;gap:14px}
+.price .old{font-size:30px}.price .zero{font-size:54px}
+.linkplay{background:none;border:0;cursor:pointer;color:var(--h);font:600 17px Inter,sans-serif;display:inline-flex;align-items:center;gap:10px;padding:12px 4px;min-height:44px}
+.linkplay span{width:34px;height:34px;border-radius:50%;border:1.5px solid #18BCD2;display:inline-flex;align-items:center;justify-content:center}
+.trust{margin-top:14px;font-size:14px;color:var(--t3)}
+
+/* video frames */
+.vframe{position:relative;width:100%;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(32,207,224,.42);background:#04131d;box-shadow:0 40px 120px rgba(0,0,0,.6),0 0 80px rgba(0,220,238,.12)}
+.vframe .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vframe .yt{position:absolute;inset:0;width:100%;height:100%}
+.vframe iframe{width:100%;height:100%;border:0;display:block}
+.vbadge{position:absolute;left:18px;top:18px;z-index:3;display:inline-flex;align-items:center;gap:8px;background:rgba(1,7,19,.8);color:var(--h);font-size:13px;font-weight:650;padding:7px 12px;border-radius:6px;pointer-events:none}
+.unmute{position:absolute;right:18px;bottom:18px;z-index:3;display:inline-flex;align-items:center;gap:10px;background:var(--b);color:#001117;font:750 15px Inter,sans-serif;padding:12px 18px;border-radius:10px;border:0;cursor:pointer}
+.unmute[hidden]{display:none}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--s2);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.stats div{padding:22px 26px;border-right:1px solid rgba(82,205,220,.12)}
+.stats b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--h)}
+.stats span{display:block;margin-top:4px;font-size:14px;color:var(--t2)}
+
+.marks{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px 26px;font-size:15px;color:var(--t2)}
+.marks b{color:var(--b2);font-variant-numeric:tabular-nums}
+
+/* viewer */
+.viewer-shell{position:relative;width:100%;height:min(78vh,720px);border-radius:20px;overflow:hidden;border:1px solid rgba(32,207,224,.42);background:#04131d}
+.viewer-shell iframe{width:100%;height:100%;border:0;display:block}
+.vgrid{margin-top:20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.vgrid figure{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--s2)}
+.vgrid img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.vgrid figcaption{padding:12px 14px;font-size:14px;color:var(--t2)}
+.vgrid figcaption b{color:var(--h);display:block;font-size:15px;margin-bottom:2px}
+.howto{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:20px}
+.howto div{background:var(--s2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;font-size:15px;line-height:1.55;color:var(--t2)}
+.howto b{color:var(--b);font-size:20px;display:block;margin-bottom:6px}
+
+/* bundle */
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.bundle .card{padding:26px}
+.bundle h3{font-size:21px;line-height:1.25;margin-top:18px}
+.bundle p{margin:10px 0 0;font-size:15px;line-height:1.6;color:var(--t2)}
+.bundle .top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--t3)}
+.prompt{margin-top:20px;overflow:hidden}
+.prompt .hd{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:16px 22px;border-bottom:1px solid rgba(82,205,220,.12)}
+.prompt pre{margin:0;padding:18px 22px 0;height:120px;overflow:hidden;white-space:pre-wrap;font:14px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;color:#dce5ec;-webkit-mask-image:linear-gradient(#000 40%,transparent);mask-image:linear-gradient(#000 40%,transparent)}
+details.prog{margin-top:20px}
+details.prog summary{list-style:none;cursor:pointer;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+details.prog summary::-webkit-details-marker{display:none}
+details.prog summary b{display:block;font-size:19px;color:var(--h)}
+details.prog summary span.s{display:block;margin-top:4px;font-size:14px;color:var(--t2)}
+details.prog .chev{transition:transform .2s}
+details.prog[open] .chev{transform:rotate(180deg)}
+details.prog ol{list-style:none;margin:0;padding:0;border-top:1px solid rgba(82,205,220,.12)}
+details.prog li{display:flex;align-items:center;gap:18px;padding:16px 24px;border-bottom:1px solid rgba(82,205,220,.08)}
+details.prog .n{width:28px;flex:none;font-weight:750;color:var(--b2);font-variant-numeric:tabular-nums}
+details.prog .tt{flex:1;min-width:0}
+details.prog .tt b{display:block;font-size:16px;color:var(--h)}
+details.prog .tt span{display:block;margin-top:3px;font-size:14px;line-height:1.5;color:var(--t2)}
+details.prog .len{width:52px;flex:none;text-align:right;font-variant-numeric:tabular-nums}
+.op{font-size:12px;font-weight:750;color:#001117;background:var(--b);padding:4px 10px;border-radius:6px;white-space:nowrap}
+.pr{font-size:12px;font-weight:650;color:var(--b3);border:1px solid rgba(32,207,224,.5);padding:3px 9px;border-radius:6px;white-space:nowrap}
+
+/* vizmaker bonus */
+.vmbox{border-radius:22px;border:1px solid rgba(32,207,224,.42);background:var(--s2);padding:48px;display:flex;flex-wrap:wrap;gap:40px;align-items:center}
+.perks{flex:1 1 400px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.perks div{background:var(--bg);border:1px solid rgba(82,205,220,.18);border-radius:14px;padding:20px}
+.perks b{font-size:24px;color:var(--b);display:block}
+.perks span{display:block;margin-top:6px;font-size:14px;line-height:1.45;color:var(--t2)}
+
+/* form */
+.formbox{background:var(--s2);border:1px solid rgba(32,207,224,.5);border-radius:22px;padding:56px;display:flex;flex-wrap:wrap;gap:48px;align-items:center;box-shadow:0 0 0 8px rgba(0,228,240,.05),0 0 90px rgba(0,220,238,.1)}
+.formbox form{display:flex;flex-direction:column;gap:12px}
+.formbox label{font-size:14px;font-weight:600;color:var(--h)}
+.formbox input{font:inherit;font-size:17px;padding:16px 18px;border-radius:10px;border:1px solid rgba(184,207,211,.35);background:var(--bg);color:var(--h);min-height:56px}
+.formbox input:focus{outline:2px solid var(--b);outline-offset:2px}
+.ok{background:rgba(0,228,240,.1);border:1px solid rgba(32,207,224,.5);border-radius:14px;padding:26px}
+.unlocked{margin-top:40px}
+
+/* tutor */
+.tutor{display:flex;flex-wrap:wrap;gap:56px;align-items:center}
+.tutor .ph{flex:1 1 300px;max-width:380px;aspect-ratio:4/5;border-radius:18px;overflow:hidden;border:1px solid rgba(82,205,220,.22)}
+.tutor .ph img{width:100%;height:100%;object-fit:cover}
+.tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.tags span{border:1px solid rgba(184,207,211,.3);color:var(--h);font-size:13px;padding:8px 14px;border-radius:999px}
+
+/* footer 1:1 vizmaker.com */
+footer.vm{background:var(--bg)}
+footer.vm .band{height:180px;background:url(https://www.vizmaker.com/footer-particles.webp) center top/cover no-repeat}
+footer.vm .cols{max-width:1240px;margin:0 auto;padding:24px 32px 0;display:flex;flex-wrap:wrap;gap:40px}
+footer.vm .brand{flex:1.4 1 240px;padding-right:32px;border-right:1px solid rgba(82,205,220,.12)}
+footer.vm .brand p{margin:14px 0 0;font-size:13px;color:rgba(225,235,239,.62)}
+footer.vm .col{flex:1 1 120px}
+footer.vm .col b{font-size:13px;color:var(--h)}
+footer.vm .col div{margin-top:14px;display:flex;flex-direction:column;gap:10px;font-size:13px}
+footer.vm .col a{color:rgba(225,235,239,.62);text-decoration:none}
+footer.vm .col a:hover{color:var(--h)}
+footer.vm .soc{margin-top:18px;display:flex;gap:14px}
+footer.vm .soc a{color:var(--b2);display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center}
+footer.vm .app{flex:1.6 1 260px}
+footer.vm .app a{display:flex;align-items:center;gap:16px;border:1px solid rgba(82,205,220,.2);border-radius:14px;padding:20px;text-decoration:none;background:rgba(4,19,29,.6)}
+footer.vm .copy{max-width:1240px;margin:36px auto 0;padding:22px 32px 34px;border-top:1px solid rgba(82,205,220,.12);font-size:12px;color:rgba(225,235,239,.5)}
+
+/* modal for trailer with sound */
+.modal{position:fixed;inset:0;z-index:100;background:rgba(1,7,19,.9);display:none;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}
+.modal .box{width:min(1180px,100%)}
+.modal .x{display:flex;justify-content:flex-end;margin-bottom:10px}
+.modal .x button{width:44px;height:44px;border-radius:10px;border:1px solid rgba(184,207,211,.3);background:none;color:var(--h);cursor:pointer}
+
+/* mobile */
+@media (max-width:1100px){header.vm nav{display:none}header.vm .in{padding:0 20px;height:68px}}
+@media (max-width:820px){
+  .wrap{padding:0 18px}
+  .subnav nav a{display:none}
+  .subnav .in{padding:8px 18px}
+  .stats,.grid3,.howto,.vgrid{grid-template-columns:1fr 1fr}
+  .stats div:nth-child(2){border-right:0}
+  .grid3{grid-template-columns:1fr}
+  .vmbox,.formbox{padding:28px 20px}
+  .perks{grid-template-columns:1fr 1fr}
+  .btn{width:100%;font-size:17px}
+  .price .zero{font-size:44px}
+  .viewer-shell{height:70vh}
+  .unmute{right:10px;bottom:10px;font-size:13px;padding:9px 12px}
+  footer.vm .brand{border-right:0;padding-right:0}
+  .promo .t{display:none}
+}
+@media (max-width:520px){.howto,.vgrid{grid-template-columns:1fr}.hero{padding-top:40px}}
+</style>
+</head>
+<body>
+
+<!-- PROMO BAR (vizmaker.com) -->
+<div class="promo"><div class="in">
+  <b>Nano Banana 2 · 4K · FREE</b>
+  <span class="t" style="color:var(--t2)">7 dni renderowania bez limitu w jakości 4K.</span>
+  <a href="https://www.vizmaker.com/pl?src=minicourse_od_maila#pricing">Rozpocznij darmowy trial →</a>
+</div></div>
+
+<!-- HEADER (vizmaker.com) -->
+<header class="vm"><div class="in">
+  <div style="display:flex;align-items:center;gap:56px">
+    <a href="https://www.vizmaker.com/pl" aria-label="VizMaker – strona główna"><img src="https://www.vizmaker.com/vizmaker-logo-wordmark.png" alt="VizMaker" width="170" height="56"></a>
+    <nav aria-label="Menu VizMaker">
+      <a href="https://www.vizmaker.com/pl#feature-videos">Funkcje</a><a href="https://www.vizmaker.com/pl#ai-models">Silniki</a><a href="https://www.vizmaker.com/pl#plugins">Wtyczki</a><a href="https://www.vizmaker.com/pl#tutorials">Tutoriale</a><a href="https://www.vizmaker.com/pl#pricing">Cennik</a><a href="https://www.vizmaker.com/pl/blog">Blog</a><a href="https://www.vizmaker.com/pl#faq">FAQ</a>
+    </nav>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <a class="dl" href="https://www.vizmaker.com/pl?src=minicourse_od_maila"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Pobierz</a>
+    <span class="lang"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>PL</span>
+  </div>
+</div></header>
+
+<!-- COURSE SUB-NAV -->
+<div class="subnav"><div class="in">
+  <nav><b style="color:var(--h);font-weight:700">Minikurs: Od maila do koncepcji</b><a href="#lekcja">Lekcja</a><a href="#projekt">Projekt</a><a href="#pakiet">Co dostajesz</a><a href="#prowadzaca">Prowadząca</a></nav>
+  <a class="cta" href="#formularz"><span class="old" style="color:#001117">199 zł</span> 0 zł · Odbierz</a>
+</div></div>
+
+<main>
+<!-- 1. EFEKT + CTA -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="pill"><span class="dot" aria-hidden="true"></span>BEZPŁATNY MINIKURS · VIZACADEMY × VIZMASTERS</div>
+    <h1>Od maila do <em>koncepcji</em> wnętrza</h1>
+    <p class="lead">Po kursie przygotujesz pierwszą koncepcję mieszkania: brief z maila klienta, trzy warianty wizualizacji i prezentację na pierwsze spotkanie.</p>
+    <div class="sig"><img src="https://i.ytimg.com/vi/-DJGMe0I1BQ/maxresdefault.jpg" alt="" style="object-position:84% 18%"><span>Prowadzi <b>Julia Cierniak</b> · główna instruktorka VizMasters</span></div>
+    <div class="chips">
+      <span class="chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00e4f0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Brief z maila w Claude</span>
+      <span class="chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00e4f0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>3 warianty wnętrza w VizMakerze</span>
+      <span class="chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00e4f0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Prezentacja na 1. spotkanie</span>
+    </div>
+    <div class="price-row">
+      <div class="price"><span class="old">199 zł</span><span class="zero">0 zł</span></div>
+      <a class="btn glow shine" href="#formularz">Odbierz cały minikurs za darmo <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <button class="linkplay" type="button" data-open-trailer><span><svg width="12" height="12" viewBox="0 0 24 24" fill="#00e4f0" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>Obejrzyj zwiastun · 38 s</button>
+    </div>
+    <div class="trust">Tylko e-mail · bez karty płatniczej · dostęp od razu</div>
+  </div>
+
+  <div class="wrap" style="margin-top:36px">
+    <div class="vframe" data-yt="D5GahPW53CU" data-loop="1">
+      <img class="poster" src="https://i.ytimg.com/vi/D5GahPW53CU/maxresdefault.jpg" alt="Zwiastun minikursu Od maila do koncepcji" fetchpriority="high">
+      <div class="yt"></div>
+      <span class="vbadge"><span class="dot" style="background:var(--red)"></span>Zwiastun · 0:38</span>
+      <button class="unmute" type="button">Włącz dźwięk</button>
+    </div>
+  </div>
+
+  <div class="wrap" style="margin-top:28px;text-align:left">
+    <div class="stats">
+      <div><b>10 lekcji</b><span>1 godz. 21 min wideo</span></div>
+      <div><b>Plik projektu</b><span>ten sam co w nagraniach</span></div>
+      <div><b>4 prompty</b><span>do Claude i VizMakera</span></div>
+      <div><b>7 dni</b><span>VizMaker bez limitu (trial)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. PEŁNA LEKCJA -->
+<section id="lekcja" style="padding:72px 0">
+  <div class="wrap">
+    <div class="eyebrow">Pełna lekcja · bez zapisu</div>
+    <h2>Zobacz, jak z jednego kadru powstają trzy koncepcje kuchni</h2>
+    <p class="lead" style="margin:12px 0 0">Lekcja 4 z 10 · 10:23. Włącza się sama, gdy do niej przewiniesz.</p>
+    <div class="vframe" data-yt="r1otv0XTMOE" style="margin-top:28px">
+      <img class="poster" src="https://i.ytimg.com/vi/r1otv0XTMOE/maxresdefault.jpg" alt="Lekcja: moodboard i trzy warianty kuchni" loading="lazy">
+      <div class="yt"></div>
+      <span class="vbadge">Lekcja 4 · 10:23</span>
+      <button class="unmute" type="button">Włącz dźwięk</button>
+    </div>
+    <div class="marks"><span><b>0:56</b> Materiały bazowe</span><span><b>2:41</b> Moodboardy</span><span><b>5:50</b> Porównanie A/B</span><span><b>7:38</b> Łączenie węzłów</span></div>
+    <div style="margin-top:30px;display:flex;flex-wrap:wrap;align-items:center;gap:18px">
+      <a class="btn shine" href="#formularz">Odbierz cały minikurs za darmo</a>
+      <span style="color:var(--t2);font-size:15px">Pozostałe 9 lekcji, plik projektu i prompty: <span class="old">199 zł</span> <b style="color:var(--b)">0 zł</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- 3. VIEWER PROJEKTU -->
+<section id="projekt" style="background:var(--s1);border-top:1px solid rgba(82,205,220,.12);border-bottom:1px solid rgba(82,205,220,.12);padding:80px 0">
+  <div class="wrap">
+    <div class="eyebrow">Projekt z kursu · sprawdź sam</div>
+    <h2>Porównaj trzy wersje tej samej kuchni</h2>
+    <div class="howto">
+      <div><b>1</b>Przybliż i przesuwaj projekt w oknie poniżej. Kliknij dowolny render, żeby go powiększyć.</div>
+      <div><b>2</b>Zwróć uwagę na podłogę, ścianę nad blatem i lampę. To one zmieniają charakter kuchni.</div>
+      <div><b>3</b>Kadr i zabudowa zostają te same. Tak pokazujesz klientowi kierunki, a nie trzy różne projekty.</div>
+    </div>
+    <div class="viewer-shell" style="margin-top:20px">
+      <iframe data-src="https://vizmaker-ai-view.github.io/?p=kredyty&utm_source=minikurs&utm_medium=landing&utm_campaign=od_maila" title="Projekt VizMaker – interaktywny podgląd" loading="lazy" allow="fullscreen"></iframe>
+    </div>
+    <p style="margin:22px 0 0;font-size:16px;color:var(--t2)">Chcesz zobaczyć, jak zmienia się światło? <a href="#lekcja-swiatlo">Druga otwarta lekcja: złota godzina, noc i dzień ↓</a></p>
+    <div id="lekcja-swiatlo" class="vframe" data-yt="hPtOuHSrtoc" style="margin-top:20px;max-width:900px">
+      <img class="poster" src="https://i.ytimg.com/vi/hPtOuHSrtoc/maxresdefault.jpg" alt="Lekcja: jedna kuchnia, wiele nastrojów" loading="lazy">
+      <div class="yt"></div>
+      <span class="vbadge">Lekcja 8 · 8:07 · światło i nastrój</span>
+      <button class="unmute" type="button">Włącz dźwięk</button>
+    </div>
+  </div>
+</section>
+
+<!-- 4. CO DOSTANIESZ -->
+<section id="pakiet" style="padding:80px 0 40px">
+  <div class="wrap">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px">
+      <div><div class="eyebrow">Co dostaniesz po zapisie</div><h2>Materiały, na których pracuje prowadząca</h2></div>
+      <div class="price"><span class="old" style="font-size:24px">199 zł</span><span class="zero" style="font-size:40px">0 zł</span></div>
+    </div>
+    <div class="grid3 bundle" style="margin-top:32px">
+      <div class="card"><div class="top"><span class="tag">PO ZAPISIE</span>ZIP · ok. 379 KB</div><h3>Plik projektu VizMaker</h3><p>Ten sam projekt co w nagraniach. Otwierasz go w VizMakerze i pracujesz na ustawieniach prowadzącej.</p></div>
+      <div class="card"><div class="top"><span class="tag">PO ZAPISIE</span>4 gotowe prompty</div><h3>Zestaw promptów</h3><p>Analityk briefu, dokument A4 na spotkanie, moodboard na wnętrze i prezentacja na 1. spotkanie.</p></div>
+      <div class="card"><div class="top"><span class="tag">PO ZAPISIE</span>10 lekcji · 1 godz. 21 min</div><h3>Wszystkie lekcje wideo</h3><p>Jeden projekt mieszkania od maila klienta do prezentacji na pierwsze spotkanie.</p></div>
+    </div>
+    <div class="card prompt">
+      <div class="hd"><span style="display:flex;align-items:center;gap:10px"><span class="tag">PO ZAPISIE</span><b style="color:var(--h)">Prompt z lekcji 1: analityk briefu</b></span><span style="font-size:14px;color:var(--t3)">Kopiuj prompt · po zapisie</span></div>
+      <pre>Jesteś moim osobistym analitykiem briefów projektowych, konsultantem na etapie preprojektowym oraz asystentem przygotowującym mnie do pierwszych spotkań z inwestorami.
+
+Pomagasz mi analizować pierwsze wiadomości e-mail od potencjalnych klientów…</pre>
+    </div>
+    <details class="card prog">
+      <summary><span><b>Pełny program · 10 lekcji · 1 godz. 21 min</b><span class="s">Rozwiń, żeby zobaczyć wszystkie tematy</span></span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e4f0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <ol id="program"></ol>
+    </details>
+  </div>
+</section>
+
+<!-- VIZMAKER BONUS -->
+<section style="padding:40px 0">
+  <div class="wrap">
+    <div class="vmbox">
+      <div style="flex:1 1 460px;min-width:0">
+        <div style="display:flex;align-items:center;gap:12px"><img src="https://www.vizmaker.com/vizmaker-logo-wordmark.png" alt="VizMaker" width="130" height="43"><span class="tag" style="background:var(--b)">+ BONUS</span></div>
+        <h2 style="font-size:clamp(28px,3.4vw,40px)">Ćwicz od razu w VizMakerze. 7 dni bez limitu.</h2>
+        <p class="lead" style="margin:14px 0 0;font-size:17px">Pobierz aplikację, otwórz plik projektu z kursu i renderuj ile chcesz. Te same silniki AI co w nagraniach.</p>
+        <div style="margin-top:24px;display:flex;flex-wrap:wrap;gap:14px">
+          <a class="btn shine" href="https://www.vizmaker.com/pl?src=minicourse_od_maila#pricing" style="font-size:17px;padding:18px 26px">Rozpocznij darmowy trial</a>
+          <a class="btn-ghost" href="https://www.vizmaker.com/pl?src=minicourse_od_maila" style="color:var(--b2)">Pobierz aplikację</a>
+        </div>
+      </div>
+      <div class="perks">
+        <div><b>$0</b><span>Trial 7 dni, aplikacja do pobrania</span></div>
+        <div><b>Nano Banana 2</b><span>w 4K, 7 dni bez limitu</span></div>
+        <div><b>Bez limitu</b><span>wszystkie modele w trialu</span></div>
+        <div><b>Kredyty</b><span>nigdy nie wygasają</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. FORMULARZ -->
+<section id="formularz" style="padding:40px 0 88px">
+  <div class="wrap">
+    <div class="formbox">
+      <div style="flex:1 1 420px;min-width:0">
+        <h2 style="margin:0">Odbierz cały minikurs</h2>
+        <div class="price" style="margin-top:12px"><span class="old" style="font-size:28px">199 zł</span><span class="zero" style="font-size:56px">0 zł</span></div>
+        <p class="lead" style="margin:10px 0 0;font-size:17px">10 lekcji, plik projektu VizMaker i 4 prompty. Podaj e-mail i zaczynasz od razu.</p>
+      </div>
+      <div style="flex:1 1 400px;min-width:0" id="formslot">
+        <form id="signup" novalidate>
+          <label for="email">Adres e-mail</label>
+          <input id="email" name="email" type="email" required autocomplete="email" placeholder="np. anna@pracownia.pl">
+          <button class="btn glow" type="submit" style="width:100%">Odbierz cały minikurs za darmo</button>
+          <p id="err" role="alert" style="margin:0;font-size:14px;color:var(--red);min-height:0"></p>
+          <p style="margin:2px 0 0;font-size:13px;line-height:1.5;color:var(--t3)">Bez karty płatniczej. Wypisujesz się jednym kliknięciem. <a href="https://www.vizmaker.com/privacy-policy">Polityka prywatności</a></p>
+        </form>
+        <div class="ok" id="ok" hidden role="status">
+          <b style="font-size:22px;color:var(--h)">Gotowe! Lekcje są Twoje.</b>
+          <p style="margin:8px 0 0;font-size:16px;line-height:1.6;color:var(--t2)">Po zapisie od razu otworzysz lekcje. Link dostaniesz też e-mailem.</p>
+          <a class="btn" href="#odblokowane" style="margin-top:16px;font-size:16px;padding:15px 22px">Otwórz lekcje teraz ↓</a>
+        </div>
+      </div>
+    </div>
+    <div class="unlocked" id="odblokowane" hidden>
+      <div class="eyebrow">Odblokowane · wszystkie lekcje</div>
+      <h2 style="font-size:clamp(26px,3vw,36px)">Cały minikurs: Od maila do koncepcji</h2>
+      <div class="vframe" style="margin-top:20px"><iframe title="Playlista minikursu" src="about:blank" data-src="https://www.youtube-nocookie.com/embed/videoseries?list=PLc5r3ZgE7NSk&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. PROWADZĄCA -->
+<section id="prowadzaca" style="background:var(--s1);border-top:1px solid rgba(82,205,220,.12);padding:80px 0">
+  <div class="wrap tutor">
+    <div class="ph"><img src="https://i.ytimg.com/vi/-DJGMe0I1BQ/maxresdefault.jpg" alt="Julia Cierniak, prowadząca minikurs" loading="lazy" style="object-position:86% 30%"></div>
+    <div style="flex:2 1 460px;min-width:0">
+      <div class="eyebrow">Prowadząca</div>
+      <h2 style="font-size:clamp(34px,4.4vw,50px)">Julia Cierniak</h2>
+      <div style="margin-top:10px;font-size:18px;font-weight:550;color:var(--b3)">Architektka, wizualizacje 3D i koncepcje wnętrz z AI</div>
+      <p class="lead" style="margin:20px 0 0;font-size:17px;line-height:1.7;max-width:680px">Absolwentka Politechniki Krakowskiej. Od lat łączy projektowanie architektury z wizualizacją 3D, także przy dużych realizacjach komercyjnych. Pracuje w SketchUpie i Lumionie, a dziś przygotowuje pierwsze koncepcje dla klientów z pomocą Claude i VizMakera. W VizMasters prowadzi kursy z profesjonalnej wizualizacji.</p>
+      <div class="tags"><span>SketchUp</span><span>Lumion</span><span>VizMaker</span><span>Claude</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:28px">
+        <a class="btn" href="#formularz" style="font-size:17px;padding:18px 28px">Odbierz cały minikurs za darmo</a>
+        <a class="btn-ghost" href="https://www.instagram.com/land__plan/">Instagram @land__plan</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER (vizmaker.com) -->
+<footer class="vm">
+  <div class="band" aria-hidden="true"></div>
+  <div class="cols">
+    <div class="brand">
+      <img src="https://www.vizmaker.com/vizmaker-logo-wordmark.png" alt="VizMaker" width="150" height="49" loading="lazy">
+      <p>Prezentuj projekty lepiej niż kiedykolwiek.</p>
+      <a href="mailto:office@vizmaker.com" style="display:block;margin-top:14px;font-size:13px;text-decoration:none">office@vizmaker.com</a>
+      <div style="margin-top:4px;font-size:12px;color:rgba(225,235,239,.5)">VizAcademy Ltd.</div>
+      <div class="soc">
+        <a href="https://www.instagram.com/vizmaker.ai" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="https://www.youtube.com/@VizAcademyUK" aria-label="YouTube"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></a>
+        <a href="https://vizmaker.com/discord" aria-label="Discord"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M7 7.5c3-1.3 7-1.3 10 0l1.5 9c-1.6 1.2-3.2 1.8-4.5 2l-1-1.8M7 7.5L5.5 16.5c1.6 1.2 3.2 1.8 4.5 2l1-1.8"/><circle cx="9.5" cy="12.5" r="1" fill="currentColor"/><circle cx="14.5" cy="12.5" r="1" fill="currentColor"/></svg></a>
+      </div>
+    </div>
+    <div class="col"><b>Produkt</b><div><a href="https://www.vizmaker.com/pl#feature-videos">Funkcje</a><a href="https://www.vizmaker.com/pl#ai-models">Silniki</a><a href="https://www.vizmaker.com/pl#plugins">Wtyczki</a><a href="https://www.vizmaker.com/pl#tutorials">Tutoriale</a><a href="https://www.vizmaker.com/pl#pricing">Cennik</a><a href="https://www.vizmaker.com/pl#faq">FAQ</a></div></div>
+    <div class="col"><b>Materiały</b><div><a href="https://www.vizmaker.com/pl/blog">Blog</a><a href="https://drive.google.com/drive/folders/17x_uf85LvxQ7baC9sLkkrILJFLx5tl0H?usp=sharing">E-booki</a><a href="https://www.youtube.com/@vizmaker-ai">Tutoriale</a><a href="https://vizmaker.com/discord">Discord</a></div></div>
+    <div class="col"><b>Informacje prawne</b><div><a href="https://www.vizmaker.com/privacy-policy">Polityka prywatności</a><a href="https://www.vizmaker.com/terms-conditions">Regulamin</a></div></div>
+    <div class="col"><b>Język</b><div><a href="https://www.vizmaker.com/">English</a><a href="https://www.vizmaker.com/pl" style="color:var(--b2)">Polski</a><a href="https://www.vizmaker.com/de">Deutsch</a><a href="https://www.vizmaker.com/zh">中文</a><a href="https://www.vizmaker.com/ja">日本語</a><a href="https://www.vizmaker.com/ar">العربية</a><a href="https://www.vizmaker.com/es">Español</a><a href="https://www.vizmaker.com/it">Italiano</a></div></div>
+    <div class="app"><a href="https://www.vizmaker.com/pl?src=minicourse_od_maila"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#19cada" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span style="flex:1"><b style="display:block;font-size:14px;color:var(--h)">Pobierz aplikację</b><span style="display:block;margin-top:4px;font-size:12px;color:rgba(225,235,239,.62)">Pobierz VizMaker i zacznij tworzyć już teraz.</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#19cada" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  </div>
+  <div class="copy">© 2026 VizMaker. Wszelkie prawa zastrzeżone.</div>
+</footer>
+
+<!-- trailer with sound -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Zwiastun minikursu">
+  <div class="box"><div class="x"><button type="button" id="mclose" aria-label="Zamknij">✕</button></div><div class="vframe" id="mframe"></div></div>
+</div>
+
+<script>
+// ===== PRESET: lista lekcji (kolejność nauki) =====
+const LESSONS=[
+ ["Zamień mail od klienta w brief","Potrzeby, niewiadome, pytania i plan pierwszego spotkania w projekcie Claude.","11:37",0,1],
+ ["Zbuduj bazowy model mieszkania","Szkicowy model z rzutu: skala, ściany, warstwy i układ wyposażenia.","11:36"],
+ ["Ustaw kadr SketchUpa pod wizualizację AI","Przekroje, porządek widoku i perspektywa dwuzbiegowa.","5:38"],
+ ["Z inspiracji klienta stwórz trzy koncepcje","Moodboardy połączone z bazowym kadrem i porównanie A/B.","10:23",1,1],
+ ["Popraw konkretne elementy wizualizacji","Edycja zaznaczonego obszaru: podłoga, lampa, płytki, stół z referencji.","6:49"],
+ ["Odzyskaj detale po edycjach AI","Grupowanie zmian, rozdzielczość i wybór upscalera.","6:23"],
+ ["Przenieś mebel ze zdjęcia do SketchUpa","Model 3D w VizMakerze, zapis do GLB i import do SketchUpa.","4:12"],
+ ["Zmień światło i nastrój kuchni","Złota godzina, noc, światło sztuczne i dzienne, zakładka Mood.","8:07",1],
+ ["Pokaż więcej z jednego renderu","Plansze, aksonometrie i ujęcia makietowe bez nowego promptu.","9:43"],
+ ["Przygotuj prezentację na pierwsze spotkanie","Edytowalna prezentacja z briefu, wizualizacji i modelu w Claude.","7:10",0,1]
+];
+document.getElementById('program').innerHTML=LESSONS.map((l,i)=>`<li><span class="n">${String(i+1).padStart(2,'0')}</span><span class="tt"><b>${l[0]}</b><span>${l[1]}</span></span>${l[3]?'<span class="op">Otwarta</span>':''}${l[4]?'<span class="pr">+ prompt</span>':''}<span class="len">${l[2]}</span></li>`).join('');
+
+// ===== YouTube: autoplay (muted) when scrolled into view, pause when out =====
+const frames=[...document.querySelectorAll('.vframe[data-yt]')];
+const players=new Map();let apiReady=false;const queue=[];
+function loadAPI(){if(window.YT||document.getElementById('ytapi'))return;const s=document.createElement('script');s.id='ytapi';s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);}
+window.onYouTubeIframeAPIReady=()=>{apiReady=true;queue.splice(0).forEach(f=>f());};
+function makePlayer(el){
+  if(players.has(el))return players.get(el);
+  const id=el.dataset.yt;const host=el.querySelector('.yt');
+  const p={ready:false,want:false,obj:null};players.set(el,p);
+  const build=()=>{p.obj=new YT.Player(host,{videoId:id,host:'https://www.youtube-nocookie.com',playerVars:{autoplay:1,mute:1,playsinline:1,rel:0,modestbranding:1,controls:1,loop:el.dataset.loop?1:0,playlist:el.dataset.loop?id:undefined,origin:location.origin},
+    events:{onReady:e=>{p.ready=true;e.target.mute();if(p.want)e.target.playVideo();el.querySelector('.poster').style.opacity=0;},
+            onStateChange:e=>{if(e.data===1)el.querySelector('.poster').style.opacity=0;}}});};
+  apiReady?build():queue.push(build);loadAPI();return p;
+}
+const io=new IntersectionObserver(es=>es.forEach(en=>{
+  const p=makePlayer(en.target);
+  const vis=en.intersectionRatio>=0.5;p.want=vis;
+  if(p.ready){vis?p.obj.playVideo():p.obj.pauseVideo();}
+}),{threshold:[0,0.5]});
+frames.forEach(f=>{f.querySelector('.poster').style.transition='opacity .4s';io.observe(f);
+  f.querySelector('.unmute').addEventListener('click',()=>{const p=makePlayer(f);const go=()=>{if(!p.ready)return setTimeout(go,200);p.obj.unMute();p.obj.setVolume(80);p.obj.playVideo();f.querySelector('.unmute').hidden=true;};go();});
+});
+
+// ===== lazy viewer iframe (loads when near viewport) =====
+const vf=document.querySelector('.viewer-shell iframe');
+new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){vf.src=vf.dataset.src;o.disconnect();}},{rootMargin:'400px'}).observe(vf);
+
+// ===== trailer with sound in page (no new tab) =====
+const modal=document.getElementById('modal'),mframe=document.getElementById('mframe');
+document.querySelectorAll('[data-open-trailer]').forEach(b=>b.addEventListener('click',()=>{
+  players.forEach(p=>{if(p.ready)p.obj.pauseVideo();});
+  mframe.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/D5GahPW53CU?autoplay=1&playsinline=1&rel=0" title="Zwiastun minikursu" allow="autoplay; encrypted-media; fullscreen" allowfullscreen style="width:100%;height:100%;border:0"></iframe>';
+  modal.classList.add('on');}));
+function closeM(){modal.classList.remove('on');mframe.innerHTML='';}
+document.getElementById('mclose').onclick=closeM;modal.addEventListener('click',e=>{if(e.target===modal)closeM();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('on'))closeM();});
+
+// ===== signup (podłącz Mailchimp: wyślij e-mail, potem pokaż sukces) =====
+document.getElementById('signup').addEventListener('submit',async e=>{
+  e.preventDefault();const em=document.getElementById('email');const err=document.getElementById('err');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim())){err.textContent='Podaj poprawny adres e-mail.';em.focus();return;}
+  err.textContent='';
+  // TODO Mailchimp: await fetch('/api/subscribe',{method:'POST',body:JSON.stringify({email:em.value,tag:'minikurs_od_maila'})});
+  e.target.hidden=true;document.getElementById('ok').hidden=false;
+  const u=document.getElementById('odblokowane');u.hidden=false;const fr=u.querySelector('iframe');fr.src=fr.dataset.src;
+  try{localStorage.setItem('mk_od_maila','1');}catch(_){}
+});
+try{if(localStorage.getItem('mk_od_maila')==='1'){/* returning user: keep unlocked */}}catch(_){}
+</script>
+</body>
+</html>
