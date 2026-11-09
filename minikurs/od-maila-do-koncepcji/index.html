@@ -633,7 +633,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 </section>
 
 <!-- 6. MOTYWACJA + KALENDARZ -->
-<section style="padding:56px 0">
+<section id="zaplanuj" style="padding:56px 0">
   <div class="wrap">
     <div class="motiv">
       <div class="mv-l">
@@ -1015,12 +1015,15 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.con
 
 // ===== signup → Zapier → Mailchimp (Kontakty UK + tag Julia Mini kurs) =====
 const HOOK='https://hooks.zapier.com/hooks/catch/4692325/49j6zdm/';
-function unlock(){
-track.ev('generate_lead',{std:true,name:'Lead',oai:'lead_created'},{method:'minikurs_form'});
+function openAccess(){
 document.getElementById('signup').hidden=true;document.getElementById('ok').hidden=false;
 const u=document.getElementById('odblokowane');u.hidden=false;const fr=u.querySelector('iframe');fr.src=fr.dataset.src;
 renderProgram(true);
 try{localStorage.setItem('mk_od_maila','1');}catch(_){}
+}
+function unlock(){
+track.ev('generate_lead',{std:true,name:'Lead',oai:'lead_created'},{method:'minikurs_form'});
+openAccess();
 }
 document.getElementById('signup').addEventListener('submit',e=>{
 e.preventDefault();const em=document.getElementById('email');const err=document.getElementById('err');const btn=e.target.querySelector('button');
@@ -1031,7 +1034,10 @@ fetch(HOOK,{method:'POST',mode:'no-cors',body:new URLSearchParams({email:val,sou
 .then(()=>unlock())
 .catch(()=>{btn.disabled=false;btn.textContent=label;err.textContent='Coś poszło nie tak. Spróbuj ponownie.';});
 });
-try{if(localStorage.getItem('mk_od_maila')==='1'){/* returning user: keep unlocked */}}catch(_){}
+// dostęp z maila (?dostep=1) albo powracający użytkownik: od razu otwarte lekcje, bez ponownego zapisu
+(function(){let back=false;try{back=localStorage.getItem('mk_od_maila')==='1';}catch(_){}
+ const fromMail=/[?&]dostep=1/.test(location.search);
+ if(back||fromMail){openAccess();if(fromMail&&!location.hash){setTimeout(()=>document.getElementById('odblokowane').scrollIntoView({behavior:'smooth'}),400);}}})();
 </script>
 </body>
 </html>
