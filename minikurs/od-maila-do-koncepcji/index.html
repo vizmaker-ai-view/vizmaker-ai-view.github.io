@@ -502,8 +502,8 @@ function closeM(){modal.classList.remove('on');mframe.innerHTML='';}
 document.getElementById('mclose').onclick=closeM;modal.addEventListener('click',e=>{if(e.target===modal)closeM();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('on'))closeM();});
 
-// ===== signup → Mailchimp (Kontakty UK + tag "[VizMaker] - PL - Julia Mini kurs - Skp + Claude - 11-2026") =====
-const MC={url:'https://vizacademy.us3.list-manage.com/subscribe/post-json',u:'692cbed49d5d0db2085fb0a69',id:'b918cc9c01',tag:'10814991'};
+// ===== signup → Zapier → Mailchimp (Kontakty UK + tag Julia Mini kurs) =====
+const HOOK='https://hooks.zapier.com/hooks/catch/4692325/49j6zdm/';
 function unlock(){
 document.getElementById('signup').hidden=true;document.getElementById('ok').hidden=false;
 const u=document.getElementById('odblokowane');u.hidden=false;const fr=u.querySelector('iframe');fr.src=fr.dataset.src;
@@ -514,16 +514,9 @@ e.preventDefault();const em=document.getElementById('email');const err=document.
 const val=em.value.trim();
 if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){err.textContent='Podaj poprawny adres e-mail.';em.focus();return;}
 err.textContent='';const label=btn.textContent;btn.disabled=true;btn.textContent='Wysyłam…';
-const cb='mc_cb_'+Date.now();const s=document.createElement('script');let done=false;
-const fail=m=>{btn.disabled=false;btn.textContent=label;err.textContent=m||'Coś poszło nie tak. Spróbuj ponownie.';};
-window[cb]=res=>{if(done)return;done=true;delete window[cb];s.remove();
-if(res.result==='success'||/already subscribed/i.test(res.msg||'')){unlock();}
-else{fail(String(res.msg||'').replace(/<[^>]*>/g,'').replace(/^\d+ - /,''));}
-};
-s.onerror=()=>{if(!done){done=true;fail();}};
-setTimeout(()=>{if(!done){done=true;fail();}},12000);
-s.src=MC.url+'?u='+MC.u+'&id='+MC.id+'&tags='+MC.tag+'&EMAIL='+encodeURIComponent(val)+'&c='+cb;
-document.body.appendChild(s);
+fetch(HOOK,{method:'POST',mode:'no-cors',body:new URLSearchParams({email:val,source:'minikurs_od_maila',page:location.href})})
+.then(()=>unlock())
+.catch(()=>{btn.disabled=false;btn.textContent=label;err.textContent='Coś poszło nie tak. Spróbuj ponownie.';});
 });
 try{if(localStorage.getItem('mk_od_maila')==='1'){/* returning user: keep unlocked */}}catch(_){}
 </script>
