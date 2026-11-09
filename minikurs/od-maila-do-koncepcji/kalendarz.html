@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Dodaj do kalendarza Apple · Minikurs VizMaker</title>
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#010713;color:#f4f8fa;font-family:Arial,Helvetica,sans-serif;padding:16px;box-sizing:border-box}.c{max-width:440px;width:100%;background:#04131d;border:1px solid #0f3a44;border-radius:18px;padding:30px 24px;text-align:center}h1{font-size:22px;margin:0 0 10px}p{color:#c8dee2;line-height:1.6;font-size:15px;margin:0 0 18px}a.b{display:inline-block;background:#00e4f0;color:#001117;font-weight:bold;text-decoration:none;padding:15px 26px;border-radius:10px;font-size:16px}a.l{color:#19cada}</style></head>
+<body><div class="c"><h1>🗓️ Kalendarz Apple</h1><p>Wydarzenie na <b id="kiedy">jutro, 19:00</b> (90 minut) z linkiem do lekcji. Godzinę zmienisz w kalendarzu przed zapisaniem.</p><a class="b" id="ics" href="#">Dodaj do kalendarza Apple</a><p style="margin:18px 0 0;font-size:13px"><a class="l" href="https://www.youtube.com/playlist?list=PLc5r3ZgE7NSk">Otwórz lekcje na YouTube</a></p></div>
+<script>
+const d=new Date();d.setDate(d.getDate()+1);d.setHours(19,0,0,0);const e=new Date(d.getTime()+90*60000);
+const z=t=>t.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+const PL='https://www.youtube.com/playlist?list=PLc5r3ZgE7NSk';
+const title='Czas na zmianę: moja pierwsza koncepcja z AI (minikurs SketchUp + Claude + VizMaker)';
+const desc='90 minut dla siebie. Po tym minikursie koncepcja\\, która zajmowała dni\\, zajmie Ci kilka godzin. Lekcje: '+PL;
+const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//VizMaker//Minikurs//PL','BEGIN:VEVENT','UID:minikurs-od-maila-'+Date.now()+'@vizmaker.com','DTSTAMP:'+z(new Date()),'DTSTART:'+z(d),'DTEND:'+z(e),'SUMMARY:'+title,'DESCRIPTION:'+desc,'URL:'+PL,'BEGIN:VALARM','TRIGGER:-PT15M','ACTION:DISPLAY','DESCRIPTION:Minikurs VizMaker','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+const D=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+document.getElementById('kiedy').textContent='jutro ('+D[d.getDay()]+'), 19:00';
+const href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+const a=document.getElementById('ics');a.href=href;a.setAttribute('download','minikurs-od-maila-do-koncepcji.ics');
+setTimeout(()=>{try{location.href=href}catch(_){}},400);
+</script></body></html>
