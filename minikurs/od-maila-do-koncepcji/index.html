@@ -520,7 +520,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
     <div class="eyebrow">Co zyskasz</div>
     <h2>Nowe umiejętności, szybsza praca, lepsze zarobki</h2>
   </div>
-  <div class="cc" data-cc data-auto="3800" style="--w:340px">
+  <div class="cc" data-cc data-auto="1" data-speed="38" style="--w:340px">
     <div class="cc-track" id="bentrack"></div>
     <button class="cc-nav prev" type="button" aria-label="Poprzednia"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
     <button class="cc-nav next" type="button" aria-label="Następna"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -547,7 +547,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
       </div>
     </div>
   </div>
-  <div class="cc" data-cc data-auto="4200" id="car" style="--w:400px;margin-top:20px">
+  <div class="cc" data-cc data-auto="1" data-speed="45" id="car" style="--w:400px;margin-top:20px">
     <div class="cc-track" id="cartrack"></div>
     <button class="cc-nav prev" type="button" aria-label="Poprzednie zdjęcie"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
     <button class="cc-nav next" type="button" aria-label="Następne zdjęcie"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -845,25 +845,41 @@ renderProgram(false);
 // ===== karuzela „środek większy” (zdjęcia + korzyści) =====
 function centerCarousel(root){
  const tr=root.querySelector('.cc-track'),dots=root.querySelector('.cc-dots');
- const slides=[...tr.children];let cur=0,timer=null;
+ const orig=[...tr.children];const n=orig.length;
  const ctrl=document.createElement('div');ctrl.className='cc-ctrl';ctrl.append(root.querySelector('.prev'),dots,root.querySelector('.next'));root.append(ctrl);
- if(dots)dots.innerHTML=slides.map((_,i)=>`<button type="button" aria-label="Pozycja ${i+1}" data-d="${i}"></button>`).join('');
- const go=i=>{i=(i+slides.length)%slides.length;const s=slides[i];tr.scrollTo({left:s.offsetLeft-(tr.clientWidth-s.offsetWidth)/2,behavior:'smooth'});};
+ if(dots)dots.innerHTML=orig.map((_,i)=>`<button type="button" aria-label="Pozycja ${i+1}" data-d="${i}"></button>`).join('');
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const auto=!!root.dataset.auto&&!reduce;
+ // płynna, ciągła jazda: duplikujemy slajdy, żeby pętla była bez szwu
+ if(auto){orig.forEach(s=>{const c=s.cloneNode(true);c.setAttribute('aria-hidden','true');tr.append(c);});tr.style.scrollSnapType='none';}
+ const all=()=>[...tr.children];
+ let cur=0,paused=false,resumeT=null,visible=false,pos=0,last=0;
+ const loopW=()=>auto?(tr.children[n].offsetLeft-tr.children[0].offsetLeft):0;
  const mark=()=>{const c=tr.scrollLeft+tr.clientWidth/2;let best=0,bd=1e9;
-  slides.forEach((s,i)=>{const d=Math.abs(s.offsetLeft+s.offsetWidth/2-c);if(d<bd){bd=d;best=i;}});
-  cur=best;slides.forEach((s,i)=>s.classList.toggle('is-c',i===best));
-  if(dots)dots.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===best));};
+  all().forEach((s,i)=>{const d=Math.abs(s.offsetLeft+s.offsetWidth/2-c);if(d<bd){bd=d;best=i;}});
+  cur=best;all().forEach((s,i)=>s.classList.toggle('is-c',i===best));
+  if(dots)dots.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',i===best%n));};
+ const go=i=>{const s=all()[Math.max(0,Math.min(all().length-1,i))];tr.scrollTo({left:s.offsetLeft-(tr.clientWidth-s.offsetWidth)/2,behavior:'smooth'});};
+ function pause(ms){paused=true;clearTimeout(resumeT);resumeT=setTimeout(()=>{paused=false;pos=tr.scrollLeft;},ms||3500);}
  tr.addEventListener('scroll',()=>requestAnimationFrame(mark),{passive:true});
- root.querySelector('.prev').onclick=()=>{stop();go(cur-1);};
- root.querySelector('.next').onclick=()=>{stop();go(cur+1);};
- if(dots)dots.addEventListener('click',e=>{const d=e.target.dataset.d;if(d!=null){stop();go(+d);}});
- const ms=+root.dataset.auto||0;
- function stop(){if(timer){clearInterval(timer);timer=null;}}
- function startAuto(){if(!ms||timer||matchMedia('(prefers-reduced-motion: reduce)').matches)return;timer=setInterval(()=>go(cur+1),ms);}
- ['pointerdown','touchstart','wheel'].forEach(ev=>tr.addEventListener(ev,stop,{passive:true}));
- root.addEventListener('mouseenter',stop);root.addEventListener('mouseleave',startAuto);
- new IntersectionObserver(es=>es[0].isIntersecting?startAuto():stop(),{threshold:.3}).observe(root);
- requestAnimationFrame(()=>{go(Math.min(1,slides.length-1));mark();});
+ root.querySelector('.prev').onclick=()=>{pause(5000);go(cur-1);};
+ root.querySelector('.next').onclick=()=>{pause(5000);go(cur+1);};
+ if(dots)dots.addEventListener('click',e=>{const d=e.target.dataset.d;if(d!=null){pause(5000);go(+d);}});
+ ['pointerdown','touchstart','wheel'].forEach(ev=>tr.addEventListener(ev,()=>pause(4000),{passive:true}));
+ root.addEventListener('mouseenter',()=>{paused=true;clearTimeout(resumeT);});
+ root.addEventListener('mouseleave',()=>pause(800));
+ new IntersectionObserver(es=>{visible=es[0].isIntersecting;},{threshold:.1}).observe(root);
+ const speed=+(root.dataset.speed||40); // px na sekundę
+ function tick(t){
+  const dt=last?Math.min(64,t-last):16;last=t;
+  if(auto&&visible&&!paused&&!document.hidden){
+   pos+=speed*dt/1000;const L=loopW();
+   if(L>0&&pos>=L){pos-=L;}
+   tr.scrollLeft=pos;
+  }else{pos=tr.scrollLeft;}
+  requestAnimationFrame(tick);
+ }
+ requestAnimationFrame(()=>{if(!auto)go(Math.min(1,n-1));mark();pos=tr.scrollLeft;requestAnimationFrame(tick);});
 }
 
 // ===== korzyści =====
