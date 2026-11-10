@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Add to calendar · VizMaker mini-course</title>
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#010713;color:#f4f8fa;font-family:Arial,Helvetica,sans-serif;padding:16px;box-sizing:border-box}.c{max-width:440px;width:100%;background:#04131d;border:1px solid #0f3a44;border-radius:18px;padding:30px 24px;text-align:center}h1{font-size:22px;margin:0 0 10px}p{color:#c8dee2;line-height:1.6;font-size:15px;margin:0 0 18px}a.b{display:block;background:#00e4f0;color:#001117;font-weight:bold;text-decoration:none;padding:14px 20px;border-radius:10px;font-size:16px;margin:10px 0}a.g{background:transparent;color:#f4f8fa;border:1px solid #19cada}a.l{color:#19cada}</style></head>
+<body><div class="c"><h1>🗓️ Block time to learn</h1><p>90 minutes <b id="when">tomorrow at 7 PM</b> with a link to the lessons. You can change the time before saving.</p>
+<a class="b" id="google" href="#">Google Calendar</a><a class="b g" id="apple" href="#">Apple Calendar</a><a class="b g" id="outlook" href="#">Outlook</a>
+<p style="margin:18px 0 0;font-size:13px"><a class="l" href="./?access=1">Back to the lessons</a></p></div>
+<script>
+const p2=n=>String(n).padStart(2,'0');
+const d=new Date();d.setDate(d.getDate()+1);d.setHours(19,0,0,0);const e=new Date(d.getTime()+90*60000);
+const z=t=>t.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+const url='https://vizmaker-ai-view.github.io/mini-course/viral-architecture-animation/?access=1';
+const title='Time for a change: my first cinematic AI animation (free VizMaker mini-course)';
+const desc='90 minutes just for you. Turn one render into a cinematic AI animation with Anthony Rewucki: Nano Banana Pro, Kling AI, VizMaker. Project files and links are in each lesson video description. Lessons: '+url;
+const g='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+z(d)+'/'+z(e)+'&details='+encodeURIComponent(desc)+'&location='+encodeURIComponent(url);
+const o='https://outlook.live.com/calendar/0/action/compose?subject='+encodeURIComponent(title)+'&startdt='+encodeURIComponent(d.toISOString())+'&enddt='+encodeURIComponent(e.toISOString())+'&body='+encodeURIComponent(desc)+'&location='+encodeURIComponent(url);
+const a=d<new Date(2028,0,1)?'ics/'+d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())+'.ics':'./';
+const D=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+document.getElementById('when').textContent='tomorrow ('+D[d.getDay()]+') at 7 PM';
+document.getElementById('google').href=g;document.getElementById('apple').href=a;document.getElementById('outlook').href=o;
+const c=new URLSearchParams(location.search).get('c');
+const go={google:g,apple:a,outlook:o}[c];
+if(go)setTimeout(()=>{location.href=go},300);
+</script></body></html>
