@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//VizMaker//Minikurs//PL
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:minikurs-od-maila-20270603@vizmaker.com
+DTSTAMP:20261110T090000Z
+DTSTART:20270603T190000
+DTEND:20270603T203000
+SUMMARY:Czas na zmianę: moja pierwsza koncepcja z AI (minikurs SketchUp + Claude + VizMaker)
+DESCRIPTION:90 minut dla siebie. Po tym minikursie koncepcja\, która zajmowała dni\, zajmie Ci kilka godzin. Workflow projektanta z Julią Cierniak: Claude\, SketchUp\, VizMaker. Lekcje: https://vizmaker-ai-view.github.io/minikurs/od-maila-do-koncepcji/?dostep=1
+URL:https://vizmaker-ai-view.github.io/minikurs/od-maila-do-koncepcji/?dostep=1
+BEGIN:VALARM
+TRIGGER:-PT15M
+ACTION:DISPLAY
+DESCRIPTION:Minikurs VizMaker: czas na naukę
+END:VALARM
+END:VEVENT
+END:VCALENDAR
