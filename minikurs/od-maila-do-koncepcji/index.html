@@ -11,11 +11,20 @@
 <meta property="og:title" content="Od maila do koncepcji wnętrza – darmowy minikurs">
 <meta property="og:description" content="Workflow projektanta: SketchUp + Claude + VizMaker. 10 lekcji, plik projektu i prompty AI. 0 zł zamiast 199 zł.">
 <meta property="og:image" content="https://i.ytimg.com/vi/D5GahPW53CU/maxresdefault.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vizmaker-ai-view.github.io/minikurs/od-maila-do-koncepcji/">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:site_name" content="VizMaker">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.ytimg.com/vi/D5GahPW53CU/maxresdefault.jpg">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Czy minikurs jest naprawdę darmowy?","acceptedAnswer":{"@type":"Answer","text":"Tak. Do wyczerpania zapasów cały minikurs kosztuje 0 zł zamiast 199 zł. Wystarczy adres e-mail, bez karty płatniczej."}},{"@type":"Question","name":"Dla kogo jest ten kurs?","acceptedAnswer":{"@type":"Answer","text":"Dla architektów wnętrz, architektów i studentów, którzy chcą szybciej przygotowywać koncepcje z AI. Wystarczą podstawy SketchUpa, kurs przeprowadza krok po kroku przez cały workflow."}},{"@type":"Question","name":"Jakich programów potrzebuję?","acceptedAnswer":{"@type":"Answer","text":"SketchUpa, Claude i VizMakera. W VizMakerze pracujesz na silnikach AI Nano Banana 2 (Gemini) i GPT Image. Po zapisie dostajesz 7 dni VizMakera bez limitu."}},{"@type":"Question","name":"Ile trwa minikurs?","acceptedAnswer":{"@type":"Answer","text":"10 lekcji wideo, łącznie 1 godz. 21 min. Uczysz się we własnym tempie i masz dożywotni dostęp."}},{"@type":"Question","name":"Co dostanę po zapisie?","acceptedAnswer":{"@type":"Answer","text":"Wszystkie 10 lekcji, plik projektu VizMaker, plik SketchUpa, gotowe prompty AI do Claude i VizMakera oraz bonusy."}},{"@type":"Question","name":"Kto prowadzi minikurs?","acceptedAnswer":{"@type":"Answer","text":"Julia Cierniak, architektka i absolwentka Politechniki Krakowskiej, która na co dzień przygotowuje koncepcje dla klientów w workflow SketchUp + Claude + VizMaker."}}]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Course","name":"Od maila do koncepcji wnętrza","description":"Brief z maila w Claude, model w SketchUpie, warianty wizualizacji w VizMakerze i prezentacja na pierwsze spotkanie z klientem.","inLanguage":"pl","isAccessibleForFree":true,"keywords":"SketchUp, AI, workflow projektanta, Claude, VizMaker, Nano Banana, Gemini, GPT Image, prompty AI, wizualizacje wnętrz","educationalLevel":"Beginner, Intermediate","provider":{"@type":"Organization","name":"VizAcademy","sameAs":"https://www.vizmaker.com"},"instructor":{"@type":"Person","name":"Julia Cierniak"},"offers":{"@type":"Offer","price":"0","priceCurrency":"PLN","category":"Free"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online","courseWorkload":"PT1H21M"}}
+{"@context":"https://schema.org","@type":"Course","url":"https://vizmaker-ai-view.github.io/minikurs/od-maila-do-koncepcji/","image":"https://i.ytimg.com/vi/D5GahPW53CU/maxresdefault.jpg","name":"Od maila do koncepcji wnętrza","description":"Brief z maila w Claude, model w SketchUpie, warianty wizualizacji w VizMakerze i prezentacja na pierwsze spotkanie z klientem.","inLanguage":"pl","isAccessibleForFree":true,"keywords":"SketchUp, AI, workflow projektanta, Claude, VizMaker, Nano Banana, Gemini, GPT Image, prompty AI, wizualizacje wnętrz","educationalLevel":"Beginner, Intermediate","provider":{"@type":"Organization","name":"VizAcademy","sameAs":"https://www.vizmaker.com"},"instructor":{"@type":"Person","name":"Julia Cierniak"},"offers":{"@type":"Offer","price":"0","priceCurrency":"PLN","category":"Free"},"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online","courseWorkload":"PT1H21M"}}
 </script>
 <style>
 :root{--bg:#010713;--s1:#020a13;--s2:#04131d;--s3:#061c27;--t:#eafcff;--h:#f4f8fa;--t2:#c8dee2;--t3:#b8cfd3;--b:#00e4f0;--b2:#19cada;--b3:#8af6fb;--line:rgba(82,205,220,.16);--red:#FF6B6B}
@@ -531,6 +540,15 @@ footer.vmf{background:var(--bg);margin-top:20px}
  .vback{display:none;position:absolute;left:12px;top:12px;z-index:5;background:rgba(1,7,19,.85);color:var(--h);border:1px solid rgba(0,228,240,.5);border-radius:10px;padding:9px 12px;font:600 13px Inter,sans-serif}
  .viewer-shell.on .vback{display:block}
 }
+
+/* FAQ (SEO/GEO) */
+.faq{display:grid;gap:12px;margin-top:28px}
+.faq details{background:var(--s2);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.faq summary{cursor:pointer;font-size:17px;font-weight:700;color:var(--h);list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--b);font-weight:800}
+.faq details[open] summary::after{content:"–"}
+.faq p{margin:12px 0 0;font-size:15px;line-height:1.65;color:var(--t2)}
 </style>
 </head>
 <body>
@@ -762,6 +780,13 @@ footer.vmf{background:var(--bg);margin-top:20px}
         <div><b>Kredyty</b><span>nigdy nie wygasają</span></div>
       </div>
     </div>
+  </div>
+</section>
+<section id="faq" style="padding:24px 0 88px">
+  <div class="wrap">
+    <div class="eyebrow">FAQ</div>
+    <h2>Najczęstsze pytania</h2>
+    <div class="faq"><details open><summary>Czy minikurs jest naprawdę darmowy?</summary><p>Tak. Do wyczerpania zapasów cały minikurs kosztuje 0 zł zamiast 199 zł. Wystarczy adres e-mail, bez karty płatniczej.</p></details><details><summary>Dla kogo jest ten kurs?</summary><p>Dla architektów wnętrz, architektów i studentów, którzy chcą szybciej przygotowywać koncepcje z AI. Wystarczą podstawy SketchUpa, kurs przeprowadza krok po kroku przez cały workflow.</p></details><details><summary>Jakich programów potrzebuję?</summary><p>SketchUpa, Claude i VizMakera. W VizMakerze pracujesz na silnikach AI Nano Banana 2 (Gemini) i GPT Image. Po zapisie dostajesz 7 dni VizMakera bez limitu.</p></details><details><summary>Ile trwa minikurs?</summary><p>10 lekcji wideo, łącznie 1 godz. 21 min. Uczysz się we własnym tempie i masz dożywotni dostęp.</p></details><details><summary>Co dostanę po zapisie?</summary><p>Wszystkie 10 lekcji, plik projektu VizMaker, plik SketchUpa, gotowe prompty AI do Claude i VizMakera oraz bonusy.</p></details><details><summary>Kto prowadzi minikurs?</summary><p>Julia Cierniak, architektka i absolwentka Politechniki Krakowskiej, która na co dzień przygotowuje koncepcje dla klientów w workflow SketchUp + Claude + VizMaker.</p></details></div>
   </div>
 </section>
 </main>
