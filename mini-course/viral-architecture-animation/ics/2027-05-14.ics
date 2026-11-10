@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//VizMaker//MiniCourse//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:minicourse-viral-animation-20270514@vizmaker.com
+DTSTAMP:20261110T090000Z
+DTSTART:20270514T190000
+DTEND:20270514T203000
+SUMMARY:Time for a change: my first cinematic AI animation (free VizMaker mini-course)
+DESCRIPTION:90 minutes just for you. Turn one render into a cinematic AI animation with Anthony Rewucki: Nano Banana Pro\, Kling AI\, VizMaker. Lessons: https://vizmaker-ai-view.github.io/mini-course/viral-architecture-animation/?access=1
+URL:https://vizmaker-ai-view.github.io/mini-course/viral-architecture-animation/?access=1
+BEGIN:VALARM
+TRIGGER:-PT15M
+ACTION:DISPLAY
+DESCRIPTION:VizMaker mini-course: time to learn
+END:VALARM
+END:VEVENT
+END:VCALENDAR
