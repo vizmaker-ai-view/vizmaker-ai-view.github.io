@@ -553,10 +553,20 @@ footer.vmf{background:var(--bg);margin-top:20px}
 .faq summary::after{content:"+";color:var(--b);font-weight:800}
 .faq details[open] summary::after{content:"–"}
 .faq p{margin:12px 0 0;font-size:15px;line-height:1.65;color:var(--t2)}
+
+/* pasek języków */
+.langbar{background:linear-gradient(90deg,#00323a,#014450,#00323a);border-bottom:1px solid rgba(0,228,240,.3);color:#eafcff;font-size:13px;line-height:1.4}
+.langbar .in{max-width:1240px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;text-align:center}
+.langbar b{color:var(--b)}
+.langbar .ls{display:inline-flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.langbar .ls span{background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.35);border-radius:999px;padding:2px 8px;font-size:12px;white-space:nowrap}
+.langbar small{color:#b8cfd3;font-size:12px}
+@media (max-width:720px){.langbar .ls{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;max-width:100%;padding-bottom:2px;scrollbar-width:none}.langbar .ls::-webkit-scrollbar{display:none}}
 </style>
 </head>
 <body>
 
+<div class="langbar" role="note" aria-label="Course languages"><div class="in"><span>🌐 <b>Lessons in English with AI dubbing</b> in 12 languages:</span><span class="ls"><span>English</span><span>Deutsch</span><span>Español</span><span>Français</span><span>Italiano</span><span>Português</span><span>Nederlands</span><span>Polski</span><span>Українська</span><span>हिन्दी</span><span>Bahasa Indonesia</span><span>日本語</span><span>മലയാളം</span></span><small>Switch the audio track in YouTube settings ⚙️</small></div></div>
 <div class="topbar"><div class="in">
   <div class="nm">Free AI Course: Viral Architecture Animation <span>· Nano Banana Pro + Kling + VizMaker</span></div>
   <a class="cta" href="#signup-sec"><span class="old">$199</span> $0 · Get<span class="cx"> the course</span></a>
