@@ -10,7 +10,8 @@ const desc='90 minut dla siebie. Po tym minikursie koncepcja\\, która zajmował
 const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//VizMaker//Minikurs//PL','BEGIN:VEVENT','UID:minikurs-od-maila-'+Date.now()+'@vizmaker.com','DTSTAMP:'+z(new Date()),'DTSTART:'+z(d),'DTEND:'+z(e),'SUMMARY:'+title,'DESCRIPTION:'+desc,'URL:'+PL,'BEGIN:VALARM','TRIGGER:-PT15M','ACTION:DISPLAY','DESCRIPTION:Minikurs VizMaker','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
 const D=['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
 document.getElementById('kiedy').textContent='jutro ('+D[d.getDay()]+'), 19:00';
-const href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
-const a=document.getElementById('ics');a.href=href;a.setAttribute('download','minikurs-od-maila-do-koncepcji.ics');
+const p2=n=>String(n).padStart(2,'0');
+const href=d<new Date(2028,0,1)?'ics/'+d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())+'.ics':'data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+const a=document.getElementById('ics');a.href=href;
 setTimeout(()=>{try{location.href=href}catch(_){}},400);
 </script></body></html>
