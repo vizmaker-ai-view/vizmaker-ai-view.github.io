@@ -255,6 +255,8 @@ footer.vmf{background:var(--bg);margin-top:20px}
 .motiv .cal{display:grid}
 .motiv .cal-note{margin-top:10px;font-size:13px;color:var(--t3)}
 :root{--t2:#c8dee2;--t3:#b8cfd3;--s2:#04131d}
+  .subrow{margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:12px 14px;border-radius:12px;border:1px dashed rgba(0,228,240,.35);background:rgba(1,7,19,.4);font-size:13.5px;color:var(--t2)}
+  .subrow b{color:var(--h)} .sub-t{flex:1 1 300px}
   /* notification bar (aktualizacje biblioteki) */
   .nbar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;padding:9px 44px 9px 14px;position:relative;background:#04131d;border-bottom:1px solid var(--line);font-size:13px;color:var(--t2)}
   .nbar[hidden]{display:none}
@@ -267,8 +269,8 @@ footer.vmf{background:var(--bg);margin-top:20px}
 </head>
 <body>
 <div class="nbar" id="nbar" hidden>
-  <span class="nb-ic">🔔</span><span class="nb-t"><b>New projects every week.</b> Add library updates to your calendar so you don't miss them.</span>
-  <a class="nb-go" data-upd-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-upd-outlook target="_blank" rel="noopener">Outlook</a><button class="nb-go" type="button" data-upd-ics>Apple</button>
+  <span class="nb-ic">🔔</span><span class="nb-t"><b>New projects every week.</b> Subscribe to library updates so you don't miss them.</span>
+  <span data-sub style="display:contents"><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a></span>
   <button class="nb-x" type="button" id="nbar-x" aria-label="Close">&times;</button>
 </div>
 <a class="promo" id="promo" target="_blank" rel="noopener">
@@ -308,6 +310,10 @@ footer.vmf{background:var(--bg);margin-top:20px}
           <a class="calbtn" data-cal-google href="#" target="_blank" rel="noopener"><span class="ci">G</span><span><b>Google Calendar</b><small>add in one click</small></span></a>
           <button class="calbtn" type="button" data-cal-ics><span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><span><b>Apple Calendar</b><small>.ics file</small></span></button>
           <a class="calbtn" data-cal-outlook href="#" target="_blank" rel="noopener"><span class="ci">O</span><span><b>Outlook</b><small>outlook.com / Microsoft 365</small></span></a>
+        </div>
+        <div class="subrow" data-sub>
+          <span class="sub-t">🔔 <b>Never miss a new project.</b> Subscribe once, new lessons appear in your calendar automatically:</span>
+          <a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a>
         </div>
         <div class="cal-note">Block 30 minutes tomorrow at 7 PM. Starting is the hardest part, so let your calendar remind you. You can change the time in one click.</div>
       </div>
@@ -435,15 +441,15 @@ const track=(function(){
     document.querySelectorAll('[data-cal-outlook]').forEach(function(a){a.href=L1.o;});
     document.querySelectorAll('[data-cal-ics]').forEach(function(b){b.addEventListener('click',function(){dl(L1.ics,'vizmaker-library.ics');});});
     document.querySelectorAll('[data-cal]').forEach(function(w){w.addEventListener('click',function(ev){var t=ev.target.closest('[data-cal-google],[data-cal-ics],[data-cal-outlook]');if(t)track.ev('calendar_add',{name:'CalendarAdd'},{calendar:t.hasAttribute('data-cal-google')?'google':t.hasAttribute('data-cal-ics')?'apple_ics':'outlook'});});});
-    // pasek aktualizacji: co tydzień (poniedziałek 18:00), żeby nie przegapić nowych projektów
+    // subskrypcja kalendarza aktualizacji (plik library/updates.ics, generowany przez build_ics.py)
+    var feed=location.origin+location.pathname.replace(/[^/]*$/,'')+'updates.ics', webcal=feed.replace(/^https?:/,'webcal:');
+    document.querySelectorAll('[data-sub-google]').forEach(function(a){a.href='https://calendar.google.com/calendar/render?cid='+encodeURIComponent(webcal);});
+    document.querySelectorAll('[data-sub-apple]').forEach(function(a){a.href=webcal;});
+    document.querySelectorAll('[data-sub-outlook]').forEach(function(a){a.href='https://outlook.live.com/calendar/0/addfromweb?url='+encodeURIComponent(feed)+'&name='+encodeURIComponent('VizMaker AI Project Library');});
+    document.querySelectorAll('[data-sub]').forEach(function(w){w.addEventListener('click',function(ev){var t=ev.target.closest('.nb-go');if(t)track.ev('calendar_subscribe',{name:'CalendarSubscribe'},{calendar:t.textContent.toLowerCase()});});});
     if(UPDATES_BAR){
-      var u=new Date();u.setDate(u.getDate()+((8-u.getDay())%7||7));u.setHours(18,0,0,0);var ue=new Date(u.getTime()+15*60000);
-      var L2=links('New projects in the VizMaker AI Project Library','Check what is new this week: '+url,u,ue,'FREQ=WEEKLY');
       var closed=false;try{closed=localStorage.getItem('vm_lib_nbar')==='1';}catch(_){}
-      if(!closed){$('nbar').hidden=false;}
-      document.querySelector('[data-upd-google]').href=L2.g;document.querySelector('[data-upd-outlook]').href=L2.o;
-      document.querySelector('[data-upd-ics]').onclick=function(){dl(L2.ics,'vizmaker-library-updates.ics');};
-      $('nbar').addEventListener('click',function(ev){var t=ev.target.closest('.nb-go');if(t)track.ev('updates_calendar_add',{name:'UpdatesCalendarAdd'},{calendar:t.textContent.toLowerCase()});});
+      if(!closed)$('nbar').hidden=false;
       $('nbar-x').onclick=function(){$('nbar').hidden=true;try{localStorage.setItem('vm_lib_nbar','1');}catch(_){}};
     }
   })();

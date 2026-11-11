@@ -1,0 +1,190 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//VizMaker//AI Project Library//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:VizMaker AI Project Library
+X-WR-CALDESC:New AI projects for architects and interior designers - every week
+REFRESH-INTERVAL;VALUE=DURATION:PT6H
+X-PUBLISHED-TTL:PT6H
+BEGIN:VEVENT
+UID:library-update-20261116@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20261116T170000Z
+DTEND:20261116T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20261123@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20261123T170000Z
+DTEND:20261123T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20261130@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20261130T170000Z
+DTEND:20261130T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20261207@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20261207T170000Z
+DTEND:20261207T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20261214@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20261214T170000Z
+DTEND:20261214T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20261221@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20261221T170000Z
+DTEND:20261221T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20261228@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20261228T170000Z
+DTEND:20261228T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20270104@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20270104T170000Z
+DTEND:20270104T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20270111@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20270111T170000Z
+DTEND:20270111T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20270118@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20270118T170000Z
+DTEND:20270118T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20270125@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20270125T170000Z
+DTEND:20270125T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:library-update-20270201@vizmaker.com
+DTSTAMP:20261111T235645Z
+DTSTART:20270201T170000Z
+DTEND:20270201T173000Z
+SUMMARY:🆕 New AI project in the VizMaker Library
+DESCRIPTION:A new project with a video tutorial and prompts is live. Open the library: https://vizmaker-ai-view.github.io/library/
+URL:https://vizmaker-ai-view.github.io/library/
+LOCATION:https://vizmaker-ai-view.github.io/library/
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:New AI project in the VizMaker Library
+END:VALARM
+END:VEVENT
+END:VCALENDAR
