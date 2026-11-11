@@ -49,8 +49,8 @@
       desc: 'Create client-ready analysis boards (materials, light, zoning) from one render.',
       steps: ['Start from a finished render', 'Generate material and light analysis', 'Combine into a board for the client'],
       prompts: ['Create a clean presentation board: material palette, lighting analysis and zoning diagram, minimal layout, white background'] },
-    { key: 'p5', token: 'PF4d-LwvvzyiyBoy4AhpohqnSZGlVMed', title: 'New project: step-by-step workflow',
-      soft: 'SketchUp', cat: 'Interior', min: 7,
+    { key: 'p5', token: 'PF4d-LwvvzyiyBoy4AhpohqnSZGlVMed', title: 'Revit Project: from BIM model to AI visuals',
+      soft: 'Revit', cat: 'Architecture', min: 7,
       desc: 'Follow the full workflow from model to final visual.',
       steps: ['Prepare the base model', 'Generate the first render', 'Iterate with prompts and variations'],
       prompts: ['Scandinavian living room, bright and airy, white walls, light wood, green plants, photorealistic, 4K'] },
@@ -170,11 +170,10 @@
   .lock { position: absolute; inset: 0; display: grid; place-items: center; color: var(--mut); font-size: 12px; font-weight: 600; }
   .lock div { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(0,0,0,.4); }
   /* lesson modal */
-  #lesson { position: fixed; inset: 0; z-index: 50; display: none; background: rgba(3,8,10,.8); backdrop-filter: blur(6px); padding: 20px; }
+  #lesson { position: fixed; inset: 0; z-index: 50; display: none; background: var(--bg); padding: 0; }
   #lesson.open { display: flex; align-items: center; justify-content: center; animation: fade .2s ease; }
   @keyframes fade { from { opacity: 0; } }
-  .lbox { width: min(1240px, 100%); height: min(780px, 100%); display: grid; grid-template-columns: 1fr 380px; border-radius: 18px; overflow: hidden;
-    background: var(--card); border: 1px solid rgba(0,228,240,.25); box-shadow: 0 30px 90px rgba(0,0,0,.6); }
+  .lbox { width: 100%; height: 100%; display: grid; grid-template-columns: 1fr minmax(360px, 26vw); overflow: hidden; background: var(--card); }
   .lbox iframe { width: 100%; height: 100%; border: 0; background: #000; }
   .side { display: flex; flex-direction: column; position: relative; overflow-y: auto; padding: 20px; border-left: 1px solid var(--line); }
   .side .hd { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
@@ -223,7 +222,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
     .side h2 { font-size: 19px; }
     .open3d { display: flex; width: 100%; margin: 12px 0 4px; }
     #l-yt h4:first-child { margin-top: 4px; }
-    .top .pr span { display: none; }
+    .top .pr { font-size: 11.5px; gap: 6px; } .top .pr .bar { width: 46px; } .top img { height: 18px; } .top .btn { padding: 0 12px; font-size: 12px; }
     .cont { flex-wrap: wrap; } .cont .btn { margin-left: 0; width: 100%; }
   }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
@@ -231,12 +230,12 @@ footer.vmf{background:var(--bg);margin-top:20px}
 </head>
 <body>
 <a class="promo" id="promo" target="_blank" rel="noopener">
-  <span class="pe">🍌</span><b>Nano Banana 2 · Unlimited</b><span class="ps">14 days free · no limits while you learn</span><span class="pg">Start free trial →</span>
+  <span class="pe">🍌</span><b>Nano Banana 2 · Unlimited</b><span class="ps">14 days free · no limits while you learn</span><span class="pg">Create free account →</span>
 </a>
 <header class="top"><div class="wrap">
   <img src="https://www.vizmaker.com/vizmaker-logo-line-white.png" alt="VizMaker">
   <div class="pr"><span id="pr-t">0 of 20 projects explored</span><div class="bar"><i id="pr-bar"></i></div></div>
-  <a class="btn" id="top-cta" target="_blank" rel="noopener">Try free</a>
+  <a class="btn" id="top-cta" target="_blank" rel="noopener">Create free account</a>
 </div></header>
 
 <main class="wrap">
@@ -296,7 +295,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
       <h4>Workflow</h4><ol id="l-steps"></ol>
       <div id="l-pr-wrap"><h4>Prompts used</h4><div id="l-prompts"></div></div>
       <div class="cta">
-        <a class="btn" id="l-try" target="_blank" rel="noopener">Make it yourself · 14 days unlimited AI</a>
+        <a class="btn" id="l-try" target="_blank" rel="noopener">Create free account · 14 days unlimited AI</a>
         <div class="nav"><button class="btn ghost" id="l-prev">← Previous</button><button class="btn ghost" id="l-next">Next lesson →</button></div>
       </div>
     </aside>
@@ -312,6 +311,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   var hues = [[178,72],[200,70],[160,60],[190,80],[170,65],[210,60]];
   function trialUrl(k) { return TRIAL + '&utm_source=library&utm_medium=email&utm_content=' + encodeURIComponent(k || 'library'); }
   $('top-cta').href = trialUrl('top');
+  if (window.matchMedia('(max-width: 640px)').matches) $('top-cta').textContent = 'Create account';
   $('promo').href = trialUrl('promo_bar');
   // kalendarz: jutro 19:00, 30 min
   (function () {
@@ -336,7 +336,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 
   function progress() {
     var n = LESSONS.filter(function (l) { return seen[l.key]; }).length;
-    $('pr-t').textContent = n + ' of ' + TOTAL + ' projects explored';
+    $('pr-t').textContent = window.matchMedia('(max-width: 640px)').matches ? n + '/' + TOTAL : n + ' of ' + TOTAL + ' projects explored';
     $('pr-bar').style.width = (n / TOTAL * 100) + '%';
   }
 
