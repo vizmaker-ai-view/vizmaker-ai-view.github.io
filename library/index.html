@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VizMaker AI Project Library – free mini-course (demo)</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="https://www.vizmaker.com/vizmaker-logo-line-white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  // ===== DEMO: bez trackingu. Lista lekcji = projekty z viewera (te same tokeny). =====
+  var VIEWER = 'https://viewer.svc.vizmaker.com/projectviewer?token=';
+  var TRIAL  = 'https://www.vizmaker.com/?src=library';
+  var TOTAL  = 20;
+  var YT_CHANNEL = 'https://www.youtube.com/@vizmaker-ai';   // gdy projekt nie ma tutorialu -> 'Learn more on YouTube'   // ile lekcji docelowo (reszta = "wkrótce")
+  // yt = ID filmu tutorialu (+ yt_t = start w s). Brak yt -> link do kanału. Brak title -> tytuł pobierany z YouTube.
+  // Każda lekcja: key (= ?p= w viewerze), tytuł, program, kategoria, czas, opis, kroki, prompty.
+  // TODO: tytuły / opisy / prompty do podmiany na prawdziwe (teraz przykładowe).
+  var LESSONS = [
+    { key: 'yt1', token: 'waOhpkqtSHhGrwtqF0LQGbQxHfGsPIel', yt: '-EnfwuPkmso', yt_t: 33, soft: 'VizMaker', cat: 'Tutorial', min: 6, featured: true,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'yt2', token: '0j3_l6jnugo-0Lh8NR8a-2dDJutZHrLg', yt: '6eeFLYZ2Br0', yt_t: 2, soft: 'VizMaker', cat: 'Tutorial', min: 6, featured: true,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'yt3', token: 'js3fYbAw-SJwHiL6Fqk1hRYbDp2Z84Dl', yt: 'rb1o_fax_Ko', yt_t: 13, soft: 'VizMaker', cat: 'Tutorial', min: 6,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'yt4', token: 'LXLFcwwqTu-pIPr99_OQXBj4maSr7l6M', yt: 'HImDOzcZ0ac', yt_t: 53, soft: 'VizMaker', cat: 'Tutorial', min: 6,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'live', token: 'I7eatiV64hSWBtoxxOMYQbiyKAKaiKWo', title: 'Live Preview: 3D scene to realistic render',
+      soft: 'SketchUp', cat: 'Interior', min: 6,
+      desc: 'Turn a raw 3D scene into a photorealistic live preview in minutes.',
+      steps: ['Export the view from your 3D software', 'Upload it to VizMaker and pick Live Preview', 'Refine materials and light with prompts'],
+      prompts: ['Photorealistic interior, soft natural daylight, warm oak floor, linen textiles, 35mm lens, editorial photography',
+                'Keep geometry exactly, change only materials and lighting, evening mood, warm accent lamps'] },
+    { key: 'analysis', token: 'qJMOXaYM4PEPd8zX3Bs_FlVqwDqPl98X', title: 'Interior Analysis Boards',
+      soft: 'Any 3D', cat: 'Presentation', min: 5,
+      desc: 'Create client-ready analysis boards (materials, light, zoning) from one render.',
+      steps: ['Start from a finished render', 'Generate material and light analysis', 'Combine into a board for the client'],
+      prompts: ['Create a clean presentation board: material palette, lighting analysis and zoning diagram, minimal layout, white background'] },
+    { key: 'p5', token: 'PF4d-LwvvzyiyBoy4AhpohqnSZGlVMed', title: 'New project: step-by-step workflow',
+      soft: 'SketchUp', cat: 'Interior', min: 7,
+      desc: 'Follow the full workflow from model to final visual.',
+      steps: ['Prepare the base model', 'Generate the first render', 'Iterate with prompts and variations'],
+      prompts: ['Scandinavian living room, bright and airy, white walls, light wood, green plants, photorealistic, 4K'] },
+    { key: 'default', token: 'YGUejv3XWkASVC86RyQH2BbWrVcmpVhT', title: 'VizMaker Guide Project',
+      soft: 'Any 3D', cat: 'Basics', min: 4,
+      desc: 'The basics: how a VizMaker project is built, node by node.',
+      steps: ['Open the project and explore the nodes', 'See how each step changes the image', 'Repeat it on your own scene'],
+      prompts: ['Photorealistic render of this scene, keep composition, realistic materials, soft shadows'] },
+    { key: 'kredyty', token: 'Y1uiuTrNmlJefSFO-ftyb1ALsJ_EnwNy', title: 'Smart credits: more renders for less',
+      soft: 'Any 3D', cat: 'Basics', min: 3,
+      desc: 'How to plan your renders so you get more variations from the same budget.',
+      steps: ['Test in low resolution first', 'Lock the best variation', 'Upscale only the final image'],
+      prompts: ['Quick draft render, same composition, focus on light direction only'] }
+  ];
+  var SOON = ['Kitchen Japandi', 'Facade from Revit massing', 'Bathroom spa mood', 'Bedroom evening light', 'Video from a still render',
+              'Office open space', 'Exterior at dusk', 'Moodboard to render', 'Before / after for social media', 'Sketch to render',
+              'Retail interior', 'Landscape & garden', 'Product in interior', 'Restaurant ambience', 'Client variations in 10 min'];
+</script>
+<style>
+  :root { --teal: #4fe3d8; --teal-d: #2bc6d6; --bg: #0b1114; --card: #11191d; --line: rgba(255,255,255,.08); --txt: #e9f4f3; --mut: #8fa3a6; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, system-ui, -apple-system, sans-serif; }
+  a { color: inherit; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+  /* top bar */
+  .top { position: sticky; top: 0; z-index: 20; background: rgba(11,17,20,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .top .wrap { display: flex; align-items: center; gap: 14px; height: 60px; }
+  .top img { height: 22px; }
+  .top .pr { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--mut); }
+  .bar { width: 120px; height: 6px; border-radius: 9px; background: rgba(79,227,216,.15); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--teal-d), var(--teal)); transition: width .5s ease; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 42px; padding: 0 18px; border-radius: 10px; border: 0;
+    background: linear-gradient(90deg, var(--teal-d), var(--teal)); color: #061316; font: 700 14px/1 Inter, sans-serif; text-decoration: none; cursor: pointer;
+    box-shadow: 0 0 24px rgba(79,227,216,.25); transition: transform .15s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--txt); border: 1px solid var(--line); box-shadow: none; }
+  .top .btn { height: 36px; font-size: 13px; }
+  /* hero */
+  .hero { padding: 56px 0 30px; position: relative; }
+  .hero::before { content: ''; position: absolute; inset: -60px 0 auto; height: 360px; pointer-events: none;
+    background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba(79,227,216,.14), transparent 70%); }
+  .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(79,227,216,.1);
+    color: var(--teal); font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
+  .badge i { width: 7px; height: 7px; border-radius: 50%; background: #39d98a; animation: live 1.6s infinite; }
+  @keyframes live { 50% { opacity: .3; } }
+  h1 { font-size: clamp(30px, 5vw, 50px); line-height: 1.08; letter-spacing: -1.2px; margin: 16px 0 12px; max-width: 760px; }
+  h1 span { background: linear-gradient(90deg, var(--teal), #b6fff6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p { color: var(--mut); font-size: 17px; line-height: 1.55; max-width: 620px; margin: 0 0 22px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 26px; color: var(--mut); font-size: 13px; }
+  .stats b { display: block; color: var(--txt); font-size: 20px; }
+  /* continue / came-from */
+  .cont { display: none; margin: 10px 0 6px; padding: 16px 18px; border-radius: 14px; border: 1px solid rgba(79,227,216,.35);
+    background: linear-gradient(90deg, rgba(79,227,216,.1), transparent); align-items: center; gap: 14px; }
+  .cont.on { display: flex; }
+  .cont small { display: block; color: var(--teal); font-weight: 700; font-size: 11px; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 3px; }
+  .cont .btn { margin-left: auto; flex: none; }
+  /* filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 26px 0 18px; }
+  .chip { height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--mut);
+    font: 600 13px Inter, sans-serif; cursor: pointer; }
+  .chip.on { border-color: var(--teal); color: var(--teal); background: rgba(79,227,216,.08); }
+  /* grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; padding-bottom: 40px; }
+  .card { position: relative; border-radius: 16px; background: var(--card); border: 1px solid var(--line); overflow: hidden; cursor: pointer;
+    transition: transform .2s ease, border-color .2s ease; animation: up .5s ease both; }
+  .card:hover { transform: translateY(-3px); border-color: rgba(79,227,216,.4); }
+  @keyframes up { from { opacity: 0; transform: translateY(10px); } }
+  .thumb { position: relative; aspect-ratio: 16/10; background: #0e1519; overflow: hidden; }
+  .thumb .g { position: absolute; inset: 0; }
+  .thumb .num { position: absolute; left: 14px; bottom: 10px; font-size: 44px; font-weight: 800; color: rgba(255,255,255,.12); letter-spacing: -2px; }
+  .thumb .play { position: absolute; inset: 0; display: grid; place-items: center; }
+  .thumb .play span { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: rgba(79,227,216,.92);
+    box-shadow: 0 0 30px rgba(79,227,216,.5); transition: transform .2s ease; }
+  .card:hover .play span { transform: scale(1.1); }
+  .thumb .play svg { width: 18px; height: 18px; fill: #061316; margin-left: 3px; }
+  .thumb img.yt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .8; }
+  .tag-yt { position: absolute; right: 10px; bottom: 10px; padding: 4px 9px; border-radius: 999px; background: rgba(0,0,0,.65); color: #fff; font-size: 10.5px; font-weight: 700; }
+  .ytbox { position: relative; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: #000; margin-bottom: 4px; }
+  .ytbox iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .ytlink { display: inline-flex; align-items: center; gap: 8px; color: var(--teal); font-size: 13.5px; font-weight: 600; text-decoration: none; }
+  .tag-f { position: absolute; top: 10px; left: 10px; padding: 4px 9px; border-radius: 999px; background: #ff4f00; color: #fff; font-size: 10.5px; font-weight: 700; }
+  .done { position: absolute; top: 10px; right: 10px; padding: 4px 9px; border-radius: 999px; background: rgba(57,217,138,.18); color: #39d98a;
+    font-size: 10.5px; font-weight: 700; display: none; }
+  .card.seen .done { display: block; }
+  .body { padding: 14px 16px 16px; }
+  .meta { display: flex; gap: 8px; font-size: 11.5px; color: var(--mut); margin-bottom: 8px; }
+  .meta span { padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,.05); }
+  .card h3 { margin: 0 0 6px; font-size: 16px; line-height: 1.3; }
+  .card p { margin: 0; color: var(--mut); font-size: 13px; line-height: 1.45; }
+  .card.soon { cursor: default; opacity: .55; }
+  .card.soon:hover { transform: none; border-color: var(--line); }
+  .lock { position: absolute; inset: 0; display: grid; place-items: center; color: var(--mut); font-size: 12px; font-weight: 600; }
+  .lock div { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(0,0,0,.4); }
+  /* lesson modal */
+  #lesson { position: fixed; inset: 0; z-index: 50; display: none; background: rgba(3,8,10,.8); backdrop-filter: blur(6px); padding: 20px; }
+  #lesson.open { display: flex; align-items: center; justify-content: center; animation: fade .2s ease; }
+  @keyframes fade { from { opacity: 0; } }
+  .lbox { width: min(1240px, 100%); height: min(780px, 100%); display: grid; grid-template-columns: 1fr 380px; border-radius: 18px; overflow: hidden;
+    background: var(--card); border: 1px solid rgba(79,227,216,.25); box-shadow: 0 30px 90px rgba(0,0,0,.6); }
+  .lbox iframe { width: 100%; height: 100%; border: 0; background: #000; }
+  .side { display: flex; flex-direction: column; overflow-y: auto; padding: 20px; border-left: 1px solid var(--line); }
+  .side .hd { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .side .x { margin-left: auto; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--mut); font-size: 20px; cursor: pointer; }
+  .side h2 { font-size: 21px; line-height: 1.25; margin: 0 0 8px; }
+  .side > p { color: var(--mut); font-size: 13.5px; line-height: 1.5; margin: 0 0 16px; }
+  .side h4 { margin: 14px 0 8px; font-size: 12px; letter-spacing: .6px; text-transform: uppercase; color: var(--teal); }
+  ol { margin: 0; padding-left: 20px; color: #c9d6d7; font-size: 13.5px; line-height: 1.6; }
+  .pr-box { position: relative; margin-bottom: 8px; padding: 12px 40px 12px 12px; border-radius: 10px; background: rgba(0,0,0,.3); border: 1px solid var(--line);
+    font: 500 12.5px/1.5 ui-monospace, Menlo, monospace; color: #c9d6d7; }
+  .pr-box button { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--line); background: rgba(255,255,255,.05);
+    color: var(--mut); cursor: pointer; font-size: 12px; }
+  .pr-box.ok button { color: #39d98a; border-color: #39d98a; }
+  .side .cta { margin-top: auto; padding-top: 16px; display: grid; gap: 8px; }
+  .side .cta .btn { width: 100%; }
+  .nav { display: flex; gap: 8px; }
+  .nav .btn { flex: 1; }
+  footer { border-top: 1px solid var(--line); padding: 24px 0 40px; color: var(--mut); font-size: 12.5px; text-align: center; }
+  @media (max-width: 860px) {
+    #lesson { padding: 0; }
+    .lbox { height: 100%; border-radius: 0; grid-template-columns: 1fr; grid-template-rows: 45vh 1fr; }
+    .side { border-left: 0; border-top: 1px solid var(--line); }
+    .top .pr span { display: none; }
+    .cont { flex-wrap: wrap; } .cont .btn { margin-left: 0; width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <img src="https://www.vizmaker.com/vizmaker-logo-line-white.png" alt="VizMaker">
+  <div class="pr"><span id="pr-t">0 of 20 projects explored</span><div class="bar"><i id="pr-bar"></i></div></div>
+  <a class="btn" id="top-cta" target="_blank" rel="noopener">Try free</a>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="badge"><i></i>Free mini-course · New project every week</span>
+    <h1>The <span>AI Project Library</span> for architects &amp; interior designers</h1>
+    <p>20 real VizMaker projects you can open in 3D, with the exact prompts and step-by-step workflow. Explore one, then make it yours.</p>
+    <a class="btn" href="#lessons">Start with lesson 01 →</a>
+    <div class="stats"><div><b>20</b>projects</div><div><b>3–7 min</b>per lesson</div><div><b>Prompts</b>copy &amp; reuse</div><div><b>14 days</b>unlimited AI to practise</div></div>
+  </section>
+
+  <div class="cont" id="cont"><div><small id="cont-l">The project you came from</small><b id="cont-t"></b></div><button class="btn" id="cont-b">Open lesson →</button></div>
+
+  <div class="filters" id="lessons"></div>
+  <div class="grid" id="grid"></div>
+</main>
+<footer>VizMaker by VizAcademy Sp. z o.o. · Demo</footer>
+
+<div id="lesson" role="dialog" aria-modal="true">
+  <div class="lbox">
+    <iframe id="l-frame" allow="fullscreen; clipboard-write" allowfullscreen title="3D project"></iframe>
+    <aside class="side">
+      <div class="hd"><span class="badge" id="l-badge"></span><button class="x" id="l-x" aria-label="Close">&times;</button></div>
+      <h2 id="l-title"></h2>
+      <p id="l-desc"></p>
+      <div id="l-yt"></div>
+      <h4>Workflow</h4><ol id="l-steps"></ol>
+      <div id="l-pr-wrap"><h4>Prompts used</h4><div id="l-prompts"></div></div>
+      <div class="cta">
+        <a class="btn" id="l-try" target="_blank" rel="noopener">Make it yourself · 14 days unlimited AI</a>
+        <div class="nav"><button class="btn ghost" id="l-prev">← Previous</button><button class="btn ghost" id="l-next">Next lesson →</button></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var qs = new URLSearchParams(location.search);
+  var KEY = 'vm_lib_seen', seen = {};
+  try { seen = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  var hues = [[178,72],[200,70],[160,60],[190,80],[170,65],[210,60]];
+  function trialUrl(k) { return TRIAL + '&utm_source=library&utm_medium=email&utm_content=' + encodeURIComponent(k || 'library'); }
+  $('top-cta').href = trialUrl('top');
+
+  function progress() {
+    var n = LESSONS.filter(function (l) { return seen[l.key]; }).length;
+    $('pr-t').textContent = n + ' of ' + TOTAL + ' projects explored';
+    $('pr-bar').style.width = (n / TOTAL * 100) + '%';
+  }
+
+  // karty
+  var cats = ['All'], filter = 'All';
+  LESSONS.forEach(function (l) { if (cats.indexOf(l.soft) < 0) cats.push(l.soft); if (cats.indexOf(l.cat) < 0) cats.push(l.cat); });
+  cats.push('Coming soon');
+  cats.forEach(function (c) {
+    var b = document.createElement('button'); b.className = 'chip' + (c === 'All' ? ' on' : ''); b.textContent = c;
+    b.onclick = function () { filter = c; [].forEach.call(document.querySelectorAll('.chip'), function (x) { x.classList.toggle('on', x === b); }); render(); };
+    $('lessons').appendChild(b);
+  });
+  function thumb(i) {
+    var h = hues[i % hues.length];
+    return 'radial-gradient(circle at 25% 30%, hsla(' + h[0] + ',' + h[1] + '%,55%,.45), transparent 55%),' +
+           'radial-gradient(circle at 80% 75%, hsla(' + (h[0] + 30) + ',' + h[1] + '%,45%,.35), transparent 55%),' +
+           'linear-gradient(135deg,#0f1a1e,#0a1013)';
+  }
+  function render() {
+    var g = $('grid'); g.innerHTML = ''; var i = 0;
+    if (filter !== 'Coming soon') LESSONS.forEach(function (l, idx) {
+      if (filter !== 'All' && l.soft !== filter && l.cat !== filter) return;
+      var c = document.createElement('article'); c.className = 'card' + (seen[l.key] ? ' seen' : ''); c.style.animationDelay = (i++ * 50) + 'ms';
+      c.innerHTML = '<div class="thumb"><div class="g" style="background:' + thumb(idx) + '"></div>' +
+        (l.yt ? '<img class="yt" loading="lazy" alt="" src="https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg">' : '') +
+        '<div class="num">' + String(idx + 1).padStart(2, '0') + '</div>' +
+        (l.yt ? '<span class="tag-yt">▶ Video tutorial</span>' : '') +
+        '<div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>' +
+        (l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span></div>' +
+        '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span></div>' +
+        '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p></div>';
+      c.onclick = function () { open(idx); };
+      g.appendChild(c);
+    });
+    if (filter === 'All' || filter === 'Coming soon') SOON.slice(0, TOTAL - LESSONS.length).forEach(function (t, j) {
+      var idx = LESSONS.length + j, c = document.createElement('article'); c.className = 'card soon'; c.style.animationDelay = (i++ * 50) + 'ms';
+      c.innerHTML = '<div class="thumb"><div class="g" style="background:' + thumb(idx) + '"></div><div class="num">' + String(idx + 1).padStart(2, '0') + '</div>' +
+        '<div class="lock"><div>🔒 Unlocks soon</div></div></div><div class="body"><div class="meta"><span>Coming soon</span></div><h3>' + t + '</h3>' +
+        '<p>We\'ll email you when this lesson is live.</p></div>';
+      g.appendChild(c);
+    });
+  }
+
+  // lekcja
+  var cur = 0;
+  function open(idx) {
+    cur = idx; var l = LESSONS[idx];
+    $('l-frame').src = VIEWER + l.token;
+    $('l-badge').textContent = 'Lesson ' + String(idx + 1).padStart(2, '0') + ' · ' + l.min + ' min';
+    $('l-title').textContent = l.title || ''; $('l-desc').textContent = l.desc;
+    $('l-steps').innerHTML = l.steps.map(function (s) { return '<li>' + s + '</li>'; }).join('');
+    $('l-prompts').innerHTML = '';
+    l.prompts.forEach(function (p) {
+      var d = document.createElement('div'); d.className = 'pr-box'; d.textContent = p;
+      var b = document.createElement('button'); b.textContent = '⧉'; b.title = 'Copy';
+      b.onclick = function () { try { navigator.clipboard.writeText(p); } catch (e) {} d.classList.add('ok'); b.textContent = '✓'; setTimeout(function () { d.classList.remove('ok'); b.textContent = '⧉'; }, 1500); };
+      d.appendChild(b); $('l-prompts').appendChild(d);
+    });
+    $('l-pr-wrap').style.display = l.prompts.length ? '' : 'none';
+    $('l-yt').innerHTML = l.yt
+      ? '<h4>Video tutorial</h4><div class="ytbox"><iframe allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen src="https://www.youtube-nocookie.com/embed/' + l.yt + '?rel=0&start=' + (l.yt_t || 0) + '"></iframe></div>'
+      : '<h4>Learn more</h4><a class="ytlink" target="_blank" rel="noopener" href="' + YT_CHANNEL + '">▶ More tutorials on our YouTube →</a>';
+    $('l-try').href = trialUrl(l.key);
+    $('l-prev').disabled = idx === 0; $('l-next').disabled = idx === LESSONS.length - 1;
+    $('lesson').classList.add('open'); document.body.style.overflow = 'hidden';
+    seen[l.key] = 1; try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {}
+    progress();
+  }
+  function close() { $('lesson').classList.remove('open'); $('l-frame').src = 'about:blank'; $('l-yt').innerHTML = ''; document.body.style.overflow = ''; render(); }
+  $('l-x').onclick = close;
+  $('lesson').onclick = function (e) { if (e.target === $('lesson')) close(); };
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  $('l-prev').onclick = function () { if (cur > 0) open(cur - 1); };
+  $('l-next').onclick = function () { if (cur < LESSONS.length - 1) open(cur + 1); };
+
+  // ?p=klucz -> "projekt, z którego przyszedłeś" na górze (link z maila: ?p=*|PROJ|*)
+  var from = LESSONS.findIndex(function (l) { return l.key === qs.get('p'); });
+  if (from < 0) { var next = LESSONS.findIndex(function (l) { return !seen[l.key]; }); if (next > 0) { from = next; $('cont-l').textContent = 'Continue where you left off'; } }
+  if (from >= 0) { $('cont').classList.add('on'); $('cont-t').textContent = LESSONS[from].title || '…'; $('cont-b').onclick = function () { open(from); }; }
+
+  render(); progress();
+  // brak tytułu -> pobierz tytuł filmu z YouTube
+  LESSONS.forEach(function (l) {
+    if (l.title || !l.yt) return;
+    fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + l.yt))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        l.title = (d && d.title) || 'VizMaker project';
+        [].forEach.call(document.querySelectorAll('h3[data-k="' + l.key + '"]'), function (h) { h.textContent = l.title; });
+        if ($('cont').classList.contains('on') && LESSONS[from] === l) $('cont-t').textContent = l.title;
+      }).catch(function () { l.title = 'VizMaker project'; });
+  });
+})();
+</script>
+</body>
+</html>
