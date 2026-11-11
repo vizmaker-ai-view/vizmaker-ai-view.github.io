@@ -1070,6 +1070,7 @@ try{localStorage.setItem('mk_viral_anim','1');}catch(_){}
 }
 function unlock(email){
 if(HOOK)track.ev('generate_lead',{std:true,name:'Lead',oai:'lead_created'},{method:'minikurs_form'});
+if(HOOK)track.ev('lead_'+TRACK.course,null,{method:'minikurs_form'}); // osobna konwersja per minikurs (Google Ads)
 openAccess();
 document.getElementById('okmail').textContent=email;
 document.getElementById('signup').hidden=true;document.getElementById('ok').hidden=false;
