@@ -20,12 +20,13 @@
     subtitle: 'Watch how this project was made in VizMaker, step by step.',
     quickSec: 5,            // popup po X s, jeśli user jeszcze nic nie kliknął w viewerze
     lateSec:  45,           // jeśli user już klika: popup dopiero po X s (0 = nigdy)
-    everyDays: 7            // pokazuj automatycznie najwyżej raz na X dni
+    everyDays: 7,           // pokazuj automatycznie najwyżej raz na X dni
+    auto:     false         // auto-popup wyłączony (11.2026) - tutorial tylko z przycisku
   };
 
   // Pasek promo u góry (jak na vizmaker.com)
   var PROMO = {
-    on:       true,
+    on:       false,          // wyłączony (11.2026)
     title:    'Nano Banana 2 · 4K · FREE',
     text:     '7 days of unlimited rendering in 4K quality.',
     cta:      'Start free trial',
@@ -585,6 +586,28 @@
     #dl-rem { display: block; }
     #rem-sheet { z-index: 35; }
   }
+  /* ======== 11.2026: telefon - "14 Days / Unlimited AI" jako animowana ikonka w lewym pasku ======== */
+  @media (max-width: 768px) {
+    #dl-btn { left: 0 !important; right: auto; bottom: auto !important; top: calc(var(--promo-h) + 272px); width: 58px;
+      flex-direction: column; align-items: center; gap: 4px; padding: 6px 0; border-radius: 0; overflow: visible;
+      background: transparent; box-shadow: none; animation: none; color: #e9f4f3; text-align: center;
+      font: 700 10px/1.1 Inter, system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+    #dl-btn::after { display: none; }
+    #dl-btn .ic { position: relative; width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, #2bc6d6, #4fe3d8 55%, #b6fff6); box-shadow: 0 0 14px rgba(79,227,216,.55);
+      animation: trGlow 2.4s ease-in-out infinite; }
+    #dl-btn .ic::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid rgba(79,227,216,.7);
+      animation: trRing 2.4s ease-out infinite; }
+    #dl-btn .ic svg { width: 17px; height: 17px; fill: #061316; stroke: none; animation: trSpark 3s ease-in-out infinite; }
+    #dl-btn small { display: block; margin-top: 2px; font-weight: 600; font-size: 9px; color: var(--vm-teal); letter-spacing: .1px; }
+    #dl-btn:active .ic { transform: scale(.92); }
+    @keyframes trGlow { 0%,100% { box-shadow: 0 0 10px rgba(79,227,216,.4); } 50% { box-shadow: 0 0 22px rgba(79,227,216,.85); } }
+    @keyframes trRing { 0% { transform: scale(.9); opacity: .9; } 80%,100% { transform: scale(1.45); opacity: 0; } }
+    @keyframes trSpark { 0%,100% { transform: rotate(0) scale(1); } 20% { transform: rotate(-12deg) scale(1.15); } 40% { transform: rotate(8deg) scale(1); } }
+    #dl-btn { animation: trIn .5s cubic-bezier(.2,1.4,.4,1) both; }
+    @keyframes trIn { from { transform: translateX(-30px); opacity: 0; } to { transform: none; opacity: 1; } }
+  }
+  @media (prefers-reduced-motion: reduce) { #dl-btn .ic, #dl-btn .ic::before, #dl-btn .ic svg { animation: none !important; } }
 </style>
 </head>
 <body>
@@ -765,7 +788,7 @@
     var interacted = false, timer = null, opened = false;
     function schedule(sec, src) {
       clearTimeout(timer);
-      if (sec > 0 && !isMobile) timer = setTimeout(function () { if (!ov.classList.contains('open')) open(src); }, sec * 1000);   // na telefonie bez auto-popupu
+      if (TUTORIAL.auto && sec > 0 && !isMobile) timer = setTimeout(function () { if (!ov.classList.contains('open')) open(src); }, sec * 1000);   // na telefonie bez auto-popupu
     }
     function onInteract() {
       if (interacted) return; interacted = true;
@@ -1004,7 +1027,7 @@
   })();
 </script>
 <button id="dl-btn" type="button" hidden>
-  <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span>
+  <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></span>
   <span><span id="dl-btn-t"></span><small id="dl-btn-s"></small></span>
 </button>
 <div id="dl-layer">
@@ -1046,7 +1069,7 @@
     var isMac = /Mac/i.test(navigator.platform || navigator.userAgent) && !isMobile;
     var COPY = {
       windows: { title: isMobile ? 'Send this project to your PC' : 'Get the desktop app',
-                 sub: isMobile ? "We'll email you this project + VizMaker free (7 days of unlimited 4K). Open it on your computer."
+                 sub: isMobile ? "We'll email you this project + VizMaker free (14 days of unlimited AI). Open it on your computer."
                                : 'Download VizMaker for desktop, optimized for maximum performance. Start creating in minutes.',
                  btn: isMobile ? 'Send to my PC' : 'Get my download link',
                  doneT: isMobile ? 'Check your inbox' : 'Your download is ready',
@@ -1057,8 +1080,8 @@
     };
     var os = isMac ? 'macos' : 'windows', busy = false;
 
-    $('dl-btn-t').textContent = isMobile ? 'Send to my PC' : DOWNLOAD.btn; $('dl-btn-s').textContent = DOWNLOAD.btnSub;
-    $('dl-btn').hidden = false;
+    $('dl-btn-t').textContent = isMobile ? '14 Days' : DOWNLOAD.btn; $('dl-btn-s').textContent = isMobile ? 'Unlimited AI' : DOWNLOAD.btnSub;
+    $('dl-btn').hidden = !isMobile;   // PC: bez przycisku 'Get VizMaker free' (11.2026); telefon: ikonka w lewym pasku
     $('dl-store').href = DOWNLOAD.storeUrl; $('dl-direct').href = DOWNLOAD.directUrl;
 
     function setOs(o, user) {
@@ -1176,12 +1199,13 @@
     var yt = document.getElementById('tut-yt');
     yt.removeAttribute('href'); yt.removeAttribute('target');
     yt.innerHTML = '<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Get VizMaker free';
+    yt.style.display = 'none';   // bez 'Get VizMaker free' w okienku tutorialu (11.2026)
     yt.onclick = function (e) {
       e.preventDefault(); document.getElementById('tut-close').click();
       window.vmOpenDownload && window.vmOpenDownload('tutorial');
     };
     // PC: exit-intent - kursor wyjeżdża do zakładek/krzyżyka -> raz na sesję okienko pobierania
-    if (!isMobile) vmAfterIntro(function () {
+    if (false && !isMobile) vmAfterIntro(function () {   // exit-intent popup wyłączony (11.2026)
       var armedAt = Date.now() + 8000;
       document.addEventListener('mouseout', function onOut(e) {
         if (e.relatedTarget || e.clientY > 0 || Date.now() < armedAt) return;
