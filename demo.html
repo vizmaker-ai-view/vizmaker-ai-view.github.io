@@ -98,6 +98,10 @@
     'analysis': {   // Interior Analysis Boards
       desktop: 'https://viewer.svc.vizmaker.com/projectviewer?token=qJMOXaYM4PEPd8zX3Bs_FlVqwDqPl98X',
       mobile:  'https://viewer.svc.vizmaker.com/projectviewer?token=qJMOXaYM4PEPd8zX3Bs_FlVqwDqPl98X'
+    },
+    'p5': {   // Nowy projekt (11-2026)
+      desktop: 'https://viewer.svc.vizmaker.com/projectviewer?token=PF4d-LwvvzyiyBoy4AhpohqnSZGlVMed',
+      mobile:  'https://viewer.svc.vizmaker.com/projectviewer?token=PF4d-LwvvzyiyBoy4AhpohqnSZGlVMed'
     }
     // ,'kuchnia': { desktop: 'https://...token=AAA', mobile: 'https://...token=BBB' }
   };
@@ -1068,12 +1072,12 @@
     var layer = $('dl-layer'), box = $('dl-box'), email = $('dl-email'), go = $('dl-go'), err = $('dl-err');
     var isMac = /Mac/i.test(navigator.platform || navigator.userAgent) && !isMobile;
     var COPY = {
-      windows: { title: isMobile ? 'Send this project to your PC' : 'Get the desktop app',
-                 sub: isMobile ? "We'll email you this project + VizMaker free (14 days of unlimited AI). Open it on your computer."
+      windows: { title: isMobile ? 'Get VizMaker on your PC' : 'Get the desktop app',
+                 sub: isMobile ? "We'll email you the download link. 14 days of unlimited AI, free. Open it on your computer."
                                : 'Download VizMaker for desktop, optimized for maximum performance. Start creating in minutes.',
-                 btn: isMobile ? 'Send to my PC' : 'Get my download link',
+                 btn: isMobile ? 'Email me the link' : 'Get my download link',
                  doneT: isMobile ? 'Check your inbox' : 'Your download is ready',
-                 doneM: isMobile ? "Sent! Open the email on your PC to get this project and install VizMaker."
+                 doneM: isMobile ? "Sent! Open the email on your PC to install VizMaker and start your free trial."
                                  : "Your Windows download is ready. We've also sent the download link to your email." },
       macos:   { title: 'Waiting list', sub: 'Get notification when macOS app will be released', btn: 'Notify me',
                  doneT: "You're on the list", doneM: "We'll email you as soon as VizMaker for macOS is available." }

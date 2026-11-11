@@ -7,6 +7,7 @@
 
 <!-- ====== KONFIGURACJA ====== -->
 <script>
+  var DEMO = false;   // DEMO: bez GA4 / Meta / OpenAI pixeli (testy nie psują danych z reklam)
   var GA_ID = 'G-00QC63JGWS';   // GA4: VizMaker Viewer (Ads)
   var FB_PIXEL_ID = '1874148790429212';   // Meta Pixel: VizMaker Viewer (VizAcademy UK)
   var FB_ENGAGED_SEC = 15;   // po ilu s oglądania leci ViewerEngaged do Meta (15/30/60/120)
@@ -19,12 +20,13 @@
     subtitle: 'Watch how this project was made in VizMaker, step by step.',
     quickSec: 5,            // popup po X s, jeśli user jeszcze nic nie kliknął w viewerze
     lateSec:  45,           // jeśli user już klika: popup dopiero po X s (0 = nigdy)
-    everyDays: 7            // pokazuj automatycznie najwyżej raz na X dni
+    everyDays: 7,           // pokazuj automatycznie najwyżej raz na X dni
+    auto:     false         // auto-popup wyłączony (11.2026) - tutorial tylko z przycisku
   };
 
   // Pasek promo u góry (jak na vizmaker.com)
   var PROMO = {
-    on:       true,
+    on:       false,          // wyłączony (11.2026)
     title:    'Nano Banana 2 · 4K · FREE',
     text:     '7 days of unlimited rendering in 4K quality.',
     cta:      'Start free trial',
@@ -56,6 +58,28 @@
     swing:    0.7,                             // dzień szybciej / noc wolniej (0 = równo)
     peakUTC:  14                               // szczyt o 14:00 UTC (EU popołudnie + USA rano)
   };
+
+  // Intro: mini okno "Rendering..." -> start przybliżony na renderze -> płynny zoom-out do całego workflow
+  var INTRO = {
+    on:        true,
+    minLoadMs: 1500,     // okno ładowania min. tyle (duża ramka musi wczytać ostre obrazki)
+    maxLoadMs: 6500,     // i max. tyle, nawet jeśli viewer nie zgłosi "load"
+    holdMs:    1200,     // ile trzymamy przybliżenie na renderze
+    zoomMs:    1600,     // jak długo trwa oddalanie
+    hiresK:    8,        // druga, 8x większa ramka viewera: viewer sam renderuje node ostro (prawdziwy zoom, nie lupa)
+    // punkt startu (środek noda z obrazkiem) jako ułamek ekranu [x, y] w domyślnym widoku viewera
+    // (pozycja w DUŻEJ ramce - tam projekt wypełnia prawie cały ekran)
+    focus: {
+      'default': { mobile: [0.533, 0.754] },
+      'live':    { mobile: [0.533, 0.754] }
+    },
+    // dopasowanie końca animacji do normalnego viewera (on zostawia margines na swoje przyciski):
+    // [środek grafu x,y w normalnym widoku, środek grafu x,y w dużej ramce, skala normalny/duży]
+    land: { mobile: [0.569, 0.365, 0.510, 0.488, 0.577] }
+  };
+  var _introQ = [], _introDone = false;
+  function vmAfterIntro(fn) { if (_introDone) fn(); else _introQ.push(fn); }
+  function vmIntroDone() { _introDone = true; _introQ.splice(0).forEach(function (f) { f(); }); }
 
   // Projekty pokazowe pod reklamy. W linku reklamy: ?p=kuchnia (bez ?p = 'default')
   var PROJECTS = {
@@ -100,13 +124,13 @@
                  (qs.get('gclid') || qs.get('gbraid') || qs.get('wbraid')) ? 'google' : qs.get('li_fat_id') ? 'linkedin' : 'direct');
   var P = { project: projectKey, device_layout: device, ad_source: adSource,
             ad_campaign: qs.get('utm_campaign') || '(none)', ad_content: qs.get('utm_content') || '(none)' };   // dołączane do każdego eventu
-  gtag('config', GA_ID);
+  if (!DEMO) gtag('config', GA_ID);
   gtag('event', 'viewer_open', P);   // otwarcie viewera z projektem i urządzeniem
 
   var s = document.createElement('script');
   s.async = true;
   s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-  document.head.appendChild(s);
+  if (!DEMO) document.head.appendChild(s);
 
   // Meta Pixel (VizMaker Viewer): PageView na starcie + wybrane eventy GA4 -> Meta
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -114,8 +138,7 @@
   n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
   t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
   document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', FB_PIXEL_ID);
-  fbq('track', 'PageView');
+  if (!DEMO) { fbq('init', FB_PIXEL_ID); fbq('track', 'PageView'); }
 
   var FB_MAP = {   // event GA4 -> [metoda, event Meta]
     viewer_open:    ['track',       'ViewContent'],
@@ -126,7 +149,7 @@
     macos_waitlist_requested: ['trackCustom', 'MacWaitlist']
   };
   function fbEvent(name, params) {
-    var m = FB_MAP[name]; if (!m || !window.fbq) return;
+    var m = FB_MAP[name]; if (DEMO || !m || !window.fbq) return;
     if (name === 'viewer_engaged' && (params || {}).seconds !== FB_ENGAGED_SEC) return;   // 1 konwersja na wizytę
     fbq(m[0], m[1], Object.assign({ content_name: projectKey, content_category: device }, params || {}));
   }
@@ -144,7 +167,7 @@
     var f = d.getElementsByTagName(s)[0];
     f.parentNode.insertBefore(js, f);
   })(window, document, 'script', 'https://bzrcdn.openai.com/sdk/oaiq.min.js');
-  oaiq('init', { pixelId: OAI_PIXEL_ID });
+  if (!DEMO) oaiq('init', { pixelId: OAI_PIXEL_ID });
 
   // event GA4 -> lista [event OpenAI, dane, nazwa custom]
   // UWAGA: kampanie "Conversions" w OpenAI optymalizują tylko pod eventy standardowe,
@@ -159,7 +182,7 @@
   };
   var oaiVisit = Date.now().toString(36) + Math.random().toString(36).slice(2, 8), oaiSeq = 0;
   function oaiEvent(name, params) {
-    var list = OAI_MAP[name]; if (!list || !window.oaiq) return;
+    var list = OAI_MAP[name]; if (DEMO || !list || !window.oaiq) return;
     if (name === 'viewer_engaged' && (params || {}).seconds !== FB_ENGAGED_SEC) return;   // 1 konwersja na wizytę
     list.forEach(function (m) {
       var opts = { event_id: oaiVisit + '_' + m[0] + '_' + (++oaiSeq) };
@@ -171,7 +194,7 @@
   var _gtag = gtag;
   gtag = function (type, name, params) {
     _gtag.apply(this, arguments);
-    if (type === 'event') { fbEvent(name, params); oaiEvent(name, params); }
+    if (type === 'event') { fbEvent(name, params); oaiEvent(name, params); if (DEMO) console.log('[demo event]', name, params || ''); }
   };
 </script>
 
@@ -530,6 +553,65 @@
     #rc-tip { left: 64px; top: calc(var(--promo-h) + 270px); }
   }
   @media (prefers-reduced-motion: reduce) { #rc .l i, #rc.tick .ring, #rc.tick .n { animation: none !important; } }
+  /* ======== DEMO: intro + uproszczenia ======== */
+  #intro { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at center, rgba(14,24,28,.92), #070c0e 70%); transition: opacity .5s ease; }
+  #intro.out { opacity: 0; pointer-events: none; }
+  #intro .card { width: 230px; padding: 22px 20px 18px; border-radius: 18px; text-align: center;
+    background: linear-gradient(180deg, #121a1f, #0b1215); border: 1px solid rgba(79,227,216,.22);
+    box-shadow: 0 24px 60px rgba(0,0,0,.6), 0 0 40px rgba(79,227,216,.08); color: #e9f4f3;
+    font-family: Inter, system-ui, -apple-system, sans-serif; animation: tutPop .35s cubic-bezier(.2,.9,.3,1.2); }
+  #intro .brand { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 16px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #9fb2b4; }
+  #intro .brand img { width: 16px; height: 16px; }
+  #intro .ring { position: relative; width: 84px; height: 84px; margin: 0 auto 14px; }
+  #intro .ring svg { width: 84px; height: 84px; transform: rotate(-90deg); }
+  #intro .ring .bg { fill: none; stroke: rgba(79,227,216,.12); stroke-width: 5; }
+  #intro .ring .fg { fill: none; stroke: var(--vm-teal); stroke-width: 5; stroke-linecap: round;
+    filter: drop-shadow(0 0 6px rgba(79,227,216,.6)); }
+  #intro .pct { position: absolute; inset: 0; display: grid; place-items: center; font: 700 19px/1 Inter, system-ui, sans-serif;
+    font-variant-numeric: tabular-nums; }
+  #intro .step { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  #intro .sub { font-size: 12px; color: #7f9497; font-variant-numeric: tabular-nums; }
+  #intro .sub i { display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: #39d98a;
+    vertical-align: 1px; animation: rcLive 1.2s ease-in-out infinite; }
+  body.intro #dl-btn, body.intro #tut-btn, body.intro #rem-btn, body.intro #rc, body.intro #hint { opacity: 0 !important; pointer-events: none !important; }
+  #dl-btn { transition: transform .15s ease, opacity .6s ease; }
+  #tut-btn { transition: transform .15s ease, border-color .15s ease, opacity .6s ease; }
+  #rem-btn, #rc { transition: top .35s ease, opacity .6s ease; }
+  #dl-rem { display: none; width: 100%; margin-top: 10px; padding: 6px; border: 0; background: none; cursor: pointer;
+    color: #93a7aa; font: 500 13px Inter, system-ui, sans-serif; text-decoration: underline; text-underline-offset: 3px; }
+  /* telefon: jedna akcja "Send to my PC"; Later/plakietka/dymek znikają, przypomnienie jest w okienku */
+  @media (max-width: 768px) {
+    #rem-btn, #rem-tip { display: none !important; }
+    #rc { top: calc(var(--promo-h) + 206px); }
+    #tut-btn { transition: top .35s ease, opacity .6s ease; }
+    #tut-btn .ic::after { animation: none; opacity: 0; }   /* tutorial: spokojna ikonka bez pulsowania */
+    #dl-rem { display: block; }
+    #rem-sheet { z-index: 35; }
+  }
+  /* ======== 11.2026: telefon - "14 Days / Unlimited AI" jako animowana ikonka w lewym pasku ======== */
+  @media (max-width: 768px) {
+    #dl-btn { left: 0 !important; right: auto; bottom: auto !important; top: calc(var(--promo-h) + 272px); width: 58px;
+      flex-direction: column; align-items: center; gap: 4px; padding: 6px 0; border-radius: 0; overflow: visible;
+      background: transparent; box-shadow: none; animation: none; color: #e9f4f3; text-align: center;
+      font: 700 10px/1.1 Inter, system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+    #dl-btn::after { display: none; }
+    #dl-btn .ic { position: relative; width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, #2bc6d6, #4fe3d8 55%, #b6fff6); box-shadow: 0 0 14px rgba(79,227,216,.55);
+      animation: trGlow 2.4s ease-in-out infinite; }
+    #dl-btn .ic::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid rgba(79,227,216,.7);
+      animation: trRing 2.4s ease-out infinite; }
+    #dl-btn .ic svg { width: 17px; height: 17px; fill: #061316; stroke: none; animation: trSpark 3s ease-in-out infinite; }
+    #dl-btn small { display: block; margin-top: 2px; font-weight: 600; font-size: 9px; color: var(--vm-teal); letter-spacing: .1px; }
+    #dl-btn:active .ic { transform: scale(.92); }
+    @keyframes trGlow { 0%,100% { box-shadow: 0 0 10px rgba(79,227,216,.4); } 50% { box-shadow: 0 0 22px rgba(79,227,216,.85); } }
+    @keyframes trRing { 0% { transform: scale(.9); opacity: .9; } 80%,100% { transform: scale(1.45); opacity: 0; } }
+    @keyframes trSpark { 0%,100% { transform: rotate(0) scale(1); } 20% { transform: rotate(-12deg) scale(1.15); } 40% { transform: rotate(8deg) scale(1); } }
+    #dl-btn { animation: trIn .5s cubic-bezier(.2,1.4,.4,1) both; }
+    @keyframes trIn { from { transform: translateX(-30px); opacity: 0; } to { transform: none; opacity: 1; } }
+  }
+  @media (prefers-reduced-motion: reduce) { #dl-btn .ic, #dl-btn .ic::before, #dl-btn .ic svg { animation: none !important; } }
 </style>
 </head>
 <body>
@@ -541,7 +623,91 @@
   qs.forEach(function (v, k) {
     if (/^(utm_|gclid|gbraid|wbraid|fbclid|ttclid|msclkid|oppref|olref)/.test(k)) src.searchParams.set(k, v);
   });
-  document.getElementById('viewer').src = src.toString();
+  if (INTRO.on && isMobile) window._mainSrc = src.toString();   // telefon: normalny viewer ładujemy po dużej ramce (nie naraz)
+  else document.getElementById('viewer').src = src.toString();
+</script>
+<div id="intro" role="status" aria-live="polite">
+  <div class="card">
+    <div class="brand"><img src="https://www.vizmaker.com/vizmaker-logo-line-white.png" alt="">VizMaker</div>
+    <div class="ring">
+      <svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" id="intro-fg" cx="42" cy="42" r="36"/></svg>
+      <span class="pct" id="intro-pct">0%</span>
+    </div>
+    <div class="step" id="intro-step">Loading project…</div>
+    <div class="sub"><i></i>Rendering <span id="intro-t">0.0</span>s</div>
+  </div>
+</div>
+<script>
+  (function () {
+    var ov = document.getElementById('intro');
+    if (!INTRO.on || !isMobile) { ov.remove(); vmIntroDone(); return; }   // PC: bez intro (od razu viewer)
+    document.body.classList.add('intro');
+    var main = document.getElementById('viewer'), fg = document.getElementById('intro-fg');
+    var pctEl = document.getElementById('intro-pct'), stepEl = document.getElementById('intro-step'), tEl = document.getElementById('intro-t');
+    var C = 2 * Math.PI * 36; fg.style.strokeDasharray = C; fg.style.strokeDashoffset = C;
+    var fp = ((INTRO.focus[projectKey] || INTRO.focus['default'])[device]), K = INTRO.hiresK;
+    var W = window.innerWidth, H = window.innerHeight;
+    // druga ramka: K razy większa -> viewer "dopasowuje" projekt do dużej powierzchni = wysoki zoom = ostre obrazki
+    var hi = document.createElement('iframe');
+    hi.src = window._mainSrc; hi.setAttribute('aria-hidden', 'true'); hi.tabIndex = -1;
+    hi.style.cssText = 'position:fixed;left:0;top:0;border:0;z-index:5;pointer-events:none;background:#0b0f14;' +
+      'transform-origin:0 0;width:' + (W * K) + 'px;height:' + (H * K) + 'px;transition:opacity .35s ease;';
+    var O = [fp[0] * W * K, fp[1] * H * K];                 // punkt noda w dużej ramce
+    function place(s, px, py) { hi.style.transform = 'translate(' + (px - s * O[0]) + 'px,' + (py - s * O[1]) + 'px) scale(' + s + ')'; }
+    place(1, W / 2, H / 2);                                  // start: node na środku w 100% (ostro)
+    document.body.appendChild(hi);
+    var t0 = Date.now(), loaded = false, finished = false, zooming = false, pct = 0;
+    var mainLoaded = false;
+    main.addEventListener('load', function () { mainLoaded = true; });
+    hi.addEventListener('load', function () {
+      loaded = true;
+      setTimeout(function () { main.src = window._mainSrc; }, 600);   // normalny viewer w tle, pod dużą ramką
+    });
+    setTimeout(function () { if (!main.src || main.src === 'about:blank' || !/projectviewer/.test(main.src)) main.src = window._mainSrc; }, INTRO.maxLoadMs);
+    function setPct(p) {
+      pct = p; pctEl.textContent = Math.round(p) + '%'; fg.style.strokeDashoffset = C * (1 - p / 100);
+      stepEl.textContent = p >= 100 ? 'Ready' : p < 35 ? 'Loading project…' : p < 70 ? 'Rendering previews…' : 'Almost ready…';
+    }
+    var iv = setInterval(function () {
+      var el = Date.now() - t0; tEl.textContent = (el / 1000).toFixed(1);
+      if (!finished && ((loaded && el >= INTRO.minLoadMs) || el >= INTRO.maxLoadMs)) { finished = true; finish(); return; }
+      if (!finished) setPct(Math.min(94, Math.max(pct, el / INTRO.minLoadMs * 94)));
+    }, 50);
+    function finish() {
+      setPct(100); clearInterval(iv);
+      setTimeout(function () { ov.classList.add('out'); }, 250);
+      var hold = setTimeout(zoomOut, 250 + INTRO.holdMs);
+      document.addEventListener('pointerdown', function skip() {   // tap w trakcie = od razu oddal
+        document.removeEventListener('pointerdown', skip); clearTimeout(hold); zoomOut();
+      });
+    }
+    function ease(t) { return t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    function zoomOut() {
+      if (zooming) return; zooming = true;
+      var L = INTRO.land[device], r = L[4];
+      var ex = (L[0] + r * (fp[0] - L[2])) * W, ey = (L[1] + r * (fp[1] - L[3])) * H;   // gdzie node ląduje w normalnym widoku
+      var a = Date.now(), s0 = Math.log(1), s1 = Math.log(r / K);
+      (function frame() {
+        var t = Math.min(1, (Date.now() - a) / INTRO.zoomMs), e = ease(t);
+        var s = Math.exp(s0 + (s1 - s0) * e);                  // płynny zoom (logarytmicznie, jak w prawdziwym viewerze)
+        place(s, W / 2 + (ex - W / 2) * e, H / 2 + (ey - H / 2) * e);
+        if (t < 1) return requestAnimationFrame(frame);
+        var waited = Date.now();
+        (function swap() {                                     // podmiana na normalny viewer, gdy już się wczytał
+          if (!mainLoaded && Date.now() - waited < 4000) return setTimeout(swap, 100);
+          setTimeout(function () { hi.style.opacity = '0'; }, mainLoaded ? 500 : 0);
+          setTimeout(fin, (mainLoaded ? 500 : 0) + 380);
+        })();
+      })();
+    }
+    function fin() {
+        {
+          hi.remove(); ov.remove(); document.body.classList.remove('intro');
+          gtag('event', 'intro_done', Object.assign({ ms: Date.now() - t0 }, P));
+          vmIntroDone();
+        }
+    }
+  })();
 
   // Czas na stronie / zaangażowanie: event co 15 s, dopóki karta jest aktywna
   var seconds = 0;
@@ -577,7 +743,7 @@
       <button class="tut-btn2 tut-ghost" id="tut-later" type="button">Explore the project first</button>
       <a class="tut-btn2 tut-yt" id="tut-yt" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12 31 31 0 0 0 1 16.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>
-        Watch on YouTube
+        Get VizMaker free
       </a>
     </div>
   </div>
@@ -626,7 +792,7 @@
     var interacted = false, timer = null, opened = false;
     function schedule(sec, src) {
       clearTimeout(timer);
-      if (sec > 0 && !isMobile) timer = setTimeout(function () { if (!ov.classList.contains('open')) open(src); }, sec * 1000);   // na telefonie bez auto-popupu
+      if (TUTORIAL.auto && sec > 0 && !isMobile) timer = setTimeout(function () { if (!ov.classList.contains('open')) open(src); }, sec * 1000);   // na telefonie bez auto-popupu
     }
     function onInteract() {
       if (interacted) return; interacted = true;
@@ -637,7 +803,7 @@
     window.addEventListener('blur', function () {
       setTimeout(function () { if (document.activeElement && document.activeElement.id === 'viewer') onInteract(); }, 0);
     });
-    if (!recent) schedule(TUTORIAL.quickSec, 'auto_idle');
+    if (!recent) vmAfterIntro(function () { schedule(TUTORIAL.quickSec + 4, 'auto_idle'); });
   })();
 </script>
 <div id="promo" role="region" aria-label="Offer">
@@ -650,7 +816,7 @@
 </div>
 <script>
   (function () {
-    if (!PROMO.on) return;
+    if (!PROMO.on || isMobile) return;   // telefon: bez paska promo (oferta jest w okienku)
     var KEY = 'vm_promo_closed', closed = false;
     try { closed = Date.now() - (+localStorage.getItem(KEY) || 0) < PROMO.hideDays * 864e5; } catch (e) {}
     if (closed) return;
@@ -675,10 +841,10 @@
       try { localStorage.setItem(KEY, Date.now()); } catch (e) {}
       gtag('event', 'promo_close', P);
     };
-    setTimeout(function () {
+    vmAfterIntro(function () { setTimeout(function () {
       document.body.classList.add('has-promo');
       gtag('event', 'promo_view', P);
-    }, PROMO.delayMs);
+    }, 600); });
   })();
 </script>
 <div id="hint" aria-hidden="true">
@@ -693,10 +859,10 @@
     var touch = isMobile || window.matchMedia('(pointer: coarse)').matches;
     h.classList.add(touch ? 'touch' : 'desk');
     function hide() { if (done) return; done = true; clearTimeout(t1); clearTimeout(t2); h.classList.remove('on'); }
-    t1 = setTimeout(function () {
+    vmAfterIntro(function () { t1 = setTimeout(function () {
       if (done) return; h.classList.add('on'); gtag('event', 'hint_shown', P);
       t2 = setTimeout(hide, 3200);
-    }, 1200);
+    }, 900); });
     window.addEventListener('blur', function () {
       setTimeout(function () { if (document.activeElement && document.activeElement.id === 'viewer') hide(); }, 0);
     });
@@ -844,7 +1010,7 @@
 <script>
   (function () {
     var sh = document.getElementById('rem-sheet'), tip = document.getElementById('rem-tip');
-    if (!window.matchMedia('(max-width: 768px)').matches) return;
+    return;   // demo: bez dymka przypomnienia (przypomnienie jest w okienku 'Send to my PC')
     var shown = false; try { shown = sessionStorage.getItem('vm_rem_tip') === '1'; } catch (e) {}
     function hideTip() { tip.classList.remove('on'); }
     function tryTip() {
@@ -865,7 +1031,7 @@
   })();
 </script>
 <button id="dl-btn" type="button" hidden>
-  <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span>
+  <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></span>
   <span><span id="dl-btn-t"></span><small id="dl-btn-s"></small></span>
 </button>
 <div id="dl-layer">
@@ -887,6 +1053,7 @@
         <div id="dl-err"></div>
         <button class="go" id="dl-go" type="submit"></button>
       </form>
+      <button type="button" id="dl-rem">or add a calendar reminder</button>
       <div class="note">No spam. Unsubscribe anytime.</div>
     </div>
     <div id="dl-done">
@@ -905,20 +1072,20 @@
     var layer = $('dl-layer'), box = $('dl-box'), email = $('dl-email'), go = $('dl-go'), err = $('dl-err');
     var isMac = /Mac/i.test(navigator.platform || navigator.userAgent) && !isMobile;
     var COPY = {
-      windows: { title: 'Get the desktop app',
-                 sub: isMobile ? "On your phone? Leave your email and we'll send the download link — open it on your PC and start your free trial."
+      windows: { title: isMobile ? 'Get VizMaker on your PC' : 'Get the desktop app',
+                 sub: isMobile ? "We'll email you the download link. 14 days of unlimited AI, free. Open it on your computer."
                                : 'Download VizMaker for desktop, optimized for maximum performance. Start creating in minutes.',
-                 btn: isMobile ? 'Email me the download link' : 'Get my download link',
+                 btn: isMobile ? 'Email me the link' : 'Get my download link',
                  doneT: isMobile ? 'Check your inbox' : 'Your download is ready',
-                 doneM: isMobile ? "We've sent the download link to your email. Open it on your Windows PC to install VizMaker."
+                 doneM: isMobile ? "Sent! Open the email on your PC to install VizMaker and start your free trial."
                                  : "Your Windows download is ready. We've also sent the download link to your email." },
       macos:   { title: 'Waiting list', sub: 'Get notification when macOS app will be released', btn: 'Notify me',
                  doneT: "You're on the list", doneM: "We'll email you as soon as VizMaker for macOS is available." }
     };
     var os = isMac ? 'macos' : 'windows', busy = false;
 
-    $('dl-btn-t').textContent = DOWNLOAD.btn; $('dl-btn-s').textContent = DOWNLOAD.btnSub;
-    $('dl-btn').hidden = false;
+    $('dl-btn-t').textContent = isMobile ? '14 Days' : DOWNLOAD.btn; $('dl-btn-s').textContent = isMobile ? 'Unlimited AI' : DOWNLOAD.btnSub;
+    $('dl-btn').hidden = !isMobile;   // PC: bez przycisku 'Get VizMaker free' (11.2026); telefon: ikonka w lewym pasku
     $('dl-store').href = DOWNLOAD.storeUrl; $('dl-direct').href = DOWNLOAD.directUrl;
 
     function setOs(o, user) {
@@ -964,7 +1131,8 @@
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { err.textContent = 'Please enter a valid email address.'; err.style.display = 'block'; return; }
       busy = true; go.disabled = true; go.textContent = 'Sending...'; err.style.display = 'none';
       // to samo co formularz na vizmaker.com (your-email + src) + skąd przyszedł user
-      var body = new URLSearchParams({ 'your-email': v, src: DOWNLOAD.src, project: projectKey, device: device,
+      var body = new URLSearchParams({ 'your-email': v, src: DOWNLOAD.src + (DEMO ? '_demo' : ''), project: projectKey, device: device,
+        project_url: location.origin + '/?p=' + encodeURIComponent(projectKey),
         ad_source: adSource, utm_campaign: qs.get('utm_campaign') || '', utm_content: qs.get('utm_content') || '' });
       fetch(os === 'macos' ? DOWNLOAD.macHook : DOWNLOAD.windowsHook, { method: 'POST', body: body })
         .then(function (r) {
@@ -1019,6 +1187,38 @@
       gtag('event', 'render_counter_click', P);
       return;   // bez dymka (PC i telefon)
       tip.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { tip.classList.remove('on'); }, 3000);
+    });
+  })();
+</script>
+<script>
+  (function () {
+    // telefon: "or add a calendar reminder" w okienku -> zamyka okienko, otwiera arkusz przypomnienia
+    var r = document.getElementById('dl-rem');
+    if (r) r.onclick = function () {
+      document.getElementById('dl-x').click();
+      document.getElementById('rem-sheet').classList.add('open');
+      gtag('event', 'reminder_open', Object.assign({ source: 'download_modal' }, P));
+    };
+    // PC: przycisk w okienku tutorialu otwiera okienko pobierania zamiast YouTube
+    var yt = document.getElementById('tut-yt');
+    yt.removeAttribute('href'); yt.removeAttribute('target');
+    yt.innerHTML = '<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Get VizMaker free';
+    yt.style.display = 'none';   // bez 'Get VizMaker free' w okienku tutorialu (11.2026)
+    yt.onclick = function (e) {
+      e.preventDefault(); document.getElementById('tut-close').click();
+      window.vmOpenDownload && window.vmOpenDownload('tutorial');
+    };
+    // PC: exit-intent - kursor wyjeżdża do zakładek/krzyżyka -> raz na sesję okienko pobierania
+    if (false && !isMobile) vmAfterIntro(function () {   // exit-intent popup wyłączony (11.2026)
+      var armedAt = Date.now() + 8000;
+      document.addEventListener('mouseout', function onOut(e) {
+        if (e.relatedTarget || e.clientY > 0 || Date.now() < armedAt) return;
+        var shown = false; try { shown = sessionStorage.getItem('vm_exit') === '1'; } catch (x) {}
+        if (shown || document.getElementById('dl-layer').classList.contains('open')) return;
+        try { sessionStorage.setItem('vm_exit', '1'); } catch (x) {}
+        document.removeEventListener('mouseout', onOut);
+        window.vmOpenDownload && window.vmOpenDownload('exit_intent');
+      });
     });
   })();
 </script>
