@@ -610,7 +610,7 @@ const track=(function(){
   // ---- zapis e-mail -> Zapier (Catch Hook) -> Mailchimp Kontakty UK, tag 'library', double opt-in ----
   var SIGNUP_HOOK = 'https://hooks.zapier.com/hooks/catch/4692325/JrpUevp58mV2bPFP/';
   var signed = false; try { signed = localStorage.getItem('vm_lib_signed') === '1'; } catch (_) {}
-  function okHtml(again) { return '<div class="sg-ok">✅ <b>' + (again ? "You're subscribed." : "Almost done! Check your inbox") + '</b>' + (again ? ' New projects will land in your inbox.' : ' and click the confirmation link. Then you\'ll get every new project by email.') + '</div>'; }
+  function okHtml(again) { return '<div class="sg-ok">✅ <b>You\'re in!</b> Check your inbox for a welcome email from <b>edu@vizmaker.com</b>. We\'ll only write when a new project is added.</div>'; }
   function renderSignup(box) {
     box.innerHTML = '<h5>📩 Get every new AI project by email</h5><p>One new project every week: 3D scene, video tutorial and prompts. Free. Unsubscribe anytime.</p>' +
       '<form novalidate><input type="email" name="email" placeholder="your@email.com" autocomplete="email" required>' +
