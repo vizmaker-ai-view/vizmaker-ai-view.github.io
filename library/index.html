@@ -274,7 +274,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 <body>
 <div class="nbar" id="nbar" hidden>
   <span class="nb-ic">🔔</span><span class="nb-t"><b>New projects every week.</b> Subscribe to library updates so you don't miss them.</span>
-  <span data-sub style="display:contents"><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a></span>
+  <span data-sub style="display:contents"><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a></span>
   <button class="nb-x" type="button" id="nbar-x" aria-label="Close">&times;</button>
 </div>
 <a class="promo" id="promo" target="_blank" rel="noopener">
@@ -317,7 +317,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
         </div>
         <div class="subrow" data-sub>
           <span class="sub-t">🔔 <b>Never miss a new project.</b> Subscribe once, new lessons appear in your calendar automatically:</span>
-          <a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a>
+          <a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a>
         </div>
         <div class="cal-note">Block 30 minutes tomorrow at 7 PM. Starting is the hardest part, so let your calendar remind you. You can change the time in one click.</div>
       </div>
@@ -458,7 +458,10 @@ const track=(function(){
       if(isIOS){a.removeAttribute('target');a.href='#';a.addEventListener('click',function(e){e.preventDefault();dl(LW.ics,'vizmaker-library-weekly.ics');});}
       else a.href=LW.g;
     });
-    document.querySelectorAll('[data-sub-apple]').forEach(function(a){a.href=webcal;});
+    // Apple: wydarzenie cykliczne we WŁASNYM kalendarzu (.ics) -> alert działa; subskrypcja iPhone często usuwa alerty
+    document.querySelectorAll('[data-sub-apple]').forEach(function(a){a.href='#';a.addEventListener('click',function(e){e.preventDefault();dl(LW.ics,'vizmaker-library-weekly.ics');});});
+    // mały link: subskrypcja listy projektów (nazwy projektów, bez gwarancji powiadomień)
+    document.querySelectorAll('[data-sub-feed]').forEach(function(a){a.href=webcal;});
     document.querySelectorAll('[data-sub-outlook]').forEach(function(a){a.href='https://outlook.live.com/calendar/0/addfromweb?url='+encodeURIComponent(feed)+'&name='+encodeURIComponent('VizMaker AI Project Library');});
     document.querySelectorAll('[data-sub]').forEach(function(w){w.addEventListener('click',function(ev){var t=ev.target.closest('.nb-go');if(t)track.ev('calendar_subscribe',{name:'CalendarSubscribe'},{calendar:t.textContent.toLowerCase()});});});
     if(UPDATES_BAR){
