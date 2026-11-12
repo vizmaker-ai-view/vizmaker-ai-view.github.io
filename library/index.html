@@ -447,7 +447,11 @@ const track=(function(){
     document.querySelectorAll('[data-cal]').forEach(function(w){w.addEventListener('click',function(ev){var t=ev.target.closest('[data-cal-google],[data-cal-ics],[data-cal-outlook]');if(t)track.ev('calendar_add',{name:'CalendarAdd'},{calendar:t.hasAttribute('data-cal-google')?'google':t.hasAttribute('data-cal-ics')?'apple_ics':'outlook'});});});
     // subskrypcja kalendarza aktualizacji (plik library/updates.ics, generowany przez build_ics.py)
     var feed=location.origin+location.pathname.replace(/[^/]*$/,'')+'updates.ics', webcal=feed.replace(/^https?:/,'webcal:');
-    document.querySelectorAll('[data-sub-google]').forEach(function(a){a.href='https://calendar.google.com/calendar/render?cid='+encodeURIComponent(webcal);});
+    var isPhone=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    // telefon: aplikacja Google Calendar nie umie subskrybować z URL -> wydarzenie cykliczne (pon 18:00) z linkiem do biblioteki
+    var md=new Date();md.setDate(md.getDate()+((8-md.getDay())%7||7));md.setHours(18,0,0,0);var me=new Date(md.getTime()+30*60000);
+    var LW=links('\uD83C\uDD95 New AI project in the VizMaker Library','A new project with a video tutorial and prompts is live: '+url,md,me,'FREQ=WEEKLY;BYDAY=MO');
+    document.querySelectorAll('[data-sub-google]').forEach(function(a){a.href=isPhone?LW.g:'https://calendar.google.com/calendar/render?cid='+encodeURIComponent(webcal);});
     document.querySelectorAll('[data-sub-apple]').forEach(function(a){a.href=webcal;});
     document.querySelectorAll('[data-sub-outlook]').forEach(function(a){a.href='https://outlook.live.com/calendar/0/addfromweb?url='+encodeURIComponent(feed)+'&name='+encodeURIComponent('VizMaker AI Project Library');});
     document.querySelectorAll('[data-sub]').forEach(function(w){w.addEventListener('click',function(ev){var t=ev.target.closest('.nb-go');if(t)track.ev('calendar_subscribe',{name:'CalendarSubscribe'},{calendar:t.textContent.toLowerCase()});});});
