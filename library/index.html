@@ -593,7 +593,6 @@ const track=(function(){
   var signed = false; try { signed = localStorage.getItem('vm_lib_signed') === '1'; } catch (_) {}
   function okHtml(again) { return '<div class="sg-ok">✅ <b>' + (again ? "You're subscribed." : "Almost done! Check your inbox") + '</b>' + (again ? ' New projects will land in your inbox.' : ' and click the confirmation link. Then you\'ll get every new project by email.') + '</div>'; }
   function renderSignup(box) {
-    if (signed) { box.innerHTML = okHtml(true); return; }
     box.innerHTML = '<h5>📩 Get every new AI project by email</h5><p>One new project every week: 3D scene, video tutorial and prompts. Free. Unsubscribe anytime.</p>' +
       '<form novalidate><input type="email" name="email" placeholder="your@email.com" autocomplete="email" required>' +
       '<input class="sg-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">' +
@@ -619,7 +618,10 @@ const track=(function(){
       fetch(SIGNUP_HOOK, { method: 'POST', mode: 'no-cors', body: body }).catch(function () {}).then(function () {
         signed = true; try { localStorage.setItem('vm_lib_signed', '1'); } catch (_) {}
         track.ev('library_signup', { name: 'CompleteRegistration', std: true }, { place: where, lesson: proj, with_phone: f.consent_sms.checked ? 1 : 0 });
-        document.querySelectorAll('[data-signup]').forEach(function (b) { b.innerHTML = b === box ? okHtml(false) : okHtml(true); });
+        box.innerHTML = okHtml(false) + '<div style="margin-top:10px"><a data-again style="color:var(--teal);cursor:pointer;text-decoration:underline;font-size:13px">+ Add another email</a></div>';
+        var again = function () { if (box.querySelector('[data-again]')) renderSignup(box); };
+        box.querySelector('[data-again]').onclick = again;
+        setTimeout(again, 8000);
       });
     };
   }
