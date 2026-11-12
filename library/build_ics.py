@@ -7,6 +7,8 @@ start = dt.date(2026, 11, 16)  # poniedziałek
 RELEASES = [(start + dt.timedelta(weeks=i), 17, 'New AI project in the VizMaker Library',
              'A new project with a video tutorial and prompts is live. Open it: ' + URL + '?p=latest') for i in range(12)]
 # Konkretne premiery projektów: (data, godzina UTC, tytuł, opis) - dopisuj tu nowe projekty
+RELEASES = [(dt.date(2026, 11, 12), 17, 'New project: Turn any 3D scene into a realistic Live Preview',
+             'Open the project: ' + URL + '?p=default')] + RELEASES
 RELEASES = [(dt.date(2026, 11, 12), 15, 'New project: Stop searching 3D Warehouse - make your own models with AI',
              'Generate your own 3D model with AI in VizMaker. Open the project: ' + URL + '?p=yt8')] + RELEASES
 # TEST (12.11.2026): stare projekty co godzinę 17:00-21:00 Warszawa - usunąć po teście
@@ -39,7 +41,9 @@ print('ok', len(RELEASES), 'events')
 
 # ---- RSS dla Mailchimp (RSS-to-email): nowy projekt = nowy <item> na górze ----
 # (klucz projektu, data publikacji, tytuł, opis) - najnowszy pierwszy; dopisuj tu przy każdym nowym projekcie
-FEED = [('yt8', dt.datetime(2026, 11, 12, 15, 0), 'Stop searching 3D Warehouse: make your own models with AI',
+FEED = [('default', dt.datetime(2026, 11, 12, 16, 35), 'Turn any 3D scene into a realistic Live Preview',
+         'The VizMaker plugin turns any 3D scene into a photorealistic live preview. Open the guide project in 3D, watch the tutorial and copy the prompt.'),
+        ('yt8', dt.datetime(2026, 11, 12, 15, 0), 'Stop searching 3D Warehouse: make your own models with AI',
          'Can\'t find the right model? Generate your own 3D model with AI in VizMaker. Open the project in 3D and follow the tutorial.'),
         ('live', dt.datetime(2026, 11, 5, 15, 0), 'Live Preview: 3D scene to realistic render', 'Turn any 3D scene into a realistic live preview.'),
         ('yt4', dt.datetime(2026, 11, 4, 15, 0), 'Create your AI avatar and full ad campaign for free', 'AI avatar and a full ad campaign in VizMaker.'),

@@ -17,7 +17,12 @@
   // Każda lekcja: key (= ?p= w viewerze), tytuł, program, kategoria, czas, opis, kroki, prompty.
   // TODO: tytuły / opisy / prompty do podmiany na prawdziwe (teraz przykładowe).
   var LESSONS = [
-    { key: 'yt8', token: 'ZjEguxuHcyAd8R73KZBlfIB1XVcIY15o', yt: 'Ht_DU8RARIw', yt_t: 14, isNew: true, soft: 'SketchUp', cat: '3D models', min: 6,
+    { key: 'default', token: 'YGUejv3XWkASVC86RyQH2BbWrVcmpVhT', yt: 'WRiuqYljDQ4', yt_t: 23, isNew: true, soft: 'Any 3D', cat: 'Basics', min: 6,
+      title: 'Turn any 3D scene into a realistic Live Preview',
+      desc: 'The VizMaker plugin turns any 3D scene into a photorealistic live preview. Open the guide project in 3D and see how it is built, node by node.',
+      steps: ['Watch the tutorial', 'Open the project and explore the nodes', 'Repeat it on your own scene'],
+      prompts: ['Photorealistic render of this scene, keep composition, realistic materials, soft shadows'] },
+    { key: 'yt8', token: 'ZjEguxuHcyAd8R73KZBlfIB1XVcIY15o', yt: 'Ht_DU8RARIw', yt_t: 14, soft: 'SketchUp', cat: '3D models', min: 6,
       title: 'Stop searching 3D Warehouse: make your own models with AI',
       desc: 'Can\'t find the right model? Generate your own 3D model with AI in VizMaker. Open the project in 3D and follow the tutorial.',
       steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Generate your own model for your scene'], prompts: [] },
@@ -58,11 +63,6 @@
       desc: 'Follow the full workflow from model to final visual.',
       steps: ['Prepare the base model', 'Generate the first render', 'Iterate with prompts and variations'],
       prompts: ['Scandinavian living room, bright and airy, white walls, light wood, green plants, photorealistic, 4K'] },
-    { key: 'default', token: 'YGUejv3XWkASVC86RyQH2BbWrVcmpVhT', title: 'VizMaker Guide Project',
-      soft: 'Any 3D', cat: 'Basics', min: 4,
-      desc: 'The basics: how a VizMaker project is built, node by node.',
-      steps: ['Open the project and explore the nodes', 'See how each step changes the image', 'Repeat it on your own scene'],
-      prompts: ['Photorealistic render of this scene, keep composition, realistic materials, soft shadows'] },
     { key: 'kredyty', token: 'Y1uiuTrNmlJefSFO-ftyb1ALsJ_EnwNy', title: 'Smart credits: more renders for less',
       soft: 'Any 3D', cat: 'Basics', min: 3,
       desc: 'How to plan your renders so you get more variations from the same budget.',
