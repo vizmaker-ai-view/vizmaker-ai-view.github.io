@@ -269,6 +269,22 @@ footer.vmf{background:var(--bg);margin-top:20px}
   .nb-go{padding:5px 11px;border-radius:999px;border:1px solid rgba(0,228,240,.5);background:transparent;color:var(--teal);font:700 12px Inter,sans-serif;text-decoration:none;cursor:pointer}
   .nb-go:hover{background:rgba(0,228,240,.12)}
   .nb-x{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:0;background:transparent;color:var(--mut);font-size:20px;cursor:pointer}
+  .sgn{margin:18px 0;padding:16px 18px;border-radius:14px;border:1px solid rgba(0,228,240,.35);background:linear-gradient(180deg,rgba(0,228,240,.07),rgba(0,228,240,.02))}
+  .sgn h5{margin:0 0 4px;font:800 16px Inter,sans-serif;color:var(--txt)}
+  .sgn p{margin:0 0 10px;font-size:13px;color:var(--mut)}
+  .sgn form{display:flex;flex-wrap:wrap;gap:8px}
+  .sgn input[type=email],.sgn input[type=tel]{flex:1 1 220px;min-width:0;padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:#020d16;color:var(--txt);font:500 14px Inter,sans-serif}
+  .sgn input:focus{outline:2px solid var(--teal);outline-offset:0}
+  .sgn button{padding:11px 16px;border-radius:10px;border:0;background:var(--teal);color:#00161a;font:800 14px Inter,sans-serif;cursor:pointer}
+  .sgn .sg-more{flex-basis:100%;font-size:12px;color:var(--mut);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .sgn .sg-more a{color:var(--teal);cursor:pointer;text-decoration:underline}
+  .sgn .sg-ph{flex-basis:100%;display:none;gap:8px;flex-wrap:wrap}
+  .sgn .sg-ph.on{display:flex}
+  .sgn label{font-size:12px;color:var(--mut);display:flex;gap:6px;align-items:flex-start}
+  .sgn .sg-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .sgn .sg-err{flex-basis:100%;font-size:12px;color:#ff8a8a;display:none}
+  .sgn .sg-ok{font:600 14px Inter,sans-serif;color:var(--txt)}
+  .sgn .sg-ok b{color:var(--teal)}
 </style>
 </head>
 <body>
@@ -298,6 +314,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
     <div class="stats"><div><b>20</b>projects</div><div><b>3–7 min</b>per lesson</div><div><b>Prompts</b>copy &amp; reuse</div><div><b>14 days</b>unlimited AI to practise</div></div>
   </section>
 
+  <div class="sgn" data-signup="hero"></div>
   <div class="cont" id="cont"><div><small id="cont-l">The project you came from</small><b id="cont-t"></b></div><button class="btn" id="cont-b">Open lesson →</button></div>
 
   <div class="filters" id="lessons"></div>
@@ -315,6 +332,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
           <button class="calbtn" type="button" data-cal-ics><span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><span><b>Apple Calendar</b><small>.ics file</small></span></button>
           <a class="calbtn" data-cal-outlook href="#" target="_blank" rel="noopener"><span class="ci">O</span><span><b>Outlook</b><small>outlook.com / Microsoft 365</small></span></a>
         </div>
+        <div class="sgn" data-signup="plan"></div>
         <div class="subrow" data-sub>
           <span class="sub-t">🔔 <b>Never miss a new project.</b> Subscribe once, new lessons appear in your calendar automatically:</span>
           <a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a>
@@ -371,6 +389,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
       <h4>Workflow</h4><ol id="l-steps"></ol>
       <div id="l-pr-wrap"><h4>Prompts used</h4><div id="l-prompts"></div></div>
       <div class="cta">
+        <div class="sgn" data-signup="lesson"></div>
         <a class="btn" id="l-try" target="_blank" rel="noopener">Create free account · 14 days unlimited AI</a>
         <div class="nav"><button class="btn ghost" id="l-prev">← Previous</button><button class="btn ghost" id="l-next">Next lesson →</button></div>
       </div>
@@ -563,6 +582,43 @@ const track=(function(){
   var from = latest ? 0 : LESSONS.findIndex(function (l) { return l.key === pk; });
   if (from < 0) { var next = LESSONS.findIndex(function (l) { return !seen[l.key]; }); if (next > 0) { from = next; $('cont-l').textContent = 'Continue where you left off'; } }
   if (from >= 0) { $('cont').classList.add('on'); $('cont-t').textContent = LESSONS[from].title || '…'; $('cont-b').onclick = function () { open(from); }; }
+
+  // ---- zapis e-mail -> Zapier (Catch Hook) -> Mailchimp Kontakty UK, tag 'library', double opt-in ----
+  var SIGNUP_HOOK = 'https://hooks.zapier.com/hooks/catch/4692325/JrpUevp58mV2bPFP/';
+  var signed = false; try { signed = localStorage.getItem('vm_lib_signed') === '1'; } catch (_) {}
+  function okHtml(again) { return '<div class="sg-ok">✅ <b>' + (again ? "You're subscribed." : "Almost done! Check your inbox") + '</b>' + (again ? ' New projects will land in your inbox.' : ' and click the confirmation link. Then you\'ll get every new project by email.') + '</div>'; }
+  function renderSignup(box) {
+    if (signed) { box.innerHTML = okHtml(true); return; }
+    box.innerHTML = '<h5>📩 Get every new AI project by email</h5><p>One new project every week: 3D scene, video tutorial and prompts. Free. Unsubscribe anytime.</p>' +
+      '<form novalidate><input type="email" name="email" placeholder="your@email.com" autocomplete="email" required>' +
+      '<input class="sg-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+      '<button type="submit">Notify me</button>' +
+      '<div class="sg-more"><a data-ph>+ Also notify me on WhatsApp / SMS</a></div>' +
+      '<div class="sg-ph"><input type="tel" name="phone" placeholder="+48 600 000 000" autocomplete="tel">' +
+      '<label><input type="checkbox" name="consent_sms"> I agree to receive new project updates from VizMaker via WhatsApp/SMS. Reply STOP to opt out.</label></div>' +
+      '<div class="sg-err"></div></form>';
+    var f = box.querySelector('form'), err = box.querySelector('.sg-err');
+    box.querySelector('[data-ph]').onclick = function () { box.querySelector('.sg-ph').classList.add('on'); };
+    f.onsubmit = function (e) {
+      e.preventDefault();
+      var email = (f.email.value || '').trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'Please enter a valid email address.'; err.style.display = 'block'; return; }
+      var phone = (f.phone.value || '').trim();
+      if (phone && !f.consent_sms.checked) { err.textContent = 'Tick the WhatsApp/SMS consent box, or leave the phone field empty.'; err.style.display = 'block'; return; }
+      err.style.display = 'none';
+      var where = box.getAttribute('data-signup');
+      var proj = where === 'lesson' && LESSONS[cur] ? LESSONS[cur].key : (qs.get('p') && qs.get('p') !== 'latest' ? qs.get('p') : 'library');
+      var body = new URLSearchParams({ email: email, phone: f.consent_sms.checked ? phone : '', consent_sms: f.consent_sms.checked ? 'true' : 'false',
+        proj: proj, src: (qs.get('utm_source') || 'www') + (qs.get('utm_campaign') ? ':' + qs.get('utm_campaign') : ''), place: where, website: f.website.value || '' });
+      f.querySelector('button').disabled = true; f.querySelector('button').textContent = 'Sending…';
+      fetch(SIGNUP_HOOK, { method: 'POST', mode: 'no-cors', body: body }).catch(function () {}).then(function () {
+        signed = true; try { localStorage.setItem('vm_lib_signed', '1'); } catch (_) {}
+        track.ev('library_signup', { name: 'CompleteRegistration', std: true }, { place: where, lesson: proj, with_phone: f.consent_sms.checked ? 1 : 0 });
+        document.querySelectorAll('[data-signup]').forEach(function (b) { b.innerHTML = b === box ? okHtml(false) : okHtml(true); });
+      });
+    };
+  }
+  document.querySelectorAll('[data-signup]').forEach(renderSignup);
 
   render(); progress();
   if (latest && LESSONS.length) setTimeout(function () { open(0); }, 300);
