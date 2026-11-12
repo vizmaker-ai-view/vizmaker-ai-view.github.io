@@ -452,7 +452,12 @@ const track=(function(){
     var md=new Date();md.setDate(md.getDate()+((8-md.getDay())%7||7));md.setHours(18,0,0,0);var me=new Date(md.getTime()+30*60000);
     var LW=links('\uD83C\uDD95 New AI project in the VizMaker Library','A new project with a video tutorial and prompts is live: '+url,md,me,'FREQ=WEEKLY;BYDAY=MO');
     // Google (PC i telefon): wydarzenie cykliczne we WŁASNYM kalendarzu -> działają domyślne powiadomienia (subskrypcje w Google ich nie mają)
-    document.querySelectorAll('[data-sub-google]').forEach(function(a){a.href=LW.g;});
+    var isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+    // iPhone: Safari zwykle nie jest zalogowane do Google (link przekierowuje na Workspace) -> plik .ics z wydarzeniem cyklicznym
+    document.querySelectorAll('[data-sub-google]').forEach(function(a){
+      if(isIOS){a.removeAttribute('target');a.href='#';a.addEventListener('click',function(e){e.preventDefault();dl(LW.ics,'vizmaker-library-weekly.ics');});}
+      else a.href=LW.g;
+    });
     document.querySelectorAll('[data-sub-apple]').forEach(function(a){a.href=webcal;});
     document.querySelectorAll('[data-sub-outlook]').forEach(function(a){a.href='https://outlook.live.com/calendar/0/addfromweb?url='+encodeURIComponent(feed)+'&name='+encodeURIComponent('VizMaker AI Project Library');});
     document.querySelectorAll('[data-sub]').forEach(function(w){w.addEventListener('click',function(ev){var t=ev.target.closest('.nb-go');if(t)track.ev('calendar_subscribe',{name:'CalendarSubscribe'},{calendar:t.textContent.toLowerCase()});});});
