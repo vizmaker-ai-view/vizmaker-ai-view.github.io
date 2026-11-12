@@ -451,7 +451,17 @@ const track=(function(){
     // telefon: aplikacja Google Calendar nie umie subskrybować z URL -> wydarzenie cykliczne (pon 18:00) z linkiem do biblioteki
     var md=new Date();md.setDate(md.getDate()+((8-md.getDay())%7||7));md.setHours(18,0,0,0);var me=new Date(md.getTime()+30*60000);
     var LW=links('\uD83C\uDD95 New AI project in the VizMaker Library','A new project with a video tutorial and prompts is live: '+url,md,me,'FREQ=WEEKLY;BYDAY=MO');
-    document.querySelectorAll('[data-sub-google]').forEach(function(a){a.href=isPhone?LW.g:'https://calendar.google.com/calendar/render?cid='+encodeURIComponent(webcal);});
+    document.querySelectorAll('[data-sub-google]').forEach(function(a){
+      if(isPhone){a.href=LW.g;return;}
+      // PC: link cid=webcal w Google często daje "You don't have access" -> otwieramy "From URL" i kopiujemy adres
+      a.href='https://calendar.google.com/calendar/u/0/r/settings/addbyurl';
+      a.addEventListener('click',function(){
+        try{navigator.clipboard.writeText(feed);}catch(_){}
+        var t=document.createElement('div');t.textContent='Calendar link copied - paste it in Google Calendar (Ctrl+V) and click "Add calendar"';
+        t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#00e4f0;color:#00161a;padding:12px 18px;border-radius:12px;font-weight:700;z-index:9999;max-width:90vw;text-align:center';
+        document.body.appendChild(t);setTimeout(function(){t.remove();},7000);
+      });
+    });
     document.querySelectorAll('[data-sub-apple]').forEach(function(a){a.href=webcal;});
     document.querySelectorAll('[data-sub-outlook]').forEach(function(a){a.href='https://outlook.live.com/calendar/0/addfromweb?url='+encodeURIComponent(feed)+'&name='+encodeURIComponent('VizMaker AI Project Library');});
     document.querySelectorAll('[data-sub]').forEach(function(w){w.addEventListener('click',function(ev){var t=ev.target.closest('.nb-go');if(t)track.ev('calendar_subscribe',{name:'CalendarSubscribe'},{calendar:t.textContent.toLowerCase()});});});
