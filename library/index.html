@@ -17,6 +17,10 @@
   // Każda lekcja: key (= ?p= w viewerze), tytuł, program, kategoria, czas, opis, kroki, prompty.
   // TODO: tytuły / opisy / prompty do podmiany na prawdziwe (teraz przykładowe).
   var LESSONS = [
+    { key: 'yt8', token: 'ZjEguxuHcyAd8R73KZBlfIB1XVcIY15o', yt: 'Ht_DU8RARIw', yt_t: 14, isNew: true, soft: 'SketchUp', cat: '3D models', min: 6,
+      title: 'Stop searching 3D Warehouse: make your own models with AI',
+      desc: 'Can\'t find the right model? Generate your own 3D model with AI in VizMaker. Open the project in 3D and follow the tutorial.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Generate your own model for your scene'], prompts: [] },
     { key: 'yt1', token: 'waOhpkqtSHhGrwtqF0LQGbQxHfGsPIel', yt: '-EnfwuPkmso', yt_t: 33, soft: 'VizMaker', cat: 'Tutorial', min: 6, featured: true,
       desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
       steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
@@ -384,7 +388,7 @@ const TRACK={
   OAI_PIXEL_ID:'6msDXFx25TWabFByppdNTg' // OpenAI Ads „VizMaker Mini Course”
 };
 // Pasek "aktualizacje biblioteki w kalendarzu" - na razie WYŁĄCZONY (true = włącz)
-const UPDATES_BAR=false;
+const UPDATES_BAR=true;
 const track=(function(){
   let on=false;const q=[];
   function load(){
@@ -489,7 +493,7 @@ const track=(function(){
         '<div class="num">' + String(idx + 1).padStart(2, '0') + '</div>' +
         (l.yt ? '<span class="tag-yt">▶ Video tutorial</span>' : '') +
         '<div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>' +
-        (l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span></div>' +
+        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span></div>' +
         '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span></div>' +
         '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p></div>';
       c.onclick = function () { open(idx); };
