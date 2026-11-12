@@ -41,7 +41,9 @@ print('ok', len(RELEASES), 'events')
 
 # ---- RSS dla Mailchimp (RSS-to-email): nowy projekt = nowy <item> na górze ----
 # (klucz projektu, data publikacji, tytuł, opis) - najnowszy pierwszy; dopisuj tu przy każdym nowym projekcie
-FEED = [('default', dt.datetime(2026, 11, 12, 16, 50), 'Turn any 3D scene into a realistic Live Preview',
+FEED = [('yt9', dt.datetime(2026, 11, 12, 16, 56), 'Gemini Omni vs Seedance 2.0: battle of the AI video titans',
+         'Two top AI video models head to head on the same architecture scene. See which one wins, then open the project and test both in VizMaker.'),
+        ('default', dt.datetime(2026, 11, 12, 16, 50), 'Turn any 3D scene into a realistic Live Preview',
          'The VizMaker plugin turns any 3D scene into a photorealistic live preview. Open the guide project in 3D, watch the tutorial and copy the prompt.'),
         ('yt8', dt.datetime(2026, 11, 12, 15, 0), 'Stop searching 3D Warehouse: make your own models with AI',
          'Can\'t find the right model? Generate your own 3D model with AI in VizMaker. Open the project in 3D and follow the tutorial.'),
