@@ -17,30 +17,30 @@
   // Każda lekcja: key (= ?p= w viewerze), tytuł, program, kategoria, czas, opis, kroki, prompty.
   // TODO: tytuły / opisy / prompty do podmiany na prawdziwe (teraz przykładowe).
   var LESSONS = [
-    { key: 'yt9', token: 'Ay1FlbeTIYn7xKXcFACCi5D3oRiNut8Q', yt: 'ADKQaBrFA1w', isNew: true, soft: 'VizMaker', cat: 'AI video', min: 6,
+    { key: 'yt9', added: '2026-11-12T16:57', token: 'Ay1FlbeTIYn7xKXcFACCi5D3oRiNut8Q', yt: 'ADKQaBrFA1w', soft: 'VizMaker', cat: 'AI video', min: 6,
       title: 'Gemini Omni vs Seedance 2.0: battle of the AI video titans',
       desc: 'We put two top AI video models head to head on the same architecture scene. See which one wins, then open the project and test both yourself in VizMaker.',
       steps: ['Watch the comparison', 'Open the project in 3D and see both outputs', 'Run the same prompt on your own scene'],
       prompts: [] },
-    { key: 'default', token: 'YGUejv3XWkASVC86RyQH2BbWrVcmpVhT', yt: 'WRiuqYljDQ4', yt_t: 23, soft: 'Any 3D', cat: 'Basics', min: 6,
+    { key: 'default', added: '2026-11-12T16:50', token: 'YGUejv3XWkASVC86RyQH2BbWrVcmpVhT', yt: 'WRiuqYljDQ4', yt_t: 23, soft: 'Any 3D', cat: 'Basics', min: 6,
       title: 'Turn any 3D scene into a realistic Live Preview',
       desc: 'The VizMaker plugin turns any 3D scene into a photorealistic live preview. Open the guide project in 3D and see how it is built, node by node.',
       steps: ['Watch the tutorial', 'Open the project and explore the nodes', 'Repeat it on your own scene'],
       prompts: ['Photorealistic render of this scene, keep composition, realistic materials, soft shadows'] },
-    { key: 'yt8', token: 'ZjEguxuHcyAd8R73KZBlfIB1XVcIY15o', yt: 'Ht_DU8RARIw', yt_t: 14, soft: 'SketchUp', cat: '3D models', min: 6,
+    { key: 'yt8', added: '2026-11-12T15:00', token: 'ZjEguxuHcyAd8R73KZBlfIB1XVcIY15o', yt: 'Ht_DU8RARIw', yt_t: 14, soft: 'SketchUp', cat: '3D models', min: 6,
       title: 'Stop searching 3D Warehouse: make your own models with AI',
       desc: 'Can\'t find the right model? Generate your own 3D model with AI in VizMaker. Open the project in 3D and follow the tutorial.',
       steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Generate your own model for your scene'], prompts: [] },
-    { key: 'yt1', token: 'waOhpkqtSHhGrwtqF0LQGbQxHfGsPIel', yt: '-EnfwuPkmso', yt_t: 33, soft: 'VizMaker', cat: 'Tutorial', min: 6, featured: true,
+    { key: 'yt1', added: '2026-11-01', token: 'waOhpkqtSHhGrwtqF0LQGbQxHfGsPIel', yt: '-EnfwuPkmso', yt_t: 33, soft: 'VizMaker', cat: 'Tutorial', min: 6, featured: true,
       desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
       steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
-    { key: 'yt2', token: '0j3_l6jnugo-0Lh8NR8a-2dDJutZHrLg', yt: '6eeFLYZ2Br0', yt_t: 2, soft: 'VizMaker', cat: 'Tutorial', min: 6, featured: true,
+    { key: 'yt2', added: '2026-11-02', token: '0j3_l6jnugo-0Lh8NR8a-2dDJutZHrLg', yt: '6eeFLYZ2Br0', yt_t: 2, soft: 'VizMaker', cat: 'Tutorial', min: 6, featured: true,
       desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
       steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
-    { key: 'yt3', token: 'js3fYbAw-SJwHiL6Fqk1hRYbDp2Z84Dl', yt: 'rb1o_fax_Ko', yt_t: 13, soft: 'VizMaker', cat: 'Tutorial', min: 6,
+    { key: 'yt3', added: '2026-11-03', token: 'js3fYbAw-SJwHiL6Fqk1hRYbDp2Z84Dl', yt: 'rb1o_fax_Ko', yt_t: 13, soft: 'VizMaker', cat: 'Tutorial', min: 6,
       desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
       steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
-    { key: 'yt4', token: 'LXLFcwwqTu-pIPr99_OQXBj4maSr7l6M', yt: 'HImDOzcZ0ac', yt_t: 53, soft: 'VizMaker', cat: 'Tutorial', min: 6,
+    { key: 'yt4', added: '2026-11-04', token: 'LXLFcwwqTu-pIPr99_OQXBj4maSr7l6M', yt: 'HImDOzcZ0ac', yt_t: 53, soft: 'VizMaker', cat: 'Tutorial', min: 6,
       desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
       steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
     { key: 'yt5', token: 'zIvr37dc1MJhi6nVD2zybpvMAbzly4cK', yt: '8CAEfEjbPYo', yt_t: 8, soft: 'VizMaker', cat: 'Tutorial', min: 6,
@@ -52,7 +52,7 @@
     { key: 'yt7', token: 'KiLcRX3s_-smGKJ7Ft9R8kuNALBF5ZjS', yt: 'EL3HGc4u6QQ', yt_t: 41, soft: 'VizMaker', cat: 'Tutorial', min: 6,
       desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
       steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
-    { key: 'live', token: 'I7eatiV64hSWBtoxxOMYQbiyKAKaiKWo', title: 'Live Preview: 3D scene to realistic render',
+    { key: 'live', added: '2026-11-05', token: 'I7eatiV64hSWBtoxxOMYQbiyKAKaiKWo', title: 'Live Preview: 3D scene to realistic render',
       soft: 'SketchUp', cat: 'Interior', min: 6,
       desc: 'Turn a raw 3D scene into a photorealistic live preview in minutes.',
       steps: ['Export the view from your 3D software', 'Upload it to VizMaker and pick Live Preview', 'Refine materials and light with prompts'],
@@ -74,6 +74,13 @@
       steps: ['Test in low resolution first', 'Lock the best variation', 'Upscale only the final image'],
       prompts: ['Quick draft render, same composition, focus on light direction only'] }
   ];
+  // sortowanie: od najnowszego (pole added), projekty bez daty na końcu; NEW = dodane w ostatnich 7 dniach
+  LESSONS = LESSONS.map(function (l, i) { return [l, i]; }).sort(function (a, b) {
+    var da = a[0].added || '', db = b[0].added || '';
+    return da === db ? a[1] - b[1] : (da < db ? 1 : -1);
+  }).map(function (x) { return x[0]; });
+  LESSONS.forEach(function (l) { if (l.added && (Date.now() - Date.parse(l.added)) < 7 * 864e5) l.isNew = true; });
+  function addedLabel(l) { if (!l.added) return ''; var d = new Date(l.added); return 'Added ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
   var SOON = ['Kitchen Japandi', 'Facade from Revit massing', 'Bathroom spa mood', 'Bedroom evening light', 'Video from a still render',
               'Office open space', 'Exterior at dusk', 'Moodboard to render', 'Before / after for social media', 'Sketch to render',
               'Retail interior', 'Landscape & garden', 'Product in interior', 'Restaurant ambience', 'Client variations in 10 min'];
@@ -531,7 +538,7 @@ const track=(function(){
         (l.yt ? '<span class="tag-yt">▶ Video tutorial</span>' : '') +
         '<div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>' +
         (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span></div>' +
-        '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span></div>' +
+        '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span>' + (l.added ? '<span>' + addedLabel(l) + '</span>' : '') + '</div>' +
         '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p></div>';
       c.onclick = function () { open(idx); };
       g.appendChild(c);
