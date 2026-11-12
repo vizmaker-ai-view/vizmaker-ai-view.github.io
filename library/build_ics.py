@@ -22,5 +22,13 @@ for d, h, t, desc in RELEASES:
           'DTSTART:' + z(d, h), 'DTEND:' + z(d, h, 30), 'SUMMARY:\U0001F195 ' + t, 'DESCRIPTION:' + desc, 'URL:' + URL, 'LOCATION:' + URL,
           'BEGIN:VALARM', 'TRIGGER:PT0M', 'ACTION:DISPLAY', 'DESCRIPTION:' + t, 'END:VALARM', 'END:VEVENT']
 L.append('END:VCALENDAR')
-open(__file__.replace('build_ics.py', 'updates.ics'), 'w', newline='').write('\r\n'.join(L) + '\r\n')
+def fold(line):  # RFC 5545: linie max 75 bajtów, kontynuacja od spacji
+    b, out, cur = line.encode('utf-8'), [], b''
+    for ch in line:
+        c = ch.encode('utf-8')
+        if len(cur) + len(c) > (75 if not out else 74): out.append(cur); cur = b''
+        cur += c
+    out.append(cur)
+    return '\r\n '.join(x.decode('utf-8') for x in out)
+open(__file__.replace('build_ics.py', 'updates.ics'), 'w', newline='').write('\r\n'.join(fold(x) for x in L) + '\r\n')
 print('ok', len(RELEASES), 'events')
