@@ -36,3 +36,22 @@ def fold(line):  # RFC 5545: linie max 75 bajtów, kontynuacja od spacji
     return '\r\n '.join(x.decode('utf-8') for x in out)
 open(__file__.replace('build_ics.py', 'updates.ics'), 'w', newline='').write('\r\n'.join(fold(x) for x in L) + '\r\n')
 print('ok', len(RELEASES), 'events')
+
+# ---- RSS dla Mailchimp (RSS-to-email): nowy projekt = nowy <item> na górze ----
+# (klucz projektu, data publikacji, tytuł, opis) - najnowszy pierwszy; dopisuj tu przy każdym nowym projekcie
+FEED = [('yt8', dt.datetime(2026, 11, 12, 15, 0), 'Stop searching 3D Warehouse: make your own models with AI',
+         'Can\'t find the right model? Generate your own 3D model with AI in VizMaker. Open the project in 3D and follow the tutorial.'),
+        ('live', dt.datetime(2026, 11, 5, 15, 0), 'Live Preview: 3D scene to realistic render', 'Turn any 3D scene into a realistic live preview.'),
+        ('yt4', dt.datetime(2026, 11, 4, 15, 0), 'Create your AI avatar and full ad campaign for free', 'AI avatar and a full ad campaign in VizMaker.'),
+        ('yt3', dt.datetime(2026, 11, 3, 15, 0), 'The fastest way to show clients your interior ideas', 'Show interior ideas to clients in minutes.'),
+        ('yt2', dt.datetime(2026, 11, 2, 15, 0), 'Realistic AI animation from a viewport', 'Realistic AI animation straight from your viewport.'),
+        ('yt1', dt.datetime(2026, 11, 1, 15, 0), 'Place your 3D model in Google Earth and turn it into real context visuals', 'Put your model in Google Earth and render real context.')]
+from email.utils import format_datetime
+from xml.sax.saxutils import escape
+items = ''.join('<item><title>%s</title><link>%s?p=%s&amp;utm_source=mailchimp&amp;utm_medium=email&amp;utm_campaign=library_rss</link>'
+                '<guid isPermaLink="false">vm-library-%s</guid><pubDate>%s</pubDate><description>%s</description></item>\n'
+                % (escape(t), URL, k, k, format_datetime(d.replace(tzinfo=dt.timezone.utc)), escape(desc)) for k, d, t, desc in FEED)
+rss = ('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>VizMaker AI Project Library</title>'
+       '<link>%s</link><description>New AI projects for architects and interior designers - every week.</description>\n%s</channel></rss>\n' % (URL, items))
+open(__file__.replace('build_ics.py', 'feed.xml'), 'w').write(rss)
+print('feed ok', len(FEED), 'items')
