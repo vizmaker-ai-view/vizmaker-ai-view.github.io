@@ -80,7 +80,18 @@
     return da === db ? a[1] - b[1] : (da < db ? 1 : -1);
   }).map(function (x) { return x[0]; });
   LESSONS.forEach(function (l) { if (l.added && (Date.now() - Date.parse(l.added)) < 7 * 864e5) l.isNew = true; });
-  function addedLabel(l) { if (!l.added) return ''; var d = new Date(l.added); return 'Added ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function addedTime(l) { if (!l.added) return ''; var d = l.added.slice(0, 10).split('-');
+    return '<time class="added" datetime="' + l.added.slice(0, 10) + '" itemprop="datePublished">Added ' + (+d[2]) + ' ' + MON[+d[1] - 1] + ' ' + d[0] + '</time>'; }
+  // SEO/GEO: lista projektów z datami publikacji jako JSON-LD (ItemList + CreativeWork)
+  (function () { try { var ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'VizMaker AI Library – projects',
+      itemListOrder: 'https://schema.org/ItemListOrderDescending',
+      itemListElement: LESSONS.map(function (l, i) { var it = { '@type': 'CreativeWork', name: l.title, description: l.desc,
+        url: location.origin + location.pathname + '?p=' + l.key };
+        if (l.added) it.datePublished = l.added.slice(0, 10);
+        if (l.yt) it.thumbnailUrl = 'https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg';
+        return { '@type': 'ListItem', position: i + 1, item: it }; }) };
+    var sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.text = JSON.stringify(ld); document.head.appendChild(sc); } catch (e) {} })();
   var SOON = ['Kitchen Japandi', 'Facade from Revit massing', 'Bathroom spa mood', 'Bedroom evening light', 'Video from a still render',
               'Office open space', 'Exterior at dusk', 'Moodboard to render', 'Before / after for social media', 'Sketch to render',
               'Retail interior', 'Landscape & garden', 'Product in interior', 'Restaurant ambience', 'Client variations in 10 min'];
@@ -165,8 +176,9 @@
     font-size: 10.5px; font-weight: 700; display: none; }
   .card.seen .done { display: block; }
   .body { padding: 14px 16px 16px; }
-  .meta { display: flex; gap: 8px; font-size: 11.5px; color: var(--mut); margin-bottom: 8px; }
-  .meta span { padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,.05); }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 8px; font-size: 11.5px; color: var(--mut); margin-bottom: 8px; }
+  .added { display: block; margin-top: 10px; font-size: 11.5px; color: var(--mut); letter-spacing: .02em; }
+  .meta span { white-space: nowrap; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,.05); }
   .card h3 { margin: 0 0 6px; font-size: 16px; line-height: 1.3; }
   .card p { margin: 0; color: var(--mut); font-size: 13px; line-height: 1.45; }
   .card.soon { cursor: default; opacity: .55; }
@@ -538,8 +550,8 @@ const track=(function(){
         (l.yt ? '<span class="tag-yt">▶ Video tutorial</span>' : '') +
         '<div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>' +
         (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span></div>' +
-        '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span>' + (l.added ? '<span>' + addedLabel(l) + '</span>' : '') + '</div>' +
-        '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p></div>';
+        '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span></div>' +
+        '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p>' + addedTime(l) + '</div>';
       c.onclick = function () { open(idx); };
       g.appendChild(c);
     });
