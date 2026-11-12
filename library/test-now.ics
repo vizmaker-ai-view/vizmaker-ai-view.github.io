@@ -3,15 +3,15 @@ VERSION:2.0
 PRODID:-//VizMaker//Library test//EN
 METHOD:PUBLISH
 BEGIN:VEVENT
-UID:library-test-20261112T155500Z@vizmaker.com
-DTSTAMP:20261112T154749Z
-DTSTART:20261112T155500Z
-DTEND:20261112T161000Z
-SUMMARY:🆕 TEST: New project - Stop searching 3D Warehouse
+UID:library-test-20261112T161400Z@vizmaker.com
+DTSTAMP:20261112T160400Z
+DTSTART:20261112T161400Z
+DTEND:20261112T162900Z
+SUMMARY:TEST VizMaker alert
 DESCRIPTION:Open: https://vizmaker-ai-view.github.io/library/?p=latest
 URL:https://vizmaker-ai-view.github.io/library/?p=latest
 BEGIN:VALARM
-TRIGGER:PT0M
+TRIGGER:-PT1M
 ACTION:DISPLAY
 DESCRIPTION:New project in the VizMaker Library
 END:VALARM
