@@ -450,7 +450,7 @@ const track=(function(){
     var isPhone=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
     // telefon: aplikacja Google Calendar nie umie subskrybować z URL -> wydarzenie cykliczne (pon 18:00) z linkiem do biblioteki
     var md=new Date();md.setDate(md.getDate()+((8-md.getDay())%7||7));md.setHours(18,0,0,0);var me=new Date(md.getTime()+30*60000);
-    var LW=links('\uD83C\uDD95 New AI project in the VizMaker Library','A new project with a video tutorial and prompts is live: '+url,md,me,'FREQ=WEEKLY;BYDAY=MO');
+    var LW=links('\uD83C\uDD95 New AI project in the VizMaker Library','A new project with a video tutorial and prompts is live: '+url+'?p=latest',md,me,'FREQ=WEEKLY;BYDAY=MO');
     // Google (PC i telefon): wydarzenie cykliczne we WŁASNYM kalendarzu -> działają domyślne powiadomienia (subskrypcje w Google ich nie mają)
     var isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
     // iPhone: Safari zwykle nie jest zalogowane do Google (link przekierowuje na Workspace) -> plik .ics z wydarzeniem cyklicznym
@@ -555,11 +555,14 @@ const track=(function(){
   $('l-next').onclick = function () { if (cur < LESSONS.length - 1) open(cur + 1); };
 
   // ?p=klucz -> "projekt, z którego przyszedłeś" na górze (link z maila: ?p=*|PROJ|*)
-  var from = LESSONS.findIndex(function (l) { return l.key === qs.get('p'); });
+  var pk = qs.get('p'), latest = pk === 'latest' || pk === 'new';
+  // ?p=latest -> najnowszy projekt (pierwszy na liście LESSONS) i od razu go otwiera
+  var from = latest ? 0 : LESSONS.findIndex(function (l) { return l.key === pk; });
   if (from < 0) { var next = LESSONS.findIndex(function (l) { return !seen[l.key]; }); if (next > 0) { from = next; $('cont-l').textContent = 'Continue where you left off'; } }
   if (from >= 0) { $('cont').classList.add('on'); $('cont-t').textContent = LESSONS[from].title || '…'; $('cont-b').onclick = function () { open(from); }; }
 
   render(); progress();
+  if (latest && LESSONS.length) setTimeout(function () { open(0); }, 300);
   document.addEventListener('click', function (ev) {
     var a = ev.target.closest('#top-cta,#promo,#l-try'); if (a) track.ev('signup_click',{name:'InitiateCheckout',std:true,oai:'sign_up'},{place:a.id, lesson:a.id==='l-try'?LESSONS[cur].key:''});
     var o = ev.target.closest('#l-3d'); if (o) track.ev('open_3d',{name:'Open3D'},{lesson:LESSONS[cur].key});

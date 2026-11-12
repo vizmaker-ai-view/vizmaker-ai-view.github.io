@@ -5,7 +5,7 @@ URL = 'https://vizmaker-ai-view.github.io/library/'
 # (data, godzina UTC, tytuł, opis) - 17:00 UTC = 18:00 Warszawa (zima)
 start = dt.date(2026, 11, 16)  # poniedziałek
 RELEASES = [(start + dt.timedelta(weeks=i), 17, 'New AI project in the VizMaker Library',
-             'A new project with a video tutorial and prompts is live. Open the library: ' + URL) for i in range(12)]
+             'A new project with a video tutorial and prompts is live. Open it: ' + URL + '?p=latest') for i in range(12)]
 # Konkretne premiery projektów: (data, godzina UTC, tytuł, opis) - dopisuj tu nowe projekty
 RELEASES = [(dt.date(2026, 11, 12), 15, 'New project: Stop searching 3D Warehouse - make your own models with AI',
              'Generate your own 3D model with AI in VizMaker. Open the project: ' + URL + '?p=yt8')] + RELEASES
