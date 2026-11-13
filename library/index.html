@@ -39,6 +39,11 @@
   // Każda lekcja: key (= ?p= w viewerze), tytuł, program, kategoria, czas, opis, kroki, prompty.
   // TODO: tytuły / opisy / prompty do podmiany na prawdziwe (teraz przykładowe).
   var LESSONS = [
+    { key: 'p6', added: '2026-11-13T15:25', token: 'aGW3y3sA7BTGq6MFJCukEPG8q-ouXsLA', ytSoon: true, soft: 'VizMaker', cat: 'Exterior', min: 6,
+      title: 'Cinematic exterior: AI architecture workflow',
+      desc: 'Turn an architectural exterior into cinematic AI visuals. Open the full project in 3D, explore the workflow node by node and repeat it on your own building.',
+      steps: ['Open the project and explore the nodes', 'See how each cinematic shot is built', 'Repeat the workflow on your own exterior'],
+      prompts: [] },
     { key: 'yt9', added: '2026-11-12T16:57', token: 'Ay1FlbeTIYn7xKXcFACCi5D3oRiNut8Q', yt: 'ADKQaBrFA1w', soft: 'VizMaker', cat: 'AI video', min: 6,
       title: 'Gemini Omni vs Seedance 2.0: battle of the AI video titans',
       desc: 'We put two top AI video models head to head on the same architecture scene. See which one wins, then open the project and test both yourself in VizMaker.',
@@ -607,6 +612,8 @@ const track=(function(){
     $('l-pr-wrap').style.display = l.prompts.length ? '' : 'none';
     $('l-yt').innerHTML = l.yt
       ? '<h4>Video tutorial</h4><div class="ytbox"><iframe allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen src="https://www.youtube-nocookie.com/embed/' + l.yt + '?rel=0&start=' + (l.yt_t || 0) + '"></iframe></div>'
+      : l.ytSoon
+      ? '<h4>Video tutorial coming soon</h4><a class="ytlink" target="_blank" rel="noopener" href="' + YT_CHANNEL + '">▶ Meanwhile, watch our tutorials on YouTube →</a>'
       : '<h4>Learn more</h4><a class="ytlink" target="_blank" rel="noopener" href="' + YT_CHANNEL + '">▶ More tutorials on our YouTube →</a>';
     $('l-try').href = trialUrl(l.key);
     $('l-prev').disabled = idx === 0; $('l-next').disabled = idx === LESSONS.length - 1;
