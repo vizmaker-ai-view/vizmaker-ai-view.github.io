@@ -627,6 +627,8 @@
   qs.forEach(function (v, k) {
     if (/^(utm_|gclid|gbraid|wbraid|fbclid|ttclid|msclkid|oppref|olref)/.test(k)) src.searchParams.set(k, v);
   });
+  // intro (zoom z noda) tylko dla projektów z ustawionym INTRO.focus - inne na telefonie od razu normalny viewer
+  if (!INTRO.focus[projectKey]) INTRO.on = false;
   if (INTRO.on && isMobile) window._mainSrc = src.toString();   // telefon: normalny viewer ładujemy po dużej ramce (nie naraz)
   else document.getElementById('viewer').src = src.toString();
 </script>
@@ -649,7 +651,7 @@
     var main = document.getElementById('viewer'), fg = document.getElementById('intro-fg');
     var pctEl = document.getElementById('intro-pct'), stepEl = document.getElementById('intro-step'), tEl = document.getElementById('intro-t');
     var C = 2 * Math.PI * 36; fg.style.strokeDasharray = C; fg.style.strokeDashoffset = C;
-    var fp = ((INTRO.focus[projectKey] || INTRO.focus['default'])[device]), K = INTRO.hiresK;
+    var fp = INTRO.focus[projectKey][device], K = INTRO.hiresK;
     var W = window.innerWidth, H = window.innerHeight;
     // druga ramka: K razy większa -> viewer "dopasowuje" projekt do dużej powierzchni = wysoki zoom = ostre obrazki
     var hi = document.createElement('iframe');
