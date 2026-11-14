@@ -1,0 +1,22 @@
+name: Announce new library project
+on:
+  push:
+    branches: [main]
+    paths: ['library/feed.xml']
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Test: ogłoś najnowszy projekt teraz'
+        type: boolean
+        default: true
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - run: python3 .github/scripts/announce.py
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          BEFORE: ${{ github.event.before }}
+          TEST: ${{ inputs.test }}
