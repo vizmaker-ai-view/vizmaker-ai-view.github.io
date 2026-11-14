@@ -136,6 +136,10 @@
   .top img { height: 22px; }
   .srch{position:relative;display:flex;align-items:center}
   #grid .card{transition:opacity .25s}
+  .snone{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 14px;padding:16px 18px;border-radius:14px;border:1px solid rgba(255,201,77,.35);background:linear-gradient(180deg,rgba(255,201,77,.08),rgba(255,201,77,.02))}
+  .snone .sn-ic{font-size:26px} .snone .sn-t{flex:1;min-width:220px;display:flex;flex-direction:column;gap:3px}
+  .snone b{color:var(--h);font-size:16px} .snone span{color:var(--mut);font-size:13.5px} .snone em{color:var(--teal);font-style:normal;font-weight:700}
+  .smore{margin:4px 0 12px;color:var(--h);font-weight:700;font-size:15px}
   .srch input{width:220px;height:36px;padding:0 12px 0 34px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--h);font:500 13.5px Inter,sans-serif;outline:none}
   .srch input:focus{border-color:rgba(0,228,240,.6);background:rgba(0,228,240,.06)}
   .srch .sb{position:absolute;left:4px;width:28px;height:28px;border:0;background:none;font-size:14px;cursor:default;opacity:.8}
@@ -617,8 +621,13 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="cont" id="cont"><div><small id="cont-l">The project you came from</small><b id="cont-t"></b></div><button class="btn" id="cont-b">Open lesson →</button></div>
 
   <div class="filters" id="lessons"></div>
+  <div id="srch-none" class="snone" style="display:none">
+    <div class="sn-ic">🛠️</div>
+    <div class="sn-t"><b>Sorry, we're working on it!</b><span>We don't have a project about “<em id="srch-q"></em>” yet. Tell us and we'll prioritise it.</span></div>
+    <a class="btn" id="srch-mail" href="#">✉️ Suggest this topic</a>
+  </div>
+  <div id="srch-more" class="smore" style="display:none">Meanwhile, start with one of these 👇</div>
   <div class="grid" id="grid"></div>
-  <div id="srch-none" style="display:none;text-align:center;color:var(--mut);padding:30px 0">No projects found. Try another word.</div>
 </main>
 <section id="plan" style="padding:20px 0 56px">
   <div class="wrap">
@@ -897,7 +906,13 @@ const track=(function(){
     [].forEach.call(cards, function(c){ var k = (c.querySelector('h3') || {}).dataset; var l = k && LESSONS.filter(function(x){ return x.key === k.k; })[0];
       var hay = (c.textContent + ' ' + (l ? [l.title, l.desc, l.soft, l.cat].concat(l.steps || []).join(' ') : '')).toLowerCase();
       var ok = !q || hay.indexOf(q) >= 0; c.style.display = ok ? '' : 'none'; if (ok) n++; });
-    var e = $('srch-none'); if (e) e.style.display = (q && !n) ? 'block' : 'none'; }
+    var none = !!(q && !n);
+    // brak wyników: przeprosiny + prośba o temat mailem, a pod spodem zwykła lista projektów (żeby od razu coś zacząć)
+    if (none) [].forEach.call(cards, function(c){ c.style.display = ''; });
+    $('srch-none').style.display = none ? 'flex' : 'none'; $('srch-more').style.display = none ? 'block' : 'none';
+    if (none) { $('srch-q').textContent = sq;
+      $('srch-mail').href = 'mailto:edu@vizmaker.com?subject=' + encodeURIComponent('Library request: ' + sq) + '&body=' + encodeURIComponent("Hi VizMaker team,\n\nI'd love a project / tutorial about: " + sq + "\n\nThanks!");
+      $('srch-mail').onclick = function(){ track.ev('search_request',{name:'Contact',std:true},{q:sq.slice(0,60)}); }; } }
   (function(){ var i = $('srch-i'), w = $('srch'), t;
     // wyniki dopiero gdy ktoś przestanie pisać (0,8 s) albo od razu po Enter; min. 3 znaki; przewijanie tylko raz na wyszukiwanie
     var scrolled = false, last = '';
