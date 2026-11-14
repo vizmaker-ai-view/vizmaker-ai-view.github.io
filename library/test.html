@@ -442,7 +442,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   .upnext em{font-style:normal;color:var(--teal);font-size:12.5px;font-weight:700}
   html[dir=rtl] .upnext{text-align:right}
   .card.hl{box-shadow:0 0 0 2px var(--teal),0 0 30px rgba(0,228,240,.35);transition:box-shadow .3s}
-  .lbar,.nxbar{display:none}
+  .lbar,.nxbar,.todet{display:none}
   @media (max-width:860px){
     .side .x{display:none}
     .lbar{display:flex;align-items:center;gap:10px;position:fixed;top:0;left:0;right:0;z-index:61;height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;background:rgba(1,7,19,.96);border-bottom:1px solid var(--line)}
@@ -450,7 +450,8 @@ footer.vmf{background:var(--bg);margin-top:20px}
     .lbadge{margin-left:auto;color:var(--mut);font-size:12px;font-weight:600}
     html[dir=rtl] .lbadge{margin-left:0;margin-right:auto}
     .lbox{padding-top:calc(52px + env(safe-area-inset-top));padding-bottom:64px}
-    .lbox iframe#l-frame{height:46vh;height:46dvh;margin-top:0}
+    .lbox iframe#l-frame{height:75vh;height:75dvh;margin-top:0}
+    .todet{display:flex;position:relative;z-index:2;margin:-18px auto 0;width:max-content;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;border:1px solid rgba(0,228,240,.5);background:rgba(1,7,19,.95);color:var(--teal);font:700 13px Inter,sans-serif;cursor:pointer}
     .nxbar{display:flex;align-items:center;gap:8px;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:61;height:48px;padding:0 14px;border-radius:14px;border:0;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:700 14px Inter,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer}
     .nxbar .nk{flex:0 0 auto;font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.75}
     .nxbar .nt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
@@ -579,6 +580,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <button type="button" class="nxbar" id="l-nxbar"><span class="nk">Up next</span><span class="nt" id="l-nxbar-t"></span><span class="ng">→</span></button>
   <div class="lbox">
     <iframe id="l-frame" allow="fullscreen; clipboard-write" allowfullscreen title="3D project"></iframe>
+    <button type="button" class="todet" id="l-todet">▼ Details &amp; steps</button>
     <aside class="side">
       <div class="hd"><span class="badge" id="l-badge"></span><button class="x" id="l-x" aria-label="Close">&times;</button></div>
       <h2 id="l-title"></h2>
@@ -841,6 +843,7 @@ const track=(function(){
   function close() { if (history.state && history.state.vmL) history.back(); else doClose(); }
   window.addEventListener('popstate', function () { if ($('lesson').classList.contains('open') && !(history.state && history.state.vmL)) doClose(); });
   $('l-back').onclick = close;
+  $('l-todet').onclick = function(){ var sd = $('lesson').querySelector('.side'); $('lesson').querySelector('.lbox').scrollTo({top: sd.offsetTop - 56, behavior: 'smooth'}); };
   $('l-x').onclick = close;
   $('lesson').onclick = function (e) { if (e.target === $('lesson')) close(); };
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
