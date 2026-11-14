@@ -752,7 +752,7 @@ const track=(function(){
       var where = box.getAttribute('data-signup');
       var proj = where === 'lesson' && LESSONS[cur] ? LESSONS[cur].key : (qs.get('p') && qs.get('p') !== 'latest' ? qs.get('p') : 'library');
       var body = new URLSearchParams({ email: email, phone: f.consent_sms.checked ? phone : '', consent_sms: f.consent_sms.checked ? 'true' : 'false',
-        proj: proj, src: (qs.get('utm_source') || 'www') + (qs.get('utm_campaign') ? ':' + qs.get('utm_campaign') : ''), place: where, website: f.website.value || '' });
+        proj: proj, lang: window.VM_LANG || 'en', src: (qs.get('utm_source') || 'www') + (qs.get('utm_campaign') ? ':' + qs.get('utm_campaign') : ''), place: where, website: f.website.value || '' });
       f.querySelector('button').disabled = true; f.querySelector('button').textContent = 'Sending…';
       fetch(SIGNUP_HOOK, { method: 'POST', mode: 'no-cors', body: body }).catch(function () {}).then(function () {
         signed = true; try { localStorage.setItem('vm_lib_signed', '1'); } catch (_) {}
@@ -799,5 +799,6 @@ const track=(function(){
   setInterval(function(){ if(window.VM_PUSH_ON&&window.VM_PUSH_ON()) b.classList.add('on'); }, 2000);
 })();
 </script>
+<script src="i18n.js"></script>
 </body>
 </html>
