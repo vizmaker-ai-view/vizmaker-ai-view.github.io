@@ -346,33 +346,75 @@ footer.vmf{background:var(--bg);margin-top:20px}
       appId: 'f731215b-2bee-485d-9885-819c21484aeb',
       serviceWorkerPath: '/OneSignalSDKWorker.js', serviceWorkerParam: { scope: '/' },
       notifyButton: { enable: false },
-      promptOptions: { slidedown: { prompts: [{ type: 'push', autoPrompt: true,
+      promptOptions: { slidedown: { prompts: [{ type: 'push', autoPrompt: false,
         text: { actionMessage: "🔔 Get a notification when a new FREE project drops. No email needed.", acceptButton: 'Notify me', cancelButton: 'Later' },
         delay: { pageViews: 1, timeDelay: 20 } }] } }
     });
     OneSignal.User.addTag('library', '1');
     function sync(){ var on = OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn;
-      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? '🔔 On' : '🔔 Push'; b.disabled = !!on; });
+      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? '✓ Notifications on' : (b.dataset.lbl || '🔔 Push'); b.disabled = !!on; });
       if (!OneSignal.Notifications.isPushSupported()) document.querySelectorAll('[data-push]').forEach(function(b){ b.hidden = true; }); }
+    window.VM_PUSH_ON = function(){ return OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn; };
+    window.VM_PUSH_OK = OneSignal.Notifications.isPushSupported();
     sync();
     OneSignal.User.PushSubscription.addEventListener('change', function(e){ sync();
+      if (e.current.optedIn) { try{localStorage.setItem('vm_upd','on');}catch(_){} var u=document.getElementById('upd'); if(u) setTimeout(function(){u.classList.remove('show');},1200); }
       if (e.current.optedIn && typeof track!=='undefined') track.ev('push_subscribe', {name:'Subscribe'}, {channel:'webpush'}); });
-    document.addEventListener('click', function(ev){ if (ev.target.closest('[data-push]')) OneSignal.Slidedown.promptPush({ force: true }); });
+    document.addEventListener('click', function(ev){ if (ev.target.closest('[data-push]')) OneSignal.Notifications.requestPermission(); });
   });
 </script>
+<style>
+  /* header: updates button */
+  .hb-upd{position:relative;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(0,228,240,.45);background:rgba(0,228,240,.06);color:var(--teal);font:700 13px Inter,sans-serif;cursor:pointer;transition:background .2s}
+  .hb-upd:hover{background:rgba(0,228,240,.14)}
+  .hb-upd .dot{position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(0,228,240,.7);animation:pulse 1.8s infinite}
+  .hb-upd.on .dot{display:none}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,228,240,.6)}70%{box-shadow:0 0 0 8px rgba(0,228,240,0)}100%{box-shadow:0 0 0 0 rgba(0,228,240,0)}}
+  @media (max-width:640px){.hb-upd .t{display:none}.hb-upd{padding:0 11px}}
+  /* updates popup */
+  #upd{position:fixed;right:20px;bottom:20px;z-index:60;width:380px;max-width:calc(100vw - 24px);background:linear-gradient(180deg,#06202b,#030d16);border:1px solid rgba(0,228,240,.35);border-radius:18px;
+       box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 0 1px rgba(0,228,240,.05),0 0 40px rgba(0,228,240,.12);padding:20px 20px 16px;color:var(--txt);
+       transform:translateY(24px) scale(.98);opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.2,.9,.3,1.2)}
+  #upd.show{transform:none;opacity:1;pointer-events:auto}
+  #upd .x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--mut);font-size:22px;cursor:pointer;line-height:1}
+  #upd .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.3);margin-bottom:12px;animation:ring 2.6s ease-in-out 1s infinite}
+  @keyframes ring{0%,100%{transform:rotate(0)}5%{transform:rotate(14deg)}10%{transform:rotate(-12deg)}15%{transform:rotate(8deg)}20%{transform:rotate(0)}}
+  #upd h3{margin:0 0 4px;font-size:18px;color:var(--h);letter-spacing:-.2px}
+  #upd h3 span{background:linear-gradient(90deg,var(--teal),var(--teal-l));-webkit-background-clip:text;background-clip:text;color:transparent}
+  #upd p{margin:0 0 14px;font-size:13.5px;color:var(--mut);line-height:1.45}
+  #upd .opt{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.02);margin-bottom:8px}
+  #upd .opt .oi{font-size:20px;width:28px;text-align:center}
+  #upd .opt .ot{flex:1;font-size:13px;color:var(--mut)} #upd .opt .ot b{display:block;color:var(--h);font-size:14px;margin-bottom:1px}
+  #upd .go{padding:9px 14px;border-radius:999px;border:0;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:800 13px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+  #upd .go[disabled]{background:rgba(0,228,240,.15);color:var(--teal);cursor:default}
+  #upd .cals{display:flex;gap:6px;flex-wrap:wrap}
+  #upd .later{display:block;margin:8px auto 0;background:none;border:0;color:var(--mut);font:500 12.5px Inter,sans-serif;cursor:pointer;text-decoration:underline}
+  @media (max-width:640px){#upd{left:12px;right:12px;bottom:12px;width:auto}}
+</style>
 </head>
 <body>
+<div id="upd" role="dialog" aria-label="Get updates">
+  <button class="x" type="button" data-upd-x aria-label="Close">&times;</button>
+  <div class="ic">🔔</div>
+  <h3>Never miss a new <span>FREE project</span></h3>
+  <p>New AI projects for architects &amp; interior designers every week. Get them the moment they drop.</p>
+  <div class="opt" id="upd-push"><div class="oi">🔔</div><div class="ot"><b>Instant notifications</b>On this device · no email needed</div><button class="go" type="button" data-push data-lbl="Turn on">Turn on</button></div>
+  <div class="opt" data-sub><div class="oi">📅</div><div class="ot"><b>Add to calendar</b><span class="cals"><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a></span></div></div>
+  <button class="later" type="button" data-upd-x>Maybe later</button>
+</div>
+
 <div class="nbar" id="nbar" hidden>
   <span class="nb-ic">🔔</span><span class="nb-t"><b>New projects every week.</b> Subscribe to library updates so you don't miss them.</span>
   <span data-sub style="display:contents"><a class="nb-go" data-push role="button">🔔 Push</a><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a></span>
   <button class="nb-x" type="button" id="nbar-x" aria-label="Close">&times;</button>
 </div>
-<a class="promo" id="promo" target="_blank" rel="noopener">
+<a class="promo" id="promo" hidden style="display:none" target="_blank" rel="noopener">
   <span class="pe">🍌</span><b>Nano Banana 2 · Unlimited</b><span class="ps">14 days free · no limits while you learn</span><span class="pg">Create free account →</span>
 </a>
 <header class="top"><div class="wrap">
   <img src="https://www.vizmaker.com/vizmaker-logo-line-white.png" alt="VizMaker">
   <div class="pr"><span id="pr-t">0 of 20 projects explored</span><div class="bar"><i id="pr-bar"></i></div></div>
+  <button class="hb-upd" id="upd-open" type="button"><span class="dot"></span>🔔 <span class="t">Get updates</span></button>
   <a class="btn" id="top-cta" target="_blank" rel="noopener">Create free account</a>
 </div></header>
 
@@ -481,7 +523,7 @@ const TRACK={
   OAI_PIXEL_ID:'6msDXFx25TWabFByppdNTg' // OpenAI Ads „VizMaker Mini Course”
 };
 // Pasek "aktualizacje biblioteki w kalendarzu" - na razie WYŁĄCZONY (true = włącz)
-const UPDATES_BAR=true;
+const UPDATES_BAR=false;
 const track=(function(){
   let on=false;const q=[];
   function load(){
@@ -519,7 +561,7 @@ const track=(function(){
   var hues = [[178,72],[200,70],[160,60],[190,80],[170,65],[210,60]];
   function trialUrl(k) { return TRIAL + '&utm_source=library&utm_medium=email&utm_content=' + encodeURIComponent(k || 'library'); }
   $('top-cta').href = trialUrl('top');
-  if (window.matchMedia('(max-width: 640px)').matches) $('top-cta').textContent = 'Create account';
+  if (window.matchMedia('(max-width: 640px)').matches) $('top-cta').textContent = 'Start free';
   $('promo').href = trialUrl('promo_bar');
   // ===== kalendarz (1:1 jak minikurs): jutro 19:00, 30 min =====
   (function(){
@@ -715,6 +757,19 @@ const track=(function(){
         if ($('cont').classList.contains('on') && LESSONS[from] === l) $('cont-t').textContent = l.title;
       }).catch(function () { l.title = 'VizMaker project'; });
   });
+})();
+</script>
+<script>
+(function(){
+  var u=document.getElementById('upd'),b=document.getElementById('upd-open');
+  function st(){try{return localStorage.getItem('vm_upd');}catch(_){return null;}}
+  function open(){ if(window.VM_PUSH_OK===false) document.getElementById('upd-push').style.display='none'; u.classList.add('show'); }
+  function close(){ u.classList.remove('show'); if(st()!=='on'){try{localStorage.setItem('vm_upd',String(Date.now()));}catch(_){}} }
+  b.onclick=function(){ u.classList.contains('show')?close():open(); };
+  u.addEventListener('click',function(e){ if(e.target.closest('[data-upd-x]')) close(); });
+  var s=st(), WEEK=7*864e5;
+  if(s!=='on' && !(s && Date.now()-(+s)<WEEK)) setTimeout(function(){ if(!(window.VM_PUSH_ON&&window.VM_PUSH_ON())) open(); }, 8000);
+  setInterval(function(){ if(window.VM_PUSH_ON&&window.VM_PUSH_ON()) b.classList.add('on'); }, 2000);
 })();
 </script>
 </body>
