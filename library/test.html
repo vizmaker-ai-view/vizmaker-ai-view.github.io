@@ -175,7 +175,11 @@
   .cont small { display: block; color: var(--teal); font-weight: 700; font-size: 11px; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 3px; }
   .cont .btn { margin-left: auto; flex: none; }
   /* filters */
-  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 26px 0 18px; }
+  .filters { display: flex; flex-wrap: nowrap; gap: 8px; margin: 26px 0 18px; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; padding: 2px 0;
+    -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters .chip { flex: 0 0 auto; white-space: nowrap; }
+  html[dir=rtl] .filters { -webkit-mask-image: linear-gradient(270deg, #000 88%, transparent); mask-image: linear-gradient(270deg, #000 88%, transparent); }
   .chip { height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--mut);
     font: 600 13px Inter, sans-serif; cursor: pointer; }
   .chip.on { border-color: var(--teal); color: var(--teal); background: rgba(0,228,240,.08); }
@@ -464,9 +468,11 @@ footer.vmf{background:var(--bg);margin-top:20px}
   .btn.big{padding:16px 26px;font-size:16px;box-shadow:0 10px 30px rgba(0,228,240,.3)}
   .hero-a .acts{display:flex;flex-wrap:wrap;gap:10px}
   .proof{margin-top:18px;color:var(--mut);font-size:13.5px} .proof .stars{color:#ffc94d;letter-spacing:1px;margin-right:6px}
-  .wall{position:relative;height:500px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;overflow:hidden;transform:perspective(1200px) rotateY(-8deg) rotateX(4deg);
+  .wall{position:relative;height:500px;overflow:hidden;transform:perspective(1200px) rotateY(-8deg) rotateX(4deg);
     -webkit-mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent)}
-  .wc{overflow:hidden} .wi{display:flex;flex-direction:column;gap:12px;animation:wup linear infinite} .wc:nth-child(2) .wi{animation-name:wdown}
+  .wz{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;transform:scale(2);transform-origin:33.333% 50%;transition:transform .9s cubic-bezier(.65,0,.35,1)}
+  .wz.out{transform:scale(1)}
+  .wc{overflow:hidden} .wi{display:flex;flex-direction:column;gap:12px;animation:wup linear infinite} .wc:nth-child(even) .wi{animation-name:wdown}
   @keyframes wup{from{transform:translateY(0)}to{transform:translateY(-50%)}} @keyframes wdown{from{transform:translateY(-50%)}to{transform:translateY(0)}}
   .wt{aspect-ratio:16/10;border-radius:12px;overflow:hidden;border:1px solid rgba(0,228,240,.18);box-shadow:0 10px 30px rgba(0,0,0,.45);background:#0a1013}
   .wt img{width:100%;height:100%;object-fit:cover;display:block}
@@ -482,7 +488,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   html[dir=rtl] .wall{transform:perspective(1200px) rotateY(8deg) rotateX(4deg)}
   @media (max-width:900px){
     .hero-a{grid-template-columns:1fr;gap:18px;padding-top:22px}
-    .wall{order:-1;height:210px;transform:none;grid-template-columns:repeat(3,1fr);gap:8px}
+    .wall{order:-1;height:210px;transform:none} .wz{gap:8px}
     .wi{gap:8px} .wt{border-radius:9px}
     .kpis{padding:7px 0} .kt b{font-size:15px} .kt span{font-size:11.5px} .kt>div{padding:0 16px}
   }
@@ -532,7 +538,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
       </div>
       <div class="proof"><span class="stars">★★★★★</span> Used by 500,000+ creatives in 155 countries</div>
     </div>
-    <div class="wall" aria-hidden="true"><div class="wc"></div><div class="wc"></div><div class="wc"></div></div>
+    <div class="wall" aria-hidden="true"><div class="wz"><div class="wc"></div><div class="wc"></div><div class="wc"></div><div class="wc"></div><div class="wc"></div><div class="wc"></div></div></div>
   </section>
   <div class="kpis" id="kpis" aria-hidden="true"><div class="kt">
     <div><b data-n="500000" data-plus>0</b><span>creatives use VizMaker</span></div>
@@ -549,10 +555,16 @@ footer.vmf{background:var(--bg);margin-top:20px}
     var imgs = LESSONS.filter(function(l){ return l.yt; }).map(function(l){ return 'https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg'; });
     var cols = document.querySelectorAll('.wall .wc');
     [].forEach.call(cols, function(c, ci){
-      var list = imgs.slice(ci).concat(imgs.slice(0, ci)); if (ci === 1) list.reverse();
+      var off = (ci * 3) % Math.max(1, imgs.length), list = imgs.slice(off).concat(imgs.slice(0, off)); if (ci % 2) list.reverse();
       var html = list.map(function(u){ return '<div class="wt"><img loading="lazy" alt="" src="' + u + '"></div>'; }).join('');
-      c.innerHTML = '<div class="wi" style="animation-duration:' + (38 + ci * 9) + 's">' + html + html + '</div>';
+      c.innerHTML = '<div class="wi" style="animation-duration:' + (38 + (ci % 3) * 9) + 's">' + html + html + '</div>';
     });
+    // start: szybki zoom out (3 kolumny -> cała ściana ~30+ okładek) i z powrotem, żeby pokazać skalę
+    var wz = document.querySelector('.wall .wz');
+    if (wz && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+      setTimeout(function(){ wz.classList.add('out'); }, 700);
+      setTimeout(function(){ wz.classList.remove('out'); }, 700 + 900 + 1500);
+    }
     // liczniki: prawdziwe dane z biblioteki, animacja od 0 gdy pasek jest widoczny
     var V = { projects: LESSONS.length, tutorials: LESSONS.filter(function(l){ return l.yt; }).length, pdfs: LESSONS.length,
       prompts: LESSONS.reduce(function(a, l){ return a + (l.prompts ? l.prompts.length : 0); }, 0),
@@ -780,9 +792,14 @@ const track=(function(){
   cats.push('Coming soon');
   cats.forEach(function (c) {
     var b = document.createElement('button'); b.className = 'chip' + (c === 'All' ? ' on' : ''); b.textContent = c;
-    b.onclick = function () { filter = c; [].forEach.call(document.querySelectorAll('.chip'), function (x) { x.classList.toggle('on', x === b); }); render(); };
+    b.onclick = function () { if (window.__fdrag) return; b.scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'}); filter = c; [].forEach.call(document.querySelectorAll('.chip'), function (x) { x.classList.toggle('on', x === b); }); render(); };
     $('lessons').appendChild(b);
   });
+  (function(){ var f = $('lessons'), down = false, sx = 0, sl = 0, moved = 0;
+    f.addEventListener('mousedown', function(e){ down = true; moved = 0; sx = e.pageX; sl = f.scrollLeft; });
+    window.addEventListener('mousemove', function(e){ if (!down) return; var d = e.pageX - sx; moved = Math.max(moved, Math.abs(d)); f.scrollLeft = sl - d; });
+    window.addEventListener('mouseup', function(){ if (!down) return; down = false; window.__fdrag = moved > 6; setTimeout(function(){ window.__fdrag = false; }, 0); });
+  })();
   function thumb(i) {
     var h = hues[i % hues.length];
     return 'radial-gradient(circle at 25% 30%, hsla(' + h[0] + ',' + h[1] + '%,55%,.45), transparent 55%),' +
