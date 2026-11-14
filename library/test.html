@@ -413,6 +413,21 @@ footer.vmf{background:var(--bg);margin-top:20px}
   #upd .later{display:block;margin:8px auto 0;background:none;border:0;color:var(--mut);font:500 12.5px Inter,sans-serif;cursor:pointer;text-decoration:underline}
   @media (max-width:640px){#upd{left:12px;right:12px;bottom:12px;width:auto}}
 </style>
+<style>
+  .card.locked .thumb .g,.card.locked .thumb img.yt{filter:blur(3px) brightness(.55)}
+  .card .lk{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:8px 14px;border-radius:999px;background:rgba(3,13,22,.85);border:1px solid rgba(0,228,240,.5);color:var(--teal);font:700 13px Inter,sans-serif;white-space:nowrap;z-index:3}
+  .card.locked .lk{display:block} .card.locked .play{display:none}
+  #gate{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(0,6,12,.72);backdrop-filter:blur(6px);padding:16px}
+  #gate.open{display:flex}
+  #gate .gbox{position:relative;width:460px;max-width:100%;max-height:92vh;overflow:auto;background:linear-gradient(180deg,#06202b,#030d16);border:1px solid rgba(0,228,240,.4);border-radius:20px;padding:26px 24px 18px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 50px rgba(0,228,240,.15);animation:gin .35s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes gin{from{transform:translateY(20px) scale(.97);opacity:0}}
+  #gate .x{position:absolute;top:10px;right:14px;background:none;border:0;color:var(--mut);font-size:24px;cursor:pointer}
+  #gate .gic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.3);margin-bottom:12px}
+  #gate h3{margin:0 0 6px;font-size:22px;color:var(--h)} #gate p{margin:0 0 12px;color:var(--mut);font-size:14px;line-height:1.5}
+  #gate .gl{list-style:none;padding:0;margin:0 0 6px;font-size:13.5px;color:var(--txt)} #gate .gl li{margin:4px 0}
+  #gate .sgn{margin:12px 0 6px} #gate .gfoot{text-align:center;font-size:11.5px;color:var(--mut)}
+  html[dir=rtl] #gate .x{right:auto;left:14px}
+</style>
 </head>
 <body>
 <div id="upd" role="dialog" aria-label="Get updates">
@@ -519,6 +534,17 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div><button type="button" class="btn-ghost" data-consent="0">Essential only</button><button type="button" class="btn" data-consent="1">Accept</button></div>
 </div>
 
+<div id="gate" role="dialog" aria-modal="true">
+  <div class="gbox">
+    <button class="x" id="gate-x" type="button" aria-label="Close">&times;</button>
+    <div class="gic">🔓</div>
+    <h3>Unlock all 20 projects — free</h3>
+    <p>You've explored 3 free projects. Enter your email to unlock the whole library and get every new project.</p>
+    <ul class="gl"><li>✓ All projects in 3D + video tutorials</li><li>✓ Copy-ready prompts</li><li>✓ A new project every week</li></ul>
+    <div class="sgn" data-signup="gate"></div>
+    <div class="gfoot">No spam. Unsubscribe anytime.</div>
+  </div>
+</div>
 <div id="lesson" role="dialog" aria-modal="true">
   <div class="lbox">
     <iframe id="l-frame" allow="fullscreen; clipboard-write" allowfullscreen title="3D project"></iframe>
@@ -657,17 +683,28 @@ const track=(function(){
            'radial-gradient(circle at 80% 75%, hsla(' + (h[0] + 30) + ',' + h[1] + '%,45%,.35), transparent 55%),' +
            'linear-gradient(135deg,#0f1a1e,#0a1013)';
   }
+  // ---- soft gate: 3 dowolne projekty za darmo, kolejne po zapisie mailem ----
+  var FREE = 3, pendingGate = -1;
+  (function(){ var src=(qs.get('utm_source')||'').toLowerCase(), med=(qs.get('utm_medium')||'').toLowerCase();
+    if (qs.get('unlock')==='1' || med==='email' || /mailchimp|email|newsletter/.test(src)) { try{localStorage.setItem('vm_lib_signed','1');}catch(_){} } })();
+  function isSigned(){ try{ return localStorage.getItem('vm_lib_signed')==='1'; }catch(_){ return false; } }
+  function seenCount(){ return LESSONS.filter(function(l){ return seen[l.key]; }).length; }
+  function unlocked(l){ return isSigned() || seen[l.key] || seenCount() < FREE; }
+  function gate(idx){ pendingGate = idx; $('gate').classList.add('open'); document.body.style.overflow='hidden';
+    track.ev('gate_view',{name:'GateView'},{lesson:LESSONS[idx].key, explored:seenCount()}); }
+  function gateClose(){ $('gate').classList.remove('open'); document.body.style.overflow=''; }
+  $('gate-x').onclick = gateClose; $('gate').onclick = function(e){ if(e.target===$('gate')) gateClose(); };
   function render() {
     var g = $('grid'); g.innerHTML = ''; var i = 0;
     if (filter !== 'Coming soon') LESSONS.forEach(function (l, idx) {
       if (filter !== 'All' && l.soft !== filter && l.cat !== filter) return;
-      var c = document.createElement('article'); c.className = 'card' + (seen[l.key] ? ' seen' : ''); c.style.animationDelay = (i++ * 50) + 'ms';
+      var c = document.createElement('article'); c.className = 'card' + (seen[l.key] ? ' seen' : '') + (unlocked(l) ? '' : ' locked'); c.style.animationDelay = (i++ * 50) + 'ms';
       c.innerHTML = '<div class="thumb"><div class="g" style="background:' + thumb(idx) + '"></div>' +
         (l.yt ? '<img class="yt" loading="lazy" alt="" src="https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg">' : '') +
         '<div class="num">' + String(idx + 1).padStart(2, '0') + '</div>' +
         (l.yt ? '<span class="tag-yt">▶ Video tutorial</span>' : '') +
         '<div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>' +
-        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span></div>' +
+        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span><span class="lk">🔒 Free with email</span></div>' +
         '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span></div>' +
         '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p>' + addedTime(l) + '</div>';
       c.onclick = function () { open(idx); };
@@ -685,7 +722,9 @@ const track=(function(){
   // lekcja
   var cur = 0;
   function open(idx) {
-    cur = idx; var l = LESSONS[idx];
+    var l = LESSONS[idx];
+    if (!unlocked(l)) { if ($('lesson').classList.contains('open')) close(); gate(idx); return; }
+    cur = idx;
     var mob = window.matchMedia('(max-width: 860px)').matches;
     $('l-frame').src = VIEWER + l.token;
     $('l-3d').href = VIEWER + l.token;
@@ -756,6 +795,7 @@ const track=(function(){
       f.querySelector('button').disabled = true; f.querySelector('button').textContent = 'Sending…';
       fetch(SIGNUP_HOOK, { method: 'POST', mode: 'no-cors', body: body }).catch(function () {}).then(function () {
         signed = true; try { localStorage.setItem('vm_lib_signed', '1'); } catch (_) {}
+        if (where === 'gate' && pendingGate >= 0) { var pg = pendingGate; pendingGate = -1; setTimeout(function(){ gateClose(); render(); open(pg); }, 1400); } else render();
         track.ev('library_signup', { name: 'CompleteRegistration', std: true }, { place: where, lesson: proj, with_phone: f.consent_sms.checked ? 1 : 0 });
         box.innerHTML = okHtml(false) + '<div style="margin-top:10px"><a data-again style="color:var(--teal);cursor:pointer;text-decoration:underline;font-size:13px">+ Add another email</a></div>';
         var again = function () { if (box.querySelector('[data-again]')) renderSignup(box); };
@@ -765,6 +805,8 @@ const track=(function(){
     };
   }
   document.querySelectorAll('[data-signup]').forEach(renderSignup);
+  (function(){ var gb=document.querySelector('[data-signup="gate"]'); if(!gb) return; var h=gb.querySelector('h5'), p=gb.querySelector('p'), b=gb.querySelector('button[type=submit]');
+    if(h) h.remove(); if(p) p.remove(); if(b) b.textContent='Unlock all projects'; })();
 
   render(); progress();
   if (latest && LESSONS.length) setTimeout(function () { open(0); }, 300);
