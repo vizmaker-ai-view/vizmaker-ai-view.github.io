@@ -431,6 +431,32 @@ footer.vmf{background:var(--bg);margin-top:20px}
   #gate .sgn{margin:12px 0 6px} #gate .gfoot{text-align:center;font-size:11.5px;color:var(--mut)}
   html[dir=rtl] #gate .x{right:auto;left:14px}
 </style>
+<style>
+  /* up next */
+  .upnext{display:flex;gap:12px;align-items:center;width:100%;margin:10px 0 2px;padding:10px;border-radius:12px;border:1px solid rgba(0,228,240,.35);background:rgba(0,228,240,.06);color:var(--txt);text-align:left;cursor:pointer;font:inherit;transition:background .2s}
+  .upnext:hover{background:rgba(0,228,240,.12)}
+  .upnext .uth{flex:0 0 96px;height:54px;border-radius:8px;background-size:cover;background-position:center;background-color:#0a1013}
+  .upnext .utx{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .upnext small{color:var(--teal);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  .upnext b{color:var(--h);font-size:14px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .upnext em{font-style:normal;color:var(--teal);font-size:12.5px;font-weight:700}
+  html[dir=rtl] .upnext{text-align:right}
+  .card.hl{box-shadow:0 0 0 2px var(--teal),0 0 30px rgba(0,228,240,.35);transition:box-shadow .3s}
+  .lbar,.nxbar{display:none}
+  @media (max-width:860px){
+    .side .x{display:none}
+    .lbar{display:flex;align-items:center;gap:10px;position:fixed;top:0;left:0;right:0;z-index:61;height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;background:rgba(1,7,19,.96);border-bottom:1px solid var(--line)}
+    .lback{height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(0,228,240,.45);background:rgba(0,228,240,.08);color:var(--h);font:700 14px Inter,sans-serif;cursor:pointer}
+    .lbadge{margin-left:auto;color:var(--mut);font-size:12px;font-weight:600}
+    html[dir=rtl] .lbadge{margin-left:0;margin-right:auto}
+    .lbox{padding-top:calc(52px + env(safe-area-inset-top));padding-bottom:64px}
+    .lbox iframe#l-frame{height:46vh;height:46dvh;margin-top:0}
+    .nxbar{display:flex;align-items:center;gap:8px;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:61;height:48px;padding:0 14px;border-radius:14px;border:0;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:700 14px Inter,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer}
+    .nxbar .nk{flex:0 0 auto;font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.75}
+    .nxbar .nt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+    html[dir=rtl] .nxbar .nt{text-align:right}
+  }
+</style>
 </head>
 <body>
 <div id="upd" role="dialog" aria-label="Get updates">
@@ -549,6 +575,8 @@ footer.vmf{background:var(--bg);margin-top:20px}
   </div>
 </div>
 <div id="lesson" role="dialog" aria-modal="true">
+  <div class="lbar"><button type="button" class="lback" id="l-back">← Projects</button><span class="lbadge" id="l-badge2"></span></div>
+  <button type="button" class="nxbar" id="l-nxbar"><span class="nk">Up next</span><span class="nt" id="l-nxbar-t"></span><span class="ng">→</span></button>
   <div class="lbox">
     <iframe id="l-frame" allow="fullscreen; clipboard-write" allowfullscreen title="3D project"></iframe>
     <aside class="side">
@@ -556,6 +584,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
       <h2 id="l-title"></h2>
       <p id="l-desc"></p>
       <div id="l-yt"></div>
+      <button type="button" class="upnext" id="l-upnext"><span class="uth" id="l-up-th"></span><span class="utx"><small>Up next</small><b id="l-up-t"></b><em>Open →</em></span></button>
       <button type="button" class="btn ghost pdfbtn" id="l-pdf">📄 Download project PDF</button>
       <a class="btn ghost open3d" id="l-3d" target="_blank" rel="noopener">Open the 3D project ↗ <small style="font-weight:500;opacity:.7">(best on PC)</small></a>
       <h4>Workflow</h4><ol id="l-steps"></ol>
@@ -760,7 +789,7 @@ const track=(function(){
     var full = unlocked(l);
     seen[l.key] = 1; try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {}
     var mob = window.matchMedia('(max-width: 860px)').matches;
-    $('l-frame').src = VIEWER + l.token;
+    setFrame(VIEWER + l.token);
     $('l-3d').href = VIEWER + l.token;
     $('lesson').querySelector('.side').scrollTop = 0; $('lesson').querySelector('.lbox').scrollTop = 0;
     $('l-badge').textContent = 'Lesson ' + String(idx + 1).padStart(2, '0') + ' · ' + l.min + ' min';
@@ -786,11 +815,32 @@ const track=(function(){
     $('l-pdf').innerHTML = full ? '📄 Download project PDF <small>prompts + steps</small>' : '📄 Download project PDF <small>free with email</small>';
     $('l-try').href = trialUrl(l.key);
     $('l-prev').disabled = idx === 0; $('l-next').disabled = idx === LESSONS.length - 1;
+    $('l-badge2').textContent = $('l-badge').textContent;
+    lastNext = fillNext(idx);
+    try { var u = new URL(location.href); u.searchParams.set('p', l.key);
+      if (history.state && history.state.vmL) history.replaceState({vmL:1}, '', u); else history.pushState({vmL:1}, '', u); } catch (_) {}
     $('lesson').classList.add('open'); document.body.style.overflow = 'hidden';
     track.ev('lesson_open',{name:'LessonOpen'},{lesson:l.key,lesson_no:idx+1});
     progress();
   }
-  function close() { $('lesson').classList.remove('open'); $('l-frame').src = 'about:blank'; $('l-yt').innerHTML = ''; document.body.style.overflow = ''; render(); }
+  // nowa ramka zamiast zmiany src: zmiana src dopisuje wpisy do historii i psuje przycisk "wstecz"
+  function setFrame(url){ var o = $('l-frame'), f = o.cloneNode(false); if (url) f.src = url; else f.removeAttribute('src'); o.parentNode.replaceChild(f, o); }
+  // następny proponowany projekt: pierwszy nieobejrzany po bieżącym, potem od początku
+  function nextIdx(i){ for (var k = 1; k < LESSONS.length; k++) { var j = (i + k) % LESSONS.length; if (!seen[LESSONS[j].key]) return j; } return (i + 1) % LESSONS.length; }
+  function fillNext(i){ var n = nextIdx(i), l = LESSONS[n];
+    $('l-up-t').textContent = l.title || '…'; $('l-nxbar-t').textContent = l.title || '…';
+    $('l-up-th').style.backgroundImage = l.yt ? 'url(https://i.ytimg.com/vi/' + l.yt + '/mqdefault.jpg)' : thumb(n);
+    $('l-upnext').onclick = $('l-nxbar').onclick = function(){ track.ev('next_click',{name:'NextProject'},{from:LESSONS[i].key, to:l.key}); open(n); };
+    return n; }
+  var lastNext = -1;
+  function doClose() { $('lesson').classList.remove('open'); setFrame(''); $('l-yt').innerHTML = ''; document.body.style.overflow = ''; render();
+    // po zamknięciu: przewiń do proponowanego następnego projektu i podświetl go
+    if (lastNext >= 0) { var h = document.querySelector('#grid h3[data-k="' + LESSONS[lastNext].key + '"]'), c = h && h.closest('.card');
+      if (c) { c.classList.add('hl'); c.scrollIntoView({block:'center', behavior:'smooth'}); setTimeout(function(){ c.classList.remove('hl'); }, 4000); } } }
+  // przycisk "wstecz" w telefonie/przeglądarce zamyka projekt zamiast wychodzić ze strony
+  function close() { if (history.state && history.state.vmL) history.back(); else doClose(); }
+  window.addEventListener('popstate', function () { if ($('lesson').classList.contains('open') && !(history.state && history.state.vmL)) doClose(); });
+  $('l-back').onclick = close;
   $('l-x').onclick = close;
   $('lesson').onclick = function (e) { if (e.target === $('lesson')) close(); };
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
