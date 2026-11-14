@@ -725,7 +725,7 @@ const track=(function(){
   function okHtml(again) { return '<div class="sg-ok">✅ <b>You\'re in!</b> Check your inbox for a welcome email from <b>edu@vizmaker.com</b>. We\'ll only write when a new project is added.</div>'; }
   function renderSignup(box) {
     box.innerHTML = '<h5>📩 Get every new AI project by email</h5><p>One new project every week: 3D scene, video tutorial and prompts. Free. Unsubscribe anytime.</p>' +
-      '<form novalidate><input type="email" name="email" placeholder="your@email.com" autocomplete="email" required>' +
+      '<form novalidate><input type="email" name="email" placeholder="your@email.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required>' +
       '<input class="sg-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">' +
       '<button type="submit">Notify me</button>' +
       '<div class="sg-more"><a data-ph>+ Also notify me on WhatsApp / SMS</a></div>' +
