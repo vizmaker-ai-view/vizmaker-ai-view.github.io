@@ -362,8 +362,8 @@ footer.vmf{background:var(--bg);margin-top:20px}
         delay: { pageViews: 1, timeDelay: 20 } }] } }
     });
     function sync(){ var on = OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn;
-      var st=document.querySelector('#upd-push .ot'); if(st) st.innerHTML = on ? '<b>✓ Notifications are on</b>You get every new project on this device' : '<b>Instant notifications</b>On this device · no email needed';
-      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? 'Turn off' : (b.dataset.lbl || '🔔 Push'); b.classList.toggle('off', !!on); });
+      var pk=document.querySelector('#upd-push .perk'); if(pk) pk.innerHTML = on ? '✓ Notifications are on for this device' : '✓ Instant &nbsp;·&nbsp; ✓ No email needed &nbsp;·&nbsp; ✓ Turn off anytime';
+      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? (b.classList.contains('big') ? 'Turn off notifications' : 'Turn off') : (b.dataset.lbl || '🔔 Push'); b.classList.toggle('off', !!on); });
       if (!OneSignal.Notifications.isPushSupported()) document.querySelectorAll('[data-push]').forEach(function(b){ b.hidden = true; }); }
     if (OneSignal.Notifications.permission) OneSignal.setConsentGiven(true);
     window.VM_PUSH_ON = function(){ return OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn; };
@@ -402,11 +402,61 @@ footer.vmf{background:var(--bg);margin-top:20px}
   #upd .opt .oi{font-size:20px;width:28px;text-align:center}
   #upd .opt .ot{flex:1;font-size:13px;color:var(--mut)} #upd .opt .ot b{display:block;color:var(--h);font-size:14px;margin-bottom:1px}
   #upd .go{padding:9px 14px;border-radius:999px;border:0;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:800 13px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+  #upd .go.big{display:block;width:100%;padding:14px;font-size:15px;border-radius:12px;box-shadow:0 8px 24px rgba(0,228,240,.25);animation:glow 2.4s ease-in-out infinite}
+  @keyframes glow{50%{box-shadow:0 8px 32px rgba(0,228,240,.45)}}
+  #upd .go.big.off{animation:none;box-shadow:none}
+  #upd .perk{margin:9px 0 12px;font-size:11.5px;color:var(--mut);text-align:center}
+  #upd .calrow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--mut);padding-top:10px;border-top:1px solid var(--line)}
   #upd .go.off{background:transparent;border:1px solid rgba(0,228,240,.4);color:var(--teal)}
   #upd .go[disabled]{background:rgba(0,228,240,.15);color:var(--teal);cursor:default}
   #upd .cals{display:flex;gap:6px;flex-wrap:wrap}
   #upd .later{display:block;margin:8px auto 0;background:none;border:0;color:var(--mut);font:500 12.5px Inter,sans-serif;cursor:pointer;text-decoration:underline}
   @media (max-width:640px){#upd{left:12px;right:12px;bottom:12px;width:auto}}
+</style>
+<style>
+  .card .lk{display:none;position:absolute;left:10px;bottom:10px;padding:4px 9px;border-radius:999px;background:rgba(3,13,22,.85);border:1px solid rgba(0,228,240,.35);color:var(--teal);font:700 11px Inter,sans-serif;white-space:nowrap;z-index:3}
+  .card.locked .lk{display:block} .card.locked .tag-yt{display:none}
+  .ytlock{display:block;width:100%;border:0;padding:0;cursor:pointer;background-size:cover;background-position:center}
+  .ytlock .yl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(3,13,22,.62);color:#fff;font:600 14px Inter,sans-serif;transition:background .2s}
+  .ytlock:hover .yl{background:rgba(3,13,22,.45)} .ytlock .yl b{font-size:16px} .ytlock .yl small{color:var(--teal);font-weight:700}
+  .pdfbtn{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;width:100%;justify-content:center;margin:12px 0 4px;padding:11px 14px;min-height:44px;cursor:pointer} .pdfbtn small{font-weight:500;opacity:.7;margin-left:4px}
+  #gate{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(0,6,12,.72);backdrop-filter:blur(6px);padding:16px}
+  #gate.open{display:flex}
+  #gate .gbox{position:relative;width:460px;max-width:100%;max-height:92vh;overflow:auto;background:linear-gradient(180deg,#06202b,#030d16);border:1px solid rgba(0,228,240,.4);border-radius:20px;padding:26px 24px 18px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 50px rgba(0,228,240,.15);animation:gin .35s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes gin{from{transform:translateY(20px) scale(.97);opacity:0}}
+  #gate .x{position:absolute;top:10px;right:14px;background:none;border:0;color:var(--mut);font-size:24px;cursor:pointer}
+  #gate .gic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.3);margin-bottom:12px}
+  #gate h3{margin:0 0 6px;font-size:22px;color:var(--h)} #gate p{margin:0 0 12px;color:var(--mut);font-size:14px;line-height:1.5}
+  #gate .gl{list-style:none;padding:0;margin:0 0 6px;font-size:13.5px;color:var(--txt)} #gate .gl li{margin:4px 0}
+  #gate .sgn{margin:12px 0 6px} #gate .gfoot{text-align:center;font-size:11.5px;color:var(--mut)}
+  html[dir=rtl] #gate .x{right:auto;left:14px}
+</style>
+<style>
+  /* up next */
+  .upnext{display:flex;gap:12px;align-items:center;width:100%;margin:10px 0 2px;padding:10px;border-radius:12px;border:1px solid rgba(0,228,240,.35);background:rgba(0,228,240,.06);color:var(--txt);text-align:left;cursor:pointer;font:inherit;transition:background .2s}
+  .upnext:hover{background:rgba(0,228,240,.12)}
+  .upnext .uth{flex:0 0 96px;height:54px;border-radius:8px;background-size:cover;background-position:center;background-color:#0a1013}
+  .upnext .utx{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .upnext small{color:var(--teal);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  .upnext b{color:var(--h);font-size:14px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .upnext em{font-style:normal;color:var(--teal);font-size:12.5px;font-weight:700}
+  html[dir=rtl] .upnext{text-align:right}
+  .card.hl{box-shadow:0 0 0 2px var(--teal),0 0 30px rgba(0,228,240,.35);transition:box-shadow .3s}
+  .lbar,.nxbar,.todet{display:none}
+  @media (max-width:860px){
+    .side .x{display:none}
+    .lbar{display:flex;align-items:center;gap:10px;position:fixed;top:0;left:0;right:0;z-index:61;height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;background:rgba(1,7,19,.96);border-bottom:1px solid var(--line)}
+    .lback{height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(0,228,240,.45);background:rgba(0,228,240,.08);color:var(--h);font:700 14px Inter,sans-serif;cursor:pointer}
+    .lbadge{margin-left:auto;color:var(--mut);font-size:12px;font-weight:600}
+    html[dir=rtl] .lbadge{margin-left:0;margin-right:auto}
+    .lbox{padding-top:calc(52px + env(safe-area-inset-top));padding-bottom:64px}
+    .lbox iframe#l-frame{height:75vh;height:75dvh;margin-top:0}
+    .todet{display:flex;position:relative;z-index:2;margin:-18px auto 0;width:max-content;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;border:1px solid rgba(0,228,240,.5);background:rgba(1,7,19,.95);color:var(--teal);font:700 13px Inter,sans-serif;cursor:pointer}
+    .nxbar{display:flex;align-items:center;gap:8px;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:61;height:48px;padding:0 14px;border-radius:14px;border:0;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:700 14px Inter,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer}
+    .nxbar .nk{flex:0 0 auto;font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.75}
+    .nxbar .nt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+    html[dir=rtl] .nxbar .nt{text-align:right}
+  }
 </style>
 </head>
 <body>
@@ -415,10 +465,13 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="ic">🔔</div>
   <h3>Never miss a new <span>FREE project</span></h3>
   <p>New AI projects for architects &amp; interior designers every week. Get them the moment they drop.</p>
-  <div class="opt" id="upd-push"><div class="oi">🔔</div><div class="ot"><b>Instant notifications</b>On this device · no email needed</div><button class="go" type="button" data-push data-lbl="Turn on">Turn on</button></div>
-  <div class="opt" data-sub><div class="oi">📅</div><div class="ot"><b>Add to calendar</b><span class="cals"><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a></span></div></div>
+  <div id="upd-push"><div class="ot" style="display:none"></div>
+    <button class="go big" type="button" data-push data-lbl="🔔 Yes, notify me">🔔 Yes, notify me</button>
+    <div class="perk">✓ Instant &nbsp;·&nbsp; ✓ No email needed &nbsp;·&nbsp; ✓ Turn off anytime</div>
+  </div>
+  <div class="calrow" data-sub><span>or add to calendar:</span><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a></div>
   <button class="later" type="button" data-upd-x>Maybe later</button>
-  <div style="font-size:11px;color:var(--mut);text-align:center;margin-top:6px">Turn off anytime here or in your browser. <a href="https://www.vizmaker.com/privacy-policy?src=library_push" target="_blank" rel="noopener" style="color:var(--teal)">Privacy</a></div>
+  <div style="font-size:11px;color:var(--mut);text-align:center;margin-top:6px"><a href="https://www.vizmaker.com/privacy-policy?src=library_push" target="_blank" rel="noopener" style="color:var(--teal)">Privacy</a></div>
 </div>
 
 <div class="nbar" id="nbar" hidden>
@@ -511,14 +564,30 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div><button type="button" class="btn-ghost" data-consent="0">Essential only</button><button type="button" class="btn" data-consent="1">Accept</button></div>
 </div>
 
+<div id="gate" role="dialog" aria-modal="true">
+  <div class="gbox">
+    <button class="x" id="gate-x" type="button" aria-label="Close">&times;</button>
+    <div class="gic">🔓</div>
+    <h3>Get the tutorial + PDF — free</h3>
+    <p>You've used your 3 free projects. Enter your email to unlock video tutorials and PDFs for all projects.</p>
+    <ul class="gl"><li>✓ Video tutorials for every project</li><li>✓ Project PDFs: prompts + steps</li><li>✓ A new project every week</li></ul>
+    <div class="sgn" data-signup="gate"></div>
+    <div class="gfoot">No spam. Unsubscribe anytime.</div>
+  </div>
+</div>
 <div id="lesson" role="dialog" aria-modal="true">
+  <div class="lbar"><button type="button" class="lback" id="l-back">← Projects</button><span class="lbadge" id="l-badge2"></span></div>
+  <button type="button" class="nxbar" id="l-nxbar"><span class="nk">Up next</span><span class="nt" id="l-nxbar-t"></span><span class="ng">→</span></button>
   <div class="lbox">
     <iframe id="l-frame" allow="fullscreen; clipboard-write" allowfullscreen title="3D project"></iframe>
+    <button type="button" class="todet" id="l-todet">▼ Details &amp; steps</button>
     <aside class="side">
       <div class="hd"><span class="badge" id="l-badge"></span><button class="x" id="l-x" aria-label="Close">&times;</button></div>
       <h2 id="l-title"></h2>
       <p id="l-desc"></p>
       <div id="l-yt"></div>
+      <button type="button" class="upnext" id="l-upnext"><span class="uth" id="l-up-th"></span><span class="utx"><small>Up next</small><b id="l-up-t"></b><em>Open →</em></span></button>
+      <button type="button" class="btn ghost pdfbtn" id="l-pdf">📄 Download project PDF</button>
       <a class="btn ghost open3d" id="l-3d" target="_blank" rel="noopener">Open the 3D project ↗ <small style="font-weight:500;opacity:.7">(best on PC)</small></a>
       <h4>Workflow</h4><ol id="l-steps"></ol>
       <div id="l-pr-wrap"><h4>Prompts used</h4><div id="l-prompts"></div></div>
@@ -649,17 +718,57 @@ const track=(function(){
            'radial-gradient(circle at 80% 75%, hsla(' + (h[0] + 30) + ',' + h[1] + '%,45%,.35), transparent 55%),' +
            'linear-gradient(135deg,#0f1a1e,#0a1013)';
   }
+  // ---- soft gate: 3 dowolne projekty za darmo, kolejne po zapisie mailem ----
+  var FREE = 3, pendingGate = -1;
+  (function(){ var src=(qs.get('utm_source')||'').toLowerCase(), med=(qs.get('utm_medium')||'').toLowerCase();
+    if (qs.get('unlock')==='1' || med==='email' || /mailchimp|email|newsletter/.test(src)) { try{localStorage.setItem('vm_lib_signed','1');}catch(_){} } })();
+  function isSigned(){ try{ return localStorage.getItem('vm_lib_signed')==='1'; }catch(_){ return false; } }
+  function freeKeys(){ return Object.keys(seen).filter(function(k){ return LESSONS.some(function(l){ return l.key===k; }); }).slice(0, FREE); }
+  // pełny dostęp (tutorial + PDF): zapisany mailem, albo projekt jest wśród 3 pierwszych OTWARTYCH, albo jeszcze nie wykorzystano 3
+  function unlocked(l){ var f = freeKeys(); return isSigned() || f.indexOf(l.key) >= 0 || (!seen[l.key] && f.length < FREE); }
+  var pendingAct = null;
+  function gate(idx, what){ pendingGate = idx; pendingAct = what; $('gate').classList.add('open');
+    track.ev('gate_view',{name:'GateView'},{lesson:LESSONS[idx].key, asset:what, explored:freeKeys().length}); }
+  function gateClose(){ $('gate').classList.remove('open'); }
+  $('gate-x').onclick = gateClose; $('gate').onclick = function(e){ if(e.target===$('gate')) gateClose(); };
+  var jsPdfP = null;
+  function loadPdf(){ return jsPdfP || (jsPdfP = new Promise(function(ok, no){ var sc = document.createElement('script'); sc.src = 'vendor/jspdf.umd.min.js'; sc.onload = function(){ ok(window.jspdf.jsPDF); }; sc.onerror = no; document.head.appendChild(sc); })); }
+  function cp(t){ return String(t || '').replace(/[\u2010-\u2015]/g, '-').replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/\u2026/g, '...').replace(/[^\x00-\xFF\u20AC]/g, ''); }
+  function makePdf(l){
+    track.ev('pdf_download',{name:'PdfDownload'},{lesson:l.key});
+    loadPdf().then(function(jsPDF){
+      var d = new jsPDF({unit:'mm', format:'a4'}), W = 210, M = 16, y = 0, url = 'https://vizmaker-ai-view.github.io/library/?p=' + l.key + '&utm_source=pdf&utm_medium=lead_magnet';
+      function need(h){ if (y + h > 280) { d.addPage(); y = 18; } }
+      d.setFillColor(3,13,22); d.rect(0,0,W,46,'F'); d.setFillColor(0,228,240); d.rect(0,46,W,1.2,'F');
+      d.setTextColor(0,228,240); d.setFont('helvetica','bold'); d.setFontSize(10); d.text('VIZMAKER AI  ·  FREE PROJECT LIBRARY', M, 14);
+      d.setTextColor(255,255,255); d.setFontSize(18); var tl = d.splitTextToSize(cp(l.title || 'VizMaker project'), W - 2*M); d.text(tl.slice(0,2), M, 26);
+      d.setFontSize(9.5); d.setFont('helvetica','normal'); d.setTextColor(150,190,200); d.text(cp(l.soft + '  ·  ' + l.cat + '  ·  ' + l.min + ' min'), M, 41);
+      y = 58; d.setTextColor(40,50,60); d.setFontSize(11); var dl = d.splitTextToSize(cp(l.desc), W - 2*M); d.text(dl, M, y); y += dl.length * 5.2 + 6;
+      d.setFillColor(230,252,254); d.roundedRect(M, y, W - 2*M, 14, 3, 3, 'F'); d.setTextColor(0,120,130); d.setFont('helvetica','bold'); d.setFontSize(10.5);
+      d.textWithLink('Open the full project in 3D  >', M + 5, y + 9, {url: url}); y += 24;
+      d.setTextColor(10,20,30); d.setFontSize(13); d.text('Workflow', M, y); y += 7; d.setFont('helvetica','normal'); d.setFontSize(10.5);
+      l.steps.forEach(function(st, i){ var sl = d.splitTextToSize(cp(st), W - 2*M - 10); need(sl.length * 5 + 3); d.setFillColor(0,228,240); d.circle(M + 3, y - 1.3, 2.9, 'F'); d.setTextColor(0,22,26); d.setFont('helvetica','bold'); d.setFontSize(8.5); d.text(String(i+1), M + 3, y - 0.2, {align:'center'}); d.setFont('helvetica','normal'); d.setFontSize(10.5); d.setTextColor(40,50,60); d.text(sl, M + 10, y); y += sl.length * 5 + 3; });
+      if (l.prompts.length) { y += 4; need(14); d.setTextColor(10,20,30); d.setFont('helvetica','bold'); d.setFontSize(13); d.text('Prompts used', M, y); y += 6; d.setFont('courier','normal'); d.setFontSize(9.5);
+        l.prompts.forEach(function(pr){ var pl = d.splitTextToSize(cp(pr), W - 2*M - 8); var h = pl.length * 4.4 + 6; need(h + 4); d.setFillColor(244,247,249); d.setDrawColor(210,225,230); d.roundedRect(M, y, W - 2*M, h, 2, 2, 'FD'); d.setTextColor(30,40,50); d.text(pl, M + 4, y + 5.5); y += h + 4; }); }
+      if (l.yt) { y += 2; need(10); d.setFont('helvetica','bold'); d.setFontSize(10.5); d.setTextColor(0,120,130); d.textWithLink('Watch the video tutorial on YouTube  >', M, y, {url:'https://youtu.be/' + l.yt}); y += 8; }
+      need(30); y += 4; d.setFillColor(3,13,22); d.roundedRect(M, y, W - 2*M, 24, 3, 3, 'F'); d.setTextColor(255,255,255); d.setFont('helvetica','bold'); d.setFontSize(12);
+      d.text('Try it yourself: 14 days of unlimited AI, free', M + 6, y + 10); d.setFont('helvetica','normal'); d.setFontSize(9.5); d.setTextColor(0,228,240);
+      d.textWithLink('vizmaker.com  >', M + 6, y + 17.5, {url: trialUrl(l.key).replace('src=', 'src=pdf_')});
+      var n = d.getNumberOfPages(); for (var i = 1; i <= n; i++) { d.setPage(i); d.setFont('helvetica','normal'); d.setFontSize(8); d.setTextColor(140,150,160); d.text('VizMaker AI · Free Project Library · vizmaker-ai-view.github.io/library', M, 291); d.text(i + '/' + n, W - M, 291, {align:'right'}); }
+      d.save('VizMaker-' + l.key + '.pdf');
+    }).catch(function(){ alert('PDF could not be created. Please try again.'); });
+  }
   function render() {
     var g = $('grid'); g.innerHTML = ''; var i = 0;
     if (filter !== 'Coming soon') LESSONS.forEach(function (l, idx) {
       if (filter !== 'All' && l.soft !== filter && l.cat !== filter) return;
-      var c = document.createElement('article'); c.className = 'card' + (seen[l.key] ? ' seen' : ''); c.style.animationDelay = (i++ * 50) + 'ms';
+      var c = document.createElement('article'); c.className = 'card' + (seen[l.key] ? ' seen' : '') + (unlocked(l) ? '' : ' locked'); c.style.animationDelay = (i++ * 50) + 'ms';
       c.innerHTML = '<div class="thumb"><div class="g" style="background:' + thumb(idx) + '"></div>' +
         (l.yt ? '<img class="yt" loading="lazy" alt="" src="https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg">' : '') +
         '<div class="num">' + String(idx + 1).padStart(2, '0') + '</div>' +
         (l.yt ? '<span class="tag-yt">▶ Video tutorial</span>' : '') +
         '<div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>' +
-        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span></div>' +
+        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span><span class="lk">📄 PDF + ▶ tutorial: free with email</span></div>' +
         '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span></div>' +
         '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p>' + addedTime(l) + '</div>';
       c.onclick = function () { open(idx); };
@@ -677,9 +786,12 @@ const track=(function(){
   // lekcja
   var cur = 0;
   function open(idx) {
-    cur = idx; var l = LESSONS[idx];
+    var l = LESSONS[idx];
+    cur = idx;
+    var full = unlocked(l);
+    seen[l.key] = 1; try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {}
     var mob = window.matchMedia('(max-width: 860px)').matches;
-    $('l-frame').src = VIEWER + l.token;
+    setFrame(VIEWER + l.token);
     $('l-3d').href = VIEWER + l.token;
     $('lesson').querySelector('.side').scrollTop = 0; $('lesson').querySelector('.lbox').scrollTop = 0;
     $('l-badge').textContent = 'Lesson ' + String(idx + 1).padStart(2, '0') + ' · ' + l.min + ' min';
@@ -693,19 +805,45 @@ const track=(function(){
       d.appendChild(b); $('l-prompts').appendChild(d);
     });
     $('l-pr-wrap').style.display = l.prompts.length ? '' : 'none';
-    $('l-yt').innerHTML = l.yt
+    $('l-pdf').onclick = function(){ if (unlocked(l)) makePdf(l); else gate(idx, 'pdf'); };
+    $('l-yt').innerHTML = (l.yt && !full)
+      ? '<h4>Video tutorial</h4><button type="button" class="ytbox ytlock" id="l-ytlock" style="background-image:url(https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg)"><span class="yl"><b>▶ Watch the tutorial</b><small>Free with email</small></span></button>'
+      : l.yt
       ? '<h4>Video tutorial</h4><div class="ytbox"><iframe allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen src="https://www.youtube-nocookie.com/embed/' + l.yt + '?rel=0&start=' + (l.yt_t || 0) + '"></iframe></div>'
       : l.ytSoon
       ? '<h4>Video tutorial coming soon</h4><a class="ytlink" target="_blank" rel="noopener" href="' + YT_CHANNEL + '">▶ Meanwhile, watch our tutorials on YouTube →</a>'
       : '<h4>Learn more</h4><a class="ytlink" target="_blank" rel="noopener" href="' + YT_CHANNEL + '">▶ More tutorials on our YouTube →</a>';
+    if ($('l-ytlock')) $('l-ytlock').onclick = function(){ gate(idx, 'video'); };
+    $('l-pdf').innerHTML = full ? '📄 Download project PDF <small>prompts + steps</small>' : '📄 Download project PDF <small>free with email</small>';
     $('l-try').href = trialUrl(l.key);
     $('l-prev').disabled = idx === 0; $('l-next').disabled = idx === LESSONS.length - 1;
+    $('l-badge2').textContent = $('l-badge').textContent;
+    lastNext = fillNext(idx);
+    try { var u = new URL(location.href); u.searchParams.set('p', l.key);
+      if (history.state && history.state.vmL) history.replaceState({vmL:1}, '', u); else history.pushState({vmL:1}, '', u); } catch (_) {}
     $('lesson').classList.add('open'); document.body.style.overflow = 'hidden';
     track.ev('lesson_open',{name:'LessonOpen'},{lesson:l.key,lesson_no:idx+1});
-    seen[l.key] = 1; try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {}
     progress();
   }
-  function close() { $('lesson').classList.remove('open'); $('l-frame').src = 'about:blank'; $('l-yt').innerHTML = ''; document.body.style.overflow = ''; render(); }
+  // nowa ramka zamiast zmiany src: zmiana src dopisuje wpisy do historii i psuje przycisk "wstecz"
+  function setFrame(url){ var o = $('l-frame'), f = o.cloneNode(false); if (url) f.src = url; else f.removeAttribute('src'); o.parentNode.replaceChild(f, o); }
+  // następny proponowany projekt: pierwszy nieobejrzany po bieżącym, potem od początku
+  function nextIdx(i){ for (var k = 1; k < LESSONS.length; k++) { var j = (i + k) % LESSONS.length; if (!seen[LESSONS[j].key]) return j; } return (i + 1) % LESSONS.length; }
+  function fillNext(i){ var n = nextIdx(i), l = LESSONS[n];
+    $('l-up-t').textContent = l.title || '…'; $('l-nxbar-t').textContent = l.title || '…';
+    $('l-up-th').style.backgroundImage = l.yt ? 'url(https://i.ytimg.com/vi/' + l.yt + '/mqdefault.jpg)' : thumb(n);
+    $('l-upnext').onclick = $('l-nxbar').onclick = function(){ track.ev('next_click',{name:'NextProject'},{from:LESSONS[i].key, to:l.key}); open(n); };
+    return n; }
+  var lastNext = -1;
+  function doClose() { $('lesson').classList.remove('open'); setFrame(''); $('l-yt').innerHTML = ''; document.body.style.overflow = ''; render();
+    // po zamknięciu: przewiń do proponowanego następnego projektu i podświetl go
+    if (lastNext >= 0) { var h = document.querySelector('#grid h3[data-k="' + LESSONS[lastNext].key + '"]'), c = h && h.closest('.card');
+      if (c) { c.classList.add('hl'); c.scrollIntoView({block:'center', behavior:'smooth'}); setTimeout(function(){ c.classList.remove('hl'); }, 4000); } } }
+  // przycisk "wstecz" w telefonie/przeglądarce zamyka projekt zamiast wychodzić ze strony
+  function close() { if (history.state && history.state.vmL) history.back(); else doClose(); }
+  window.addEventListener('popstate', function () { if ($('lesson').classList.contains('open') && !(history.state && history.state.vmL)) doClose(); });
+  $('l-back').onclick = close;
+  $('l-todet').onclick = function(){ var sd = $('lesson').querySelector('.side'); $('lesson').querySelector('.lbox').scrollTo({top: sd.offsetTop - 56, behavior: 'smooth'}); };
   $('l-x').onclick = close;
   $('lesson').onclick = function (e) { if (e.target === $('lesson')) close(); };
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
@@ -744,10 +882,11 @@ const track=(function(){
       var where = box.getAttribute('data-signup');
       var proj = where === 'lesson' && LESSONS[cur] ? LESSONS[cur].key : (qs.get('p') && qs.get('p') !== 'latest' ? qs.get('p') : 'library');
       var body = new URLSearchParams({ email: email, phone: f.consent_sms.checked ? phone : '', consent_sms: f.consent_sms.checked ? 'true' : 'false',
-        proj: proj, src: (qs.get('utm_source') || 'www') + (qs.get('utm_campaign') ? ':' + qs.get('utm_campaign') : ''), place: where, website: f.website.value || '' });
+        proj: proj, lang: window.VM_LANG || 'en', src: (qs.get('utm_source') || 'www') + (qs.get('utm_campaign') ? ':' + qs.get('utm_campaign') : ''), place: where, website: f.website.value || '' });
       f.querySelector('button').disabled = true; f.querySelector('button').textContent = 'Sending…';
       fetch(SIGNUP_HOOK, { method: 'POST', mode: 'no-cors', body: body }).catch(function () {}).then(function () {
         signed = true; try { localStorage.setItem('vm_lib_signed', '1'); } catch (_) {}
+        if (where === 'gate' && pendingGate >= 0) { var pg = pendingGate, act = pendingAct; pendingGate = -1; pendingAct = null; setTimeout(function(){ gateClose(); render(); open(pg); if (act === 'pdf') makePdf(LESSONS[pg]); }, 1400); } else { render(); if ($('lesson').classList.contains('open')) open(cur); }
         track.ev('library_signup', { name: 'CompleteRegistration', std: true }, { place: where, lesson: proj, with_phone: f.consent_sms.checked ? 1 : 0 });
         box.innerHTML = okHtml(false) + '<div style="margin-top:10px"><a data-again style="color:var(--teal);cursor:pointer;text-decoration:underline;font-size:13px">+ Add another email</a></div>';
         var again = function () { if (box.querySelector('[data-again]')) renderSignup(box); };
@@ -757,6 +896,8 @@ const track=(function(){
     };
   }
   document.querySelectorAll('[data-signup]').forEach(renderSignup);
+  (function(){ var gb=document.querySelector('[data-signup="gate"]'); if(!gb) return; var h=gb.querySelector('h5'), p=gb.querySelector('p'), b=gb.querySelector('button[type=submit]');
+    if(h) h.remove(); if(p) p.remove(); if(b) b.textContent='Unlock tutorial + PDF'; })();
 
   render(); progress();
   if (latest && LESSONS.length) setTimeout(function () { open(0); }, 300);
@@ -780,6 +921,7 @@ const track=(function(){
 <script>
 (function(){
   var u=document.getElementById('upd'),b=document.getElementById('upd-open');
+  if(window.VM_NO_PUSH){var cs=u.querySelector('.calrow span'); if(cs) cs.textContent='📅 Get a weekly reminder in your calendar:';}
   function st(){try{return localStorage.getItem('vm_upd');}catch(_){return null;}}
   function open(){ if(window.VM_NO_PUSH||window.VM_PUSH_OK===false) document.getElementById('upd-push').style.display='none'; u.classList.add('show'); }
   function close(){ u.classList.remove('show'); if(st()!=='on'){try{localStorage.setItem('vm_upd',String(Date.now()));}catch(_){}} }
@@ -790,5 +932,6 @@ const track=(function(){
   setInterval(function(){ if(window.VM_PUSH_ON&&window.VM_PUSH_ON()) b.classList.add('on'); }, 2000);
 })();
 </script>
+<script src="i18n.js"></script>
 </body>
 </html>
