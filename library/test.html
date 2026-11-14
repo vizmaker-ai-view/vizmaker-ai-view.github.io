@@ -470,15 +470,21 @@ footer.vmf{background:var(--bg);margin-top:20px}
   @keyframes wup{from{transform:translateY(0)}to{transform:translateY(-50%)}} @keyframes wdown{from{transform:translateY(-50%)}to{transform:translateY(0)}}
   .wt{aspect-ratio:16/10;border-radius:12px;overflow:hidden;border:1px solid rgba(0,228,240,.18);box-shadow:0 10px 30px rgba(0,0,0,.45);background:#0a1013}
   .wt img{width:100%;height:100%;object-fit:cover;display:block}
-  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:10px 0 26px;padding:18px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(0,228,240,.06),rgba(0,228,240,.01))}
-  .kpis div{text-align:center} .kpis b{display:block;font-size:26px;color:var(--h);font-variant-numeric:tabular-nums;letter-spacing:-.5px}
-  .kpis span{font-size:12.5px;color:var(--mut)}
+  .aud{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px} .aud span{padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);font-size:12.5px;font-weight:600}
+  .kpis{margin:6px 0 22px;padding:9px 0;border-radius:999px;border:1px solid var(--line);background:linear-gradient(90deg,rgba(0,228,240,.07),rgba(0,228,240,.02));overflow:hidden;pointer-events:none;user-select:none;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+  .kt{display:flex;width:max-content;animation:kmove 40s linear infinite}
+  .kt>div{display:flex;align-items:baseline;gap:7px;padding:0 22px;white-space:nowrap;border-right:1px solid rgba(0,228,240,.15)}
+  .kt b{font-size:17px;color:var(--h);font-variant-numeric:tabular-nums} .kt span{font-size:12.5px;color:var(--mut)}
+  @keyframes kmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  html[dir=rtl] .kt{animation-name:kmover} @keyframes kmover{from{transform:translateX(0)}to{transform:translateX(50%)}}
+  @media (prefers-reduced-motion: reduce){.kt{animation:none}}
   html[dir=rtl] .wall{transform:perspective(1200px) rotateY(8deg) rotateX(4deg)}
   @media (max-width:900px){
     .hero-a{grid-template-columns:1fr;gap:18px;padding-top:22px}
     .wall{order:-1;height:210px;transform:none;grid-template-columns:repeat(3,1fr);gap:8px}
     .wi{gap:8px} .wt{border-radius:9px}
-    .kpis{grid-template-columns:repeat(3,1fr);row-gap:14px;padding:14px 10px} .kpis b{font-size:21px} .kpis span{font-size:11.5px}
+    .kpis{padding:7px 0} .kt b{font-size:15px} .kt span{font-size:11.5px} .kt>div{padding:0 16px}
   }
   @media (prefers-reduced-motion: reduce){.wi{animation:none}}
 </style>
@@ -517,24 +523,26 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <section class="hero hero-a">
     <div class="hx">
       <span class="badge"><i></i>Free mini-course · New project every week</span>
-      <h1>Ready-to-use <span>AI presets</span> for architects &amp; interior designers</h1>
+      <h1>Ready-to-use <span>AI presets</span> for creative pros</h1>
+      <div class="aud"><span>Architects</span><span>Interior designers</span><span>Designers</span><span>VFX artists</span><span>E-commerce</span></div>
       <p>Open, copy, render. Client-ready presentations in minutes, not days. Free.</p>
       <div class="acts">
         <a class="btn big" href="#lessons">Get the free presets →</a>
         <a class="btn ghost" href="#plan">📅 Plan your learning time</a>
       </div>
-      <div class="proof"><span class="stars">★★★★★</span> Used by 500,000+ designers in 155 countries</div>
+      <div class="proof"><span class="stars">★★★★★</span> Used by 500,000+ creatives in 155 countries</div>
     </div>
     <div class="wall" aria-hidden="true"><div class="wc"></div><div class="wc"></div><div class="wc"></div></div>
   </section>
-  <div class="kpis" id="kpis">
-    <div><b data-n="500000" data-plus>0</b><span>designers use VizMaker</span></div>
+  <div class="kpis" id="kpis" aria-hidden="true"><div class="kt">
+    <div><b data-n="500000" data-plus>0</b><span>creatives use VizMaker</span></div>
     <div><b data-k="projects">0</b><span>projects in 3D</span></div>
     <div><b data-k="tutorials">0</b><span>video tutorials</span></div>
     <div><b data-k="pdfs">0</b><span>PDF guides</span></div>
     <div><b data-k="prompts">0</b><span>ready prompts</span></div>
     <div><b data-k="mins">0</b><span>min of learning</span></div>
-  </div>
+    <div><b data-n="155">0</b><span>countries</span></div>
+  </div></div>
   <script>
   (function(){
     // kolaż okładek: miniatury filmów projektów, 3 kolumny przewijane w pętli
@@ -549,8 +557,11 @@ footer.vmf{background:var(--bg);margin-top:20px}
     var V = { projects: LESSONS.length, tutorials: LESSONS.filter(function(l){ return l.yt; }).length, pdfs: LESSONS.length,
       prompts: LESSONS.reduce(function(a, l){ return a + (l.prompts ? l.prompts.length : 0); }, 0),
       mins: LESSONS.reduce(function(a, l){ return a + (+l.min || 0); }, 0) };
+    var kt = document.querySelector('#kpis .kt');
+    [].slice.call(kt.children).forEach(function(d){ var b = d.querySelector('b'); if (b.dataset.k) { b.dataset.n = V[b.dataset.k]; if (!V[b.dataset.k] || (b.dataset.k === 'prompts' && V.prompts < 20)) d.remove(); } });
+    // karuzela: treść ×4, przesuwa się w pętli o połowę (bez przycisków, bez klikania)
+    var one = kt.innerHTML; kt.innerHTML = one + one + one + one;
     var bs = document.querySelectorAll('#kpis b');
-    [].forEach.call(bs, function(b){ if (b.dataset.k) { b.dataset.n = V[b.dataset.k]; if (!V[b.dataset.k]) b.parentNode.style.display = 'none'; } });
     function fmt(n){ try { return n.toLocaleString(window.VM_LANG || 'en'); } catch(_) { return String(n); } }
     function run(){ var t0 = performance.now(), D = 1600;
       (function step(t){ var k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3);
@@ -628,9 +639,9 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="gbox">
     <button class="x" id="gate-x" type="button" aria-label="Close">&times;</button>
     <div class="gic">🔓</div>
-    <h3>Unlock all 20 projects — free</h3>
-    <p>You've explored 3 free projects. Enter your email to unlock the whole library and get every new project.</p>
-    <ul class="gl"><li>✓ All projects in 3D + video tutorials</li><li>✓ Project PDFs: prompts + steps</li><li>✓ A new project every week</li></ul>
+    <h3>Get full access — free</h3>
+    <p>One email and you're in: every project, plus new presets each week to win more clients.</p>
+    <ul class="gl"><li>✓ All projects, tutorials &amp; PDFs</li><li>✓ New presets every week</li><li>✓ Workflows that win clients</li></ul>
     <div class="sgn" data-signup="gate"></div>
     <div class="gfoot">No spam. Unsubscribe anytime.</div>
   </div>
@@ -923,10 +934,10 @@ const track=(function(){
   var signed = false; try { signed = localStorage.getItem('vm_lib_signed') === '1'; } catch (_) {}
   function okHtml(again) { return '<div class="sg-ok">✅ <b>You\'re in!</b> Check your inbox for a welcome email from <b>edu@vizmaker.com</b>. We\'ll only write when a new project is added.</div>'; }
   function renderSignup(box) {
-    box.innerHTML = '<h5>📩 Get every new AI project by email</h5><p>One new project every week: 3D scene, video tutorial and prompts. Free. Unsubscribe anytime.</p>' +
+    box.innerHTML = '<h5>🎁 Get full access + new presets every week</h5><p>All projects, tutorials and PDFs, plus new presets to win more clients. Free. Unsubscribe anytime.</p>' +
       '<form novalidate><input type="email" name="email" placeholder="your@email.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required>' +
       '<input class="sg-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-      '<button type="submit">Notify me</button>' +
+      '<button type="submit">Get full access →</button>' +
       '<div class="sg-more"><a data-ph>+ Also notify me on WhatsApp / SMS</a></div>' +
       '<div class="sg-ph"><input type="tel" name="phone" placeholder="+48 600 000 000" autocomplete="tel">' +
       '<label><input type="checkbox" name="consent_sms"> I agree to receive new project updates from VizMaker via WhatsApp/SMS. Reply STOP to opt out.</label></div>' +
@@ -958,7 +969,7 @@ const track=(function(){
   }
   document.querySelectorAll('[data-signup]').forEach(renderSignup);
   (function(){ var gb=document.querySelector('[data-signup="gate"]'); if(!gb) return; var h=gb.querySelector('h5'), p=gb.querySelector('p'), b=gb.querySelector('button[type=submit]');
-    if(h) h.remove(); if(p) p.remove(); if(b) b.textContent='Unlock all projects'; })();
+    if(h) h.remove(); if(p) p.remove(); if(b) b.textContent='Get full access →'; })();
 
   render(); progress();
   if (latest && LESSONS.length) setTimeout(function () { open(0); }, 300);
