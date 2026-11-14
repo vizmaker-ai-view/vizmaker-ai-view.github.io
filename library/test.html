@@ -516,16 +516,17 @@ footer.vmf{background:var(--bg);margin-top:20px}
   @keyframes wup{from{transform:translateY(0)}to{transform:translateY(-50%)}} @keyframes wdown{from{transform:translateY(-50%)}to{transform:translateY(0)}}
   .wt{aspect-ratio:16/10;border-radius:6px;overflow:hidden;border:.5px solid rgba(0,228,240,.22);box-shadow:0 5px 15px rgba(0,0,0,.45);background:#0a1013}
   .wt img{width:100%;height:100%;object-fit:cover;display:block}
-  .aud{margin:0 0 14px;overflow:hidden;pointer-events:none;user-select:none;max-width:620px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
-  .aud .at{display:flex;gap:6px;width:max-content;animation:kmove 22s linear infinite} html[dir=rtl] .aud .at{animation-name:kmover}
+  .aud{position:relative;margin:0 0 14px;overflow:hidden;pointer-events:none;user-select:none;max-width:620px;isolation:isolate}
+  .aud .at{display:flex;gap:6px;width:max-content;animation:kmove 22s linear infinite;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden} html[dir=rtl] .aud .at{animation-name:kmover}
   .aud span{white-space:nowrap;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);font-size:12.5px;font-weight:600}
-  .kpis{margin:6px 0 22px;padding:9px 0;border-radius:999px;border:1px solid var(--line);background:linear-gradient(90deg,rgba(0,228,240,.07),rgba(0,228,240,.02));overflow:hidden;pointer-events:none;user-select:none;
-    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
-  .kt{display:flex;width:max-content;animation:kmove 40s linear infinite}
+  .kpis{position:relative;margin:6px 0 22px;padding:9px 0;border-radius:999px;border:1px solid var(--line);background:linear-gradient(90deg,rgba(0,228,240,.07),rgba(0,228,240,.02));overflow:hidden;pointer-events:none;user-select:none;isolation:isolate}
+  .kpis::before,.kpis::after,.aud::before,.aud::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none}
+  .kpis::before,.aud::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)} .kpis::after,.aud::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
+  .kt{display:flex;width:max-content;animation:kmove 40s linear infinite;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden}
   .kt>div{display:flex;align-items:baseline;gap:7px;padding:0 22px;white-space:nowrap;border-right:1px solid rgba(0,228,240,.15)}
   .kt b{font-size:17px;color:var(--h);font-variant-numeric:tabular-nums} .kt span{font-size:12.5px;color:var(--mut)}
-  @keyframes kmove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  html[dir=rtl] .kt{animation-name:kmover} @keyframes kmover{from{transform:translateX(0)}to{transform:translateX(50%)}}
+  @keyframes kmove{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+  html[dir=rtl] .kt{animation-name:kmover} @keyframes kmover{from{transform:translate3d(0,0,0)}to{transform:translate3d(50%,0,0)}}
   @media (prefers-reduced-motion: reduce){.kt{animation:none}}
   html[dir=rtl] .wall{transform:perspective(1200px) rotateY(8deg) rotateX(4deg)}
   @media (max-width:900px){
@@ -621,7 +622,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
     function fmt(n){ try { return n.toLocaleString(window.VM_LANG || 'en'); } catch(_) { return String(n); } }
     function run(){ var t0 = performance.now(), D = 1600;
       (function step(t){ var k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3);
-        [].forEach.call(bs, function(b){ var n = Math.round(+b.dataset.n * e); b.textContent = fmt(n) + (b.hasAttribute('data-plus') && k === 1 ? '+' : ''); });
+        [].forEach.call(bs, function(b){ var n = Math.round(+b.dataset.n * e), t = fmt(n) + (b.hasAttribute('data-plus') && k === 1 ? '+' : ''); if (b.textContent !== t) b.textContent = t; });
         if (k < 1) requestAnimationFrame(step); })(t0); }
     var el = document.getElementById('kpis');
     if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function(es){ if (es[0].isIntersecting) { run(); io.disconnect(); } }, {threshold: .4}); io.observe(el); } else run();
