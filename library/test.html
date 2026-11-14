@@ -1156,7 +1156,8 @@ const track=(function(){
   b.onclick=function(){ u.classList.contains('show')?close():open(); };
   u.addEventListener('click',function(e){ if(e.target.closest('[data-upd-x]')) close(); });
   var s=st(), WEEK=7*864e5;
-  if(s!=='on' && !(s && Date.now()-(+s)<WEEK)) setTimeout(function(){ if(!(window.VM_PUSH_ON&&window.VM_PUSH_ON())) open(); }, 8000);
+  // automatyczny dymek tylko na PC; na telefonie zostaje dzwonek w nagłówku
+  if(!matchMedia('(max-width: 860px)').matches && s!=='on' && !(s && Date.now()-(+s)<WEEK)) setTimeout(function(){ if(!(window.VM_PUSH_ON&&window.VM_PUSH_ON())) open(); }, 8000);
   setInterval(function(){ if(window.VM_PUSH_ON&&window.VM_PUSH_ON()) b.classList.add('on'); }, 2000);
 })();
 </script>
