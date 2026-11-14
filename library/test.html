@@ -352,8 +352,8 @@ footer.vmf{background:var(--bg);margin-top:20px}
         delay: { pageViews: 1, timeDelay: 20 } }] } }
     });
     function sync(){ var on = OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn;
-      var st=document.querySelector('#upd-push .ot'); if(st) st.innerHTML = on ? '<b>✓ Notifications are on</b>You get every new project on this device' : '<b>Instant notifications</b>On this device · no email needed';
-      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? 'Turn off' : (b.dataset.lbl || '🔔 Push'); b.classList.toggle('off', !!on); });
+      var pk=document.querySelector('#upd-push .perk'); if(pk) pk.innerHTML = on ? '✓ Notifications are on for this device' : '✓ Instant &nbsp;·&nbsp; ✓ No email needed &nbsp;·&nbsp; ✓ Turn off anytime';
+      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? (b.classList.contains('big') ? 'Turn off notifications' : 'Turn off') : (b.dataset.lbl || '🔔 Push'); b.classList.toggle('off', !!on); });
       if (!OneSignal.Notifications.isPushSupported()) document.querySelectorAll('[data-push]').forEach(function(b){ b.hidden = true; }); }
     if (OneSignal.Notifications.permission) OneSignal.setConsentGiven(true);
     window.VM_PUSH_ON = function(){ return OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn; };
@@ -392,6 +392,11 @@ footer.vmf{background:var(--bg);margin-top:20px}
   #upd .opt .oi{font-size:20px;width:28px;text-align:center}
   #upd .opt .ot{flex:1;font-size:13px;color:var(--mut)} #upd .opt .ot b{display:block;color:var(--h);font-size:14px;margin-bottom:1px}
   #upd .go{padding:9px 14px;border-radius:999px;border:0;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:800 13px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+  #upd .go.big{display:block;width:100%;padding:14px;font-size:15px;border-radius:12px;box-shadow:0 8px 24px rgba(0,228,240,.25);animation:glow 2.4s ease-in-out infinite}
+  @keyframes glow{50%{box-shadow:0 8px 32px rgba(0,228,240,.45)}}
+  #upd .go.big.off{animation:none;box-shadow:none}
+  #upd .perk{margin:9px 0 12px;font-size:11.5px;color:var(--mut);text-align:center}
+  #upd .calrow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--mut);padding-top:10px;border-top:1px solid var(--line)}
   #upd .go.off{background:transparent;border:1px solid rgba(0,228,240,.4);color:var(--teal)}
   #upd .go[disabled]{background:rgba(0,228,240,.15);color:var(--teal);cursor:default}
   #upd .cals{display:flex;gap:6px;flex-wrap:wrap}
@@ -405,10 +410,13 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="ic">🔔</div>
   <h3>Never miss a new <span>FREE project</span></h3>
   <p>New AI projects for architects &amp; interior designers every week. Get them the moment they drop.</p>
-  <div class="opt" id="upd-push"><div class="oi">🔔</div><div class="ot"><b>Instant notifications</b>On this device · no email needed</div><button class="go" type="button" data-push data-lbl="Turn on">Turn on</button></div>
-  <div class="opt" data-sub><div class="oi">📅</div><div class="ot"><b>Add to calendar</b><span class="cals"><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a></span></div></div>
+  <div id="upd-push"><div class="ot" style="display:none"></div>
+    <button class="go big" type="button" data-push data-lbl="🔔 Yes, notify me">🔔 Yes, notify me</button>
+    <div class="perk">✓ Instant &nbsp;·&nbsp; ✓ No email needed &nbsp;·&nbsp; ✓ Turn off anytime</div>
+  </div>
+  <div class="calrow" data-sub><span>or add to calendar:</span><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a></div>
   <button class="later" type="button" data-upd-x>Maybe later</button>
-  <div style="font-size:11px;color:var(--mut);text-align:center;margin-top:6px">Turn off anytime here or in your browser. <a href="https://www.vizmaker.com/privacy-policy?src=library_push" target="_blank" rel="noopener" style="color:var(--teal)">Privacy</a></div>
+  <div style="font-size:11px;color:var(--mut);text-align:center;margin-top:6px"><a href="https://www.vizmaker.com/privacy-policy?src=library_push" target="_blank" rel="noopener" style="color:var(--teal)">Privacy</a></div>
 </div>
 
 <div class="nbar" id="nbar" hidden>
