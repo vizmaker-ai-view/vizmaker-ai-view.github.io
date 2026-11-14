@@ -568,9 +568,9 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="gbox">
     <button class="x" id="gate-x" type="button" aria-label="Close">&times;</button>
     <div class="gic">🔓</div>
-    <h3>Get the tutorial + PDF — free</h3>
-    <p>You've used your 3 free projects. Enter your email to unlock video tutorials and PDFs for all projects.</p>
-    <ul class="gl"><li>✓ Video tutorials for every project</li><li>✓ Project PDFs: prompts + steps</li><li>✓ A new project every week</li></ul>
+    <h3>Unlock all 20 projects — free</h3>
+    <p>You've explored 3 free projects. Enter your email to unlock the whole library and get every new project.</p>
+    <ul class="gl"><li>✓ All projects in 3D + video tutorials</li><li>✓ Project PDFs: prompts + steps</li><li>✓ A new project every week</li></ul>
     <div class="sgn" data-signup="gate"></div>
     <div class="gfoot">No spam. Unsubscribe anytime.</div>
   </div>
@@ -768,7 +768,7 @@ const track=(function(){
         '<div class="num">' + String(idx + 1).padStart(2, '0') + '</div>' +
         (l.yt ? '<span class="tag-yt">▶ Video tutorial</span>' : '') +
         '<div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>' +
-        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span><span class="lk">📄 PDF + ▶ tutorial: free with email</span></div>' +
+        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span><span class="lk">🔒 Free with email</span></div>' +
         '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span></div>' +
         '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p>' + addedTime(l) + '</div>';
       c.onclick = function () { open(idx); };
@@ -787,6 +787,7 @@ const track=(function(){
   var cur = 0;
   function open(idx) {
     var l = LESSONS[idx];
+    if (!unlocked(l)) { gate(idx, 'project'); return; }
     cur = idx;
     var full = unlocked(l);
     seen[l.key] = 1; try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {}
@@ -897,7 +898,7 @@ const track=(function(){
   }
   document.querySelectorAll('[data-signup]').forEach(renderSignup);
   (function(){ var gb=document.querySelector('[data-signup="gate"]'); if(!gb) return; var h=gb.querySelector('h5'), p=gb.querySelector('p'), b=gb.querySelector('button[type=submit]');
-    if(h) h.remove(); if(p) p.remove(); if(b) b.textContent='Unlock tutorial + PDF'; })();
+    if(h) h.remove(); if(p) p.remove(); if(b) b.textContent='Unlock all projects'; })();
 
   render(); progress();
   if (latest && LESSONS.length) setTimeout(function () { open(0); }, 300);
