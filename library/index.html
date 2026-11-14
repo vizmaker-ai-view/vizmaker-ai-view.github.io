@@ -354,7 +354,10 @@ footer.vmf{background:var(--bg);margin-top:20px}
   .sgn .sg-more{flex-basis:100%;font-size:12px;color:var(--mut);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   .sgn .sg-more a{color:var(--teal);cursor:pointer;text-decoration:underline}
   .sgn .sg-ph{flex-basis:100%;display:none;gap:8px;flex-wrap:wrap}
-  .sgn .sg-ph.on{display:flex}
+  .sgn .sg-ph.on{display:flex;animation:fade .25s ease}
+  .sgn .sg-push{flex-basis:100%;display:flex;gap:8px;align-items:center;font-size:13px;color:var(--h);font-weight:600}
+  .sgn .sg-push input{width:16px;height:16px;accent-color:var(--teal)}
+  html.nopush .sgn .sg-push{display:none}
   .sgn label{font-size:12px;color:var(--mut);display:flex;gap:6px;align-items:flex-start}
   .sgn .sg-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
   .sgn .sg-err{flex-basis:100%;font-size:12px;color:#ff8a8a;display:none}
@@ -1069,11 +1072,13 @@ const track=(function(){
       '<input class="sg-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">' +
       '<button type="submit">Get full access →</button>' +
       '<div class="sg-more"><a data-ph>+ Also notify me on WhatsApp / SMS</a></div>' +
-      '<div class="sg-ph"><input type="tel" name="phone" placeholder="+48 600 000 000" autocomplete="tel">' +
+      '<div class="sg-ph"><label class="sg-push"><input type="checkbox" name="push" checked> 🔔 Notify me on this device when new presets drop</label><input type="tel" name="phone" placeholder="+48 600 000 000" autocomplete="tel">' +
       '<label><input type="checkbox" name="consent_sms"> I agree to receive new project updates from VizMaker via WhatsApp/SMS. Reply STOP to opt out.</label></div>' +
       '<div class="sg-err"></div></form>';
     var f = box.querySelector('form'), err = box.querySelector('.sg-err');
-    box.querySelector('[data-ph]').onclick = function () { box.querySelector('.sg-ph').classList.add('on'); };
+    function reveal(){ box.querySelector('.sg-ph').classList.add('on'); var m = box.querySelector('.sg-more'); if (m) m.style.display = 'none'; }
+    box.querySelector('[data-ph]').onclick = reveal;
+    f.email.addEventListener('input', function(){ if (f.email.value.length) reveal(); }, {once:true});
     f.onsubmit = function (e) {
       e.preventDefault();
       var email = (f.email.value || '').trim();
@@ -1081,6 +1086,9 @@ const track=(function(){
       var phone = (f.phone.value || '').trim();
       if (phone && !f.consent_sms.checked) { err.textContent = 'Tick the WhatsApp/SMS consent box, or leave the phone field empty.'; err.style.display = 'block'; return; }
       err.style.display = 'none';
+      if (f.push && f.push.checked && !window.VM_NO_PUSH && window.OneSignal && OneSignal.Notifications && !OneSignal.Notifications.permission) {
+        try { OneSignal.setConsentGiven(true); OneSignal.Notifications.requestPermission(); track.ev('push_prompt',{name:'PushPrompt'},{place:box.getAttribute('data-signup')}); } catch (_) {}
+      }
       var where = box.getAttribute('data-signup');
       var proj = where === 'lesson' && LESSONS[cur] ? LESSONS[cur].key : (qs.get('p') && qs.get('p') !== 'latest' ? qs.get('p') : 'library');
       var body = new URLSearchParams({ email: email, phone: f.consent_sms.checked ? phone : '', consent_sms: f.consent_sms.checked ? 'true' : 'false',
