@@ -18,5 +18,6 @@ jobs:
       - run: python3 .github/scripts/announce.py
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          ONESIGNAL_KEY: ${{ secrets.ONESIGNAL_KEY }}
           BEFORE: ${{ github.event.before }}
           TEST: ${{ inputs.test }}

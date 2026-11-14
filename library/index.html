@@ -337,11 +337,34 @@ footer.vmf{background:var(--bg);margin-top:20px}
   .sgn .sg-ok{font:600 14px Inter,sans-serif;color:var(--txt)}
   .sgn .sg-ok b{color:var(--teal)}
 </style>
+<!-- OneSignal web push (app: VizMaker AI App) -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: 'f731215b-2bee-485d-9885-819c21484aeb',
+      serviceWorkerPath: '/OneSignalSDKWorker.js', serviceWorkerParam: { scope: '/' },
+      notifyButton: { enable: false },
+      promptOptions: { slidedown: { prompts: [{ type: 'push', autoPrompt: true,
+        text: { actionMessage: "🔔 Get a notification when a new FREE project drops. No email needed.", acceptButton: 'Notify me', cancelButton: 'Later' },
+        delay: { pageViews: 1, timeDelay: 20 } }] } }
+    });
+    OneSignal.User.addTag('library', '1');
+    function sync(){ var on = OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn;
+      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? '🔔 On' : '🔔 Push'; b.disabled = !!on; });
+      if (!OneSignal.Notifications.isPushSupported()) document.querySelectorAll('[data-push]').forEach(function(b){ b.hidden = true; }); }
+    sync();
+    OneSignal.User.PushSubscription.addEventListener('change', function(e){ sync();
+      if (e.current.optedIn && typeof track!=='undefined') track.ev('push_subscribe', {name:'Subscribe'}, {channel:'webpush'}); });
+    document.addEventListener('click', function(ev){ if (ev.target.closest('[data-push]')) OneSignal.Slidedown.promptPush({ force: true }); });
+  });
+</script>
 </head>
 <body>
 <div class="nbar" id="nbar" hidden>
   <span class="nb-ic">🔔</span><span class="nb-t"><b>New projects every week.</b> Subscribe to library updates so you don't miss them.</span>
-  <span data-sub style="display:contents"><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a></span>
+  <span data-sub style="display:contents"><a class="nb-go" data-push role="button">🔔 Push</a><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a></span>
   <button class="nb-x" type="button" id="nbar-x" aria-label="Close">&times;</button>
 </div>
 <a class="promo" id="promo" target="_blank" rel="noopener">
@@ -385,8 +408,8 @@ footer.vmf{background:var(--bg);margin-top:20px}
         </div>
         <div class="sgn" data-signup="plan"></div>
         <div class="subrow" data-sub>
-          <span class="sub-t">🔔 <b>Never miss a new project.</b> Subscribe once, new lessons appear in your calendar automatically:</span>
-          <a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a>
+          <span class="sub-t">🔔 <b>Never miss a new project.</b> Get a push notification or add new lessons to your calendar automatically:</span>
+          <a class="nb-go" data-push role="button">🔔 Push</a><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a>
         </div>
         <div class="cal-note">Block 30 minutes tomorrow at 7 PM. Starting is the hardest part, so let your calendar remind you. You can change the time in one click.</div>
       </div>

@@ -46,6 +46,18 @@ def discord(p):
                 'content': os.environ.get('DISCORD_MENTION', '') + ' 🎁 **New FREE project in the VizMaker Library!**',
                 'embeds': [embed]})
 
+def webpush(p):
+    key = os.environ.get('ONESIGNAL_KEY')
+    if not key: print('ONESIGNAL_KEY not set - skip'); return
+    body = {'app_id': 'f731215b-2bee-485d-9885-819c21484aeb', 'included_segments': ['Total Subscriptions'],
+            'target_channel': 'push', 'headings': {'en': '🆕 New FREE VizMaker project'},
+            'contents': {'en': p['title'] + ' — open it in 3D'}, 'web_url': link(p['key'], 'webpush'),
+            'name': 'library ' + p['key']}
+    if thumb(p['key']): body['chrome_web_image'] = thumb(p['key'])
+    req = urllib.request.Request('https://api.onesignal.com/notifications', data=json.dumps(body).encode(), method='POST',
+                                 headers={'Content-Type': 'application/json', 'Authorization': 'Key ' + key})
+    with urllib.request.urlopen(req) as r: print('webpush', r.status, r.read()[:200])
+
 if __name__ == '__main__':
     now = items(open(FEED, encoding='utf-8').read())
     if os.environ.get('TEST') == 'true':
@@ -55,4 +67,7 @@ if __name__ == '__main__':
         new = [i for i in now if i['guid'] not in old]
         if not old and len(new) > 1: new = new[:1]      # zabezpieczenie: nie spamuj całym feedem
     print('new projects:', [i['key'] for i in new])
-    for p in reversed(new): discord(p)                  # najstarszy z nowych pierwszy
+    for p in reversed(new):
+        for f in (discord, webpush):
+            try: f(p)
+            except Exception as e: print(f.__name__, 'failed:', e)                  # najstarszy z nowych pierwszy
