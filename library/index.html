@@ -134,6 +134,21 @@
   .top { position: sticky; top: 0; z-index: 20; background: rgba(1,7,19,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
   .top .wrap { display: flex; align-items: center; gap: 14px; height: 60px; }
   .top img { height: 22px; }
+  .srch{position:relative;display:flex;align-items:center}
+  .srch input{width:220px;height:36px;padding:0 12px 0 34px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--h);font:500 13.5px Inter,sans-serif;outline:none}
+  .srch input:focus{border-color:rgba(0,228,240,.6);background:rgba(0,228,240,.06)}
+  .srch .sb{position:absolute;left:4px;width:28px;height:28px;border:0;background:none;font-size:14px;cursor:default;opacity:.8}
+  .srch .sx{display:none}
+  html[dir=rtl] .srch input{padding:0 34px 0 12px} html[dir=rtl] .srch .sb{left:auto;right:4px}
+  @media (max-width:1100px){.srch input{width:160px}}
+  @media (max-width:640px){
+    .srch .sb{position:static;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);cursor:pointer;opacity:1}
+    .srch input,.srch .sx{display:none}
+    .srch.on{position:absolute;left:10px;right:10px;top:12px;z-index:30}
+    .srch.on .sb{display:none} .srch.on input{display:block;width:100%;padding:0 40px 0 14px;background:#06141d;height:38px}
+    .srch.on .sx{display:block;position:absolute;right:4px;width:32px;height:32px;border:0;background:none;color:var(--mut);font-size:22px;cursor:pointer}
+    html[dir=rtl] .srch.on .sx{right:auto;left:4px}
+  }
   .top .pr { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--mut); }
   .bar { width: 120px; height: 6px; border-radius: 9px; background: rgba(0,228,240,.15); overflow: hidden; }
   .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--teal-d), var(--teal)); transition: width .5s ease; }
@@ -473,6 +488,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 <style>
   .hero-a{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center;padding:40px 0 24px}
   .hero-a h1{max-width:620px}
+  .hero-a .hx{min-width:0} .aud{max-width:min(620px,100%)} #top-cta{white-space:nowrap}
   .btn.big{padding:16px 26px;font-size:16px;box-shadow:0 10px 30px rgba(0,228,240,.3)}
   .hero-a .acts{display:flex;flex-wrap:wrap;gap:10px}
   .proof{margin-top:18px;color:var(--mut);font-size:13.5px} .proof .stars{color:#ffc94d;letter-spacing:1px;margin-right:6px}
@@ -484,7 +500,9 @@ footer.vmf{background:var(--bg);margin-top:20px}
   @keyframes wup{from{transform:translateY(0)}to{transform:translateY(-50%)}} @keyframes wdown{from{transform:translateY(-50%)}to{transform:translateY(0)}}
   .wt{aspect-ratio:16/10;border-radius:6px;overflow:hidden;border:.5px solid rgba(0,228,240,.22);box-shadow:0 5px 15px rgba(0,0,0,.45);background:#0a1013}
   .wt img{width:100%;height:100%;object-fit:cover;display:block}
-  .aud{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px} .aud span{padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);font-size:12.5px;font-weight:600}
+  .aud{margin:0 0 14px;overflow:hidden;pointer-events:none;user-select:none;max-width:620px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+  .aud .at{display:flex;gap:6px;width:max-content;animation:kmove 22s linear infinite} html[dir=rtl] .aud .at{animation-name:kmover}
+  .aud span{white-space:nowrap;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);font-size:12.5px;font-weight:600}
   .kpis{margin:6px 0 22px;padding:9px 0;border-radius:999px;border:1px solid var(--line);background:linear-gradient(90deg,rgba(0,228,240,.07),rgba(0,228,240,.02));overflow:hidden;pointer-events:none;user-select:none;
     -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
   .kt{display:flex;width:max-content;animation:kmove 40s linear infinite}
@@ -495,7 +513,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   @media (prefers-reduced-motion: reduce){.kt{animation:none}}
   html[dir=rtl] .wall{transform:perspective(1200px) rotateY(8deg) rotateX(4deg)}
   @media (max-width:900px){
-    .hero-a{grid-template-columns:1fr;gap:18px;padding-top:22px}
+    .hero-a{grid-template-columns:minmax(0,1fr);gap:18px;padding-top:22px}
     .wall{order:-1;height:210px;transform:none} .wz{gap:4px}
     .wi{gap:4px} .wt{border-radius:4.5px}
     .kpis{padding:7px 0} .kt b{font-size:15px} .kt span{font-size:11.5px} .kt>div{padding:0 16px}
@@ -528,6 +546,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 </a>
 <header class="top"><div class="wrap">
   <img src="https://www.vizmaker.com/vizmaker-logo-line-white.png" alt="VizMaker">
+  <div class="srch" id="srch"><button type="button" class="sb" id="srch-b" aria-label="Search">🔍</button><input type="search" id="srch-i" placeholder="Search projects…" autocomplete="off" enterkeyhint="search"><button type="button" class="sx" id="srch-x" aria-label="Close">&times;</button></div>
   <div class="pr"><span id="pr-t">0 of 20 projects explored</span><div class="bar"><i id="pr-bar"></i></div></div>
   <button class="hb-upd" id="upd-open" type="button"><span class="dot"></span>🔔 <span class="t">Get updates</span></button>
   <a class="btn" id="top-cta" target="_blank" rel="noopener">Create free account</a>
@@ -538,7 +557,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
     <div class="hx">
       <span class="badge"><i></i>Free mini-course · New project every week</span>
       <h1>Ready-to-use <span>AI presets</span> for creative pros</h1>
-      <div class="aud"><span>Architects</span><span>Interior designers</span><span>Designers</span><span>VFX artists</span><span>E-commerce</span></div>
+      <div class="aud" aria-hidden="true"><div class="at"><span>Architects</span><span>Interior designers</span><span>Designers</span><span>Furniture</span><span>VFX artists</span><span>E-commerce</span></div></div>
       <p>Money-printing, problem-solving presets, PDFs and prompts. Open, copy, render. Free.</p>
       <div class="acts">
         <a class="btn big" href="#lessons">Get the free presets →</a>
@@ -559,6 +578,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   </div></div>
   <script>
   (function(){
+    (function(){ var at = document.querySelector('.aud .at'); if (at) at.innerHTML = at.innerHTML + at.innerHTML + at.innerHTML + at.innerHTML; })();
     // kolaż okładek: miniatury filmów projektów, 3 kolumny przewijane w pętli
     var imgs = LESSONS.filter(function(l){ return l.yt; }).map(function(l){ return 'https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg'; });
     var cols = document.querySelectorAll('.wall .wc');
@@ -597,6 +617,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 
   <div class="filters" id="lessons"></div>
   <div class="grid" id="grid"></div>
+  <div id="srch-none" style="display:none;text-align:center;color:var(--mut);padding:30px 0">No projects found. Try another word.</div>
 </main>
 <section id="plan" style="padding:20px 0 56px">
   <div class="wrap">
@@ -869,6 +890,20 @@ const track=(function(){
       d.save('VizMaker-' + l.key + '.pdf');
     }).catch(function(){ alert('PDF could not be created. Please try again.'); });
   }
+  // wyszukiwarka: szuka w tytule, opisie, kategoriach i w przetłumaczonym tekście karty
+  var sq = '';
+  function applySearch(){ var q = sq.toLowerCase(), n = 0, cards = document.querySelectorAll('#grid .card');
+    [].forEach.call(cards, function(c){ var k = (c.querySelector('h3') || {}).dataset; var l = k && LESSONS.filter(function(x){ return x.key === k.k; })[0];
+      var hay = (c.textContent + ' ' + (l ? [l.title, l.desc, l.soft, l.cat].concat(l.steps || []).join(' ') : '')).toLowerCase();
+      var ok = !q || hay.indexOf(q) >= 0; c.style.display = ok ? '' : 'none'; if (ok) n++; });
+    var e = $('srch-none'); if (e) e.style.display = (q && !n) ? 'block' : 'none'; }
+  (function(){ var i = $('srch-i'), w = $('srch'), t;
+    i.addEventListener('input', function(){ clearTimeout(t); t = setTimeout(function(){ sq = i.value.trim();
+      if (sq && filter !== 'All') { filter = 'All'; [].forEach.call(document.querySelectorAll('.chip'), function(x, j){ x.classList.toggle('on', j === 0); }); render(); }
+      applySearch(); if (sq) { var g = $('lessons'); if (g.getBoundingClientRect().top > innerHeight * .6 || g.getBoundingClientRect().top < 0) g.scrollIntoView({block:'start', behavior:'smooth'}); track.ev('search',{name:'Search',std:true},{q:sq.slice(0,60)}); } }, 250); });
+    $('srch-b').onclick = function(){ w.classList.add('on'); setTimeout(function(){ i.focus(); }, 30); };
+    $('srch-x').onclick = function(){ i.value = ''; sq = ''; applySearch(); w.classList.remove('on'); };
+  })();
   function render() {
     var g = $('grid'); g.innerHTML = ''; var i = 0;
     if (filter !== 'Coming soon') LESSONS.forEach(function (l, idx) {
@@ -952,6 +987,7 @@ const track=(function(){
     if (lastNext >= 0) { var h = document.querySelector('#grid h3[data-k="' + LESSONS[lastNext].key + '"]'), c = h && h.closest('.card');
       if (c) { c.classList.add('hl'); c.scrollIntoView({block:'center', behavior:'smooth'}); setTimeout(function(){ c.classList.remove('hl'); }, 4000); } } }
   // przycisk "wstecz" w telefonie/przeglądarce zamyka projekt zamiast wychodzić ze strony
+  var _render = render; render = function(){ _render(); setTimeout(applySearch, 0); };
   function close() { if (history.state && history.state.vmL) history.back(); else doClose(); }
   window.addEventListener('popstate', function () { if ($('lesson').classList.contains('open') && !(history.state && history.state.vmL)) doClose(); });
   $('l-back').onclick = close;
