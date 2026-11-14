@@ -424,10 +424,18 @@ footer.vmf{background:var(--bg);margin-top:20px}
   .ytlock .yl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(3,13,22,.62);color:#fff;font:600 14px Inter,sans-serif;transition:background .2s}
   .ytlock:hover .yl{background:rgba(3,13,22,.45)} .ytlock .yl b{font-size:16px} .ytlock .yl small{color:var(--teal);font-weight:700}
   .pdfbtn{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;width:100%;justify-content:center;margin:12px 0 4px;padding:11px 14px;min-height:44px;cursor:pointer} .pdfbtn small{font-weight:500;opacity:.7;margin-left:4px}
+  #ph{position:fixed;inset:0;z-index:72;display:none;align-items:center;justify-content:center;background:rgba(0,6,12,.72);backdrop-filter:blur(6px);padding:16px}
+  #ph.open{display:flex} #ph .gbox{animation:gin .35s cubic-bezier(.2,.9,.3,1.2)}
+  #ph input[type=tel]{width:100%;height:46px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--h);font:500 16px Inter,sans-serif;margin:4px 0 10px}
+  #ph .phc{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--mut);line-height:1.4;margin-bottom:12px} #ph .go{width:100%;height:48px;border:0;border-radius:12px;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:800 15px Inter,sans-serif;cursor:pointer}
+  #ph .later{display:block;margin:10px auto 0;background:none;border:0;color:var(--mut);font:500 13px Inter,sans-serif;cursor:pointer;text-decoration:underline}
   #gate{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(0,6,12,.72);backdrop-filter:blur(6px);padding:16px}
   #gate.open{display:flex}
   #gate .gbox{position:relative;width:460px;max-width:100%;max-height:92vh;overflow:auto;background:linear-gradient(180deg,#06202b,#030d16);border:1px solid rgba(0,228,240,.4);border-radius:20px;padding:26px 24px 18px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 50px rgba(0,228,240,.15);animation:gin .35s cubic-bezier(.2,.9,.3,1.2)}
   @keyframes gin{from{transform:translateY(20px) scale(.97);opacity:0}}
+  #ph .gbox{position:relative;width:440px;max-width:100%;background:linear-gradient(180deg,#06202b,#030d16);border:1px solid rgba(0,228,240,.4);border-radius:20px;padding:26px 24px 18px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  #ph .x{position:absolute;top:10px;right:14px;background:none;border:0;color:var(--mut);font-size:24px;cursor:pointer} #ph .gic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.3);margin-bottom:12px}
+  #ph h3{margin:0 0 6px;font-size:20px;color:var(--h)} #ph p{margin:0 0 12px;color:var(--mut);font-size:14px;line-height:1.5} #ph .sg-err{display:none;color:#ff8a8a;font-size:12.5px;margin:-4px 0 10px}
   #gate .x{position:absolute;top:10px;right:14px;background:none;border:0;color:var(--mut);font-size:24px;cursor:pointer}
   #gate .gic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.3);margin-bottom:12px}
   #gate h3{margin:0 0 6px;font-size:22px;color:var(--h)} #gate p{margin:0 0 12px;color:var(--mut);font-size:14px;line-height:1.5}
@@ -470,11 +478,11 @@ footer.vmf{background:var(--bg);margin-top:20px}
   .proof{margin-top:18px;color:var(--mut);font-size:13.5px} .proof .stars{color:#ffc94d;letter-spacing:1px;margin-right:6px}
   .wall{position:relative;height:500px;overflow:hidden;transform:perspective(1200px) rotateY(-8deg) rotateX(4deg);
     -webkit-mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent)}
-  .wz{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;transform:scale(2);transform-origin:33.333% 50%;transition:transform .9s cubic-bezier(.65,0,.35,1)}
+  .wz{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;transform:scale(2);transform-origin:33.333% 50%;transition:transform .9s cubic-bezier(.65,0,.35,1)}
   .wz.out{transform:scale(1)}
-  .wc{overflow:hidden} .wi{display:flex;flex-direction:column;gap:12px;animation:wup linear infinite} .wc:nth-child(even) .wi{animation-name:wdown}
+  .wc{overflow:hidden} .wi{display:flex;flex-direction:column;gap:6px;animation:wup linear infinite} .wc:nth-child(even) .wi{animation-name:wdown}
   @keyframes wup{from{transform:translateY(0)}to{transform:translateY(-50%)}} @keyframes wdown{from{transform:translateY(-50%)}to{transform:translateY(0)}}
-  .wt{aspect-ratio:16/10;border-radius:12px;overflow:hidden;border:1px solid rgba(0,228,240,.18);box-shadow:0 10px 30px rgba(0,0,0,.45);background:#0a1013}
+  .wt{aspect-ratio:16/10;border-radius:6px;overflow:hidden;border:.5px solid rgba(0,228,240,.22);box-shadow:0 5px 15px rgba(0,0,0,.45);background:#0a1013}
   .wt img{width:100%;height:100%;object-fit:cover;display:block}
   .aud{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px} .aud span{padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);font-size:12.5px;font-weight:600}
   .kpis{margin:6px 0 22px;padding:9px 0;border-radius:999px;border:1px solid var(--line);background:linear-gradient(90deg,rgba(0,228,240,.07),rgba(0,228,240,.02));overflow:hidden;pointer-events:none;user-select:none;
@@ -488,8 +496,8 @@ footer.vmf{background:var(--bg);margin-top:20px}
   html[dir=rtl] .wall{transform:perspective(1200px) rotateY(8deg) rotateX(4deg)}
   @media (max-width:900px){
     .hero-a{grid-template-columns:1fr;gap:18px;padding-top:22px}
-    .wall{order:-1;height:210px;transform:none} .wz{gap:8px}
-    .wi{gap:8px} .wt{border-radius:9px}
+    .wall{order:-1;height:210px;transform:none} .wz{gap:4px}
+    .wi{gap:4px} .wt{border-radius:4.5px}
     .kpis{padding:7px 0} .kt b{font-size:15px} .kt span{font-size:11.5px} .kt>div{padding:0 16px}
   }
   @media (prefers-reduced-motion: reduce){.wi{animation:none}}
@@ -531,7 +539,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
       <span class="badge"><i></i>Free mini-course · New project every week</span>
       <h1>Ready-to-use <span>AI presets</span> for creative pros</h1>
       <div class="aud"><span>Architects</span><span>Interior designers</span><span>Designers</span><span>VFX artists</span><span>E-commerce</span></div>
-      <p>Open, copy, render. Client-ready presentations in minutes, not days. Free.</p>
+      <p>Money-printing, problem-solving presets, PDFs and prompts. Open, copy, render. Free.</p>
       <div class="acts">
         <a class="btn big" href="#lessons">Get the free presets →</a>
         <a class="btn ghost" href="#plan">📅 Plan your learning time</a>
@@ -647,6 +655,21 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div><button type="button" class="btn-ghost" data-consent="0">Essential only</button><button type="button" class="btn" data-consent="1">Accept</button></div>
 </div>
 
+<div id="ph" role="dialog" aria-modal="true">
+  <div class="gbox">
+    <button class="x" id="ph-x" type="button" aria-label="Close">&times;</button>
+    <div class="gic">📱</div>
+    <h3>One more step: get new presets on WhatsApp</h3>
+    <p>Be the first to know when a new free preset drops. 1–2 messages a week, no spam.</p>
+    <form id="ph-f" novalidate>
+      <input type="tel" name="phone" placeholder="+44 7700 900123" autocomplete="tel" inputmode="tel">
+      <label class="phc"><input type="checkbox" name="consent_sms"> I agree to receive new project updates from VizMaker via WhatsApp/SMS. Reply STOP to opt out.</label>
+      <div class="sg-err" id="ph-err"></div>
+      <button type="submit" class="go">Send me presets on WhatsApp</button>
+      <button type="button" class="later" id="ph-skip">No thanks</button>
+    </form>
+  </div>
+</div>
 <div id="gate" role="dialog" aria-modal="true">
   <div class="gbox">
     <button class="x" id="gate-x" type="button" aria-label="Close">&times;</button>
@@ -977,12 +1000,28 @@ const track=(function(){
         signed = true; try { localStorage.setItem('vm_lib_signed', '1'); } catch (_) {}
         if (where === 'gate' && pendingGate >= 0) { var pg = pendingGate, act = pendingAct; pendingGate = -1; pendingAct = null; setTimeout(function(){ gateClose(); render(); open(pg); if (act === 'pdf') makePdf(LESSONS[pg]); }, 1400); } else { render(); if ($('lesson').classList.contains('open')) open(cur); }
         track.ev('library_signup', { name: 'CompleteRegistration', std: true }, { place: where, lesson: proj, with_phone: f.consent_sms.checked ? 1 : 0 });
+        if (!f.consent_sms.checked) askPhone(email, proj, where === 'gate' ? 1700 : 900);
         box.innerHTML = okHtml(false) + '<div style="margin-top:10px"><a data-again style="color:var(--teal);cursor:pointer;text-decoration:underline;font-size:13px">+ Add another email</a></div>';
         var again = function () { if (box.querySelector('[data-again]')) renderSignup(box); };
         box.querySelector('[data-again]').onclick = again;
         setTimeout(again, 8000);
       });
     };
+  }
+  // krok 2 po zapisie mailem: prośba o numer WhatsApp (raz na urządzenie)
+  function askPhone(email, proj, delay){
+    try { if (localStorage.getItem('vm_lib_phone')) return; } catch(_) {}
+    var m = $('ph'), f = $('ph-f'), er = $('ph-err');
+    function done(v){ try { localStorage.setItem('vm_lib_phone', v); } catch(_) {} m.classList.remove('open'); }
+    $('ph-x').onclick = $('ph-skip').onclick = function(){ track.ev('phone_skip',{name:'PhoneSkip'},{lesson:proj}); done('skip'); };
+    f.onsubmit = function(e){ e.preventDefault(); var ph = (f.phone.value || '').replace(/[\s()-]/g, '');
+      if (!/^\+?\d{7,15}$/.test(ph)) { er.textContent = 'Please enter your phone number with country code, e.g. +44…'; er.style.display = 'block'; return; }
+      if (!f.consent_sms.checked) { er.textContent = 'Please tick the consent box.'; er.style.display = 'block'; return; }
+      er.style.display = 'none';
+      fetch(SIGNUP_HOOK, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ email: email, phone: ph, consent_sms: 'true', proj: proj, lang: window.VM_LANG || 'en', src: (qs.get('utm_source') || 'www'), place: 'phone_step', website: '' }) }).catch(function(){});
+      track.ev('phone_submit',{name:'Contact',std:true},{lesson:proj});
+      f.innerHTML = '<div class="sg-ok">✅ <b>Done!</b> We\'ll send new presets to your WhatsApp.</div>'; setTimeout(function(){ done('1'); }, 1600); };
+    setTimeout(function(){ m.classList.add('open'); }, delay);
   }
   document.querySelectorAll('[data-signup]').forEach(renderSignup);
   (function(){ var gb=document.querySelector('[data-signup="gate"]'); if(!gb) return; var h=gb.querySelector('h5'), p=gb.querySelector('p'), b=gb.querySelector('button[type=submit]');
