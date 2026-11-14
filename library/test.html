@@ -458,6 +458,30 @@ footer.vmf{background:var(--bg);margin-top:20px}
     html[dir=rtl] .nxbar .nt{text-align:right}
   }
 </style>
+<style>
+  .hero-a{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center;padding:40px 0 24px}
+  .hero-a h1{max-width:620px}
+  .btn.big{padding:16px 26px;font-size:16px;box-shadow:0 10px 30px rgba(0,228,240,.3)}
+  .hero-a .acts{display:flex;flex-wrap:wrap;gap:10px}
+  .proof{margin-top:18px;color:var(--mut);font-size:13.5px} .proof .stars{color:#ffc94d;letter-spacing:1px;margin-right:6px}
+  .wall{position:relative;height:500px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;overflow:hidden;transform:perspective(1200px) rotateY(-8deg) rotateX(4deg);
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent)}
+  .wc{overflow:hidden} .wi{display:flex;flex-direction:column;gap:12px;animation:wup linear infinite} .wc:nth-child(2) .wi{animation-name:wdown}
+  @keyframes wup{from{transform:translateY(0)}to{transform:translateY(-50%)}} @keyframes wdown{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+  .wt{aspect-ratio:16/10;border-radius:12px;overflow:hidden;border:1px solid rgba(0,228,240,.18);box-shadow:0 10px 30px rgba(0,0,0,.45);background:#0a1013}
+  .wt img{width:100%;height:100%;object-fit:cover;display:block}
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:10px 0 26px;padding:18px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(0,228,240,.06),rgba(0,228,240,.01))}
+  .kpis div{text-align:center} .kpis b{display:block;font-size:26px;color:var(--h);font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .kpis span{font-size:12.5px;color:var(--mut)}
+  html[dir=rtl] .wall{transform:perspective(1200px) rotateY(8deg) rotateX(4deg)}
+  @media (max-width:900px){
+    .hero-a{grid-template-columns:1fr;gap:18px;padding-top:22px}
+    .wall{order:-1;height:210px;transform:none;grid-template-columns:repeat(3,1fr);gap:8px}
+    .wi{gap:8px} .wt{border-radius:9px}
+    .kpis{grid-template-columns:repeat(3,1fr);row-gap:14px;padding:14px 10px} .kpis b{font-size:21px} .kpis span{font-size:11.5px}
+  }
+  @media (prefers-reduced-motion: reduce){.wi{animation:none}}
+</style>
 </head>
 <body>
 <div id="upd" role="dialog" aria-label="Get updates">
@@ -490,16 +514,52 @@ footer.vmf{background:var(--bg);margin-top:20px}
 </div></header>
 
 <main class="wrap">
-  <section class="hero">
-    <span class="badge"><i></i>Free mini-course · New project every week</span>
-    <h1>The <span>AI Project Library</span> for architects &amp; interior designers</h1>
-    <p>20 real VizMaker projects you can open in 3D, with the exact prompts and step-by-step workflow. Explore one, then make it yours.</p>
-    <div class="acts">
-      <a class="btn" href="#lessons">Start with lesson 01 →</a>
-      <a class="btn ghost" href="#plan">📅 Plan your learning time</a>
+  <section class="hero hero-a">
+    <div class="hx">
+      <span class="badge"><i></i>Free mini-course · New project every week</span>
+      <h1>Ready-to-use <span>AI presets</span> for architects &amp; interior designers</h1>
+      <p>Open, copy, render. Client-ready presentations in minutes, not days. Free.</p>
+      <div class="acts">
+        <a class="btn big" href="#lessons">Get the free presets →</a>
+        <a class="btn ghost" href="#plan">📅 Plan your learning time</a>
+      </div>
+      <div class="proof"><span class="stars">★★★★★</span> Used by 500,000+ designers in 155 countries</div>
     </div>
-    <div class="stats"><div><b>20</b>projects</div><div><b>3–7 min</b>per lesson</div><div><b>Prompts</b>copy &amp; reuse</div><div><b>14 days</b>unlimited AI to practise</div></div>
+    <div class="wall" aria-hidden="true"><div class="wc"></div><div class="wc"></div><div class="wc"></div></div>
   </section>
+  <div class="kpis" id="kpis">
+    <div><b data-n="500000" data-plus>0</b><span>designers use VizMaker</span></div>
+    <div><b data-k="projects">0</b><span>projects in 3D</span></div>
+    <div><b data-k="tutorials">0</b><span>video tutorials</span></div>
+    <div><b data-k="pdfs">0</b><span>PDF guides</span></div>
+    <div><b data-k="prompts">0</b><span>ready prompts</span></div>
+    <div><b data-k="mins">0</b><span>min of learning</span></div>
+  </div>
+  <script>
+  (function(){
+    // kolaż okładek: miniatury filmów projektów, 3 kolumny przewijane w pętli
+    var imgs = LESSONS.filter(function(l){ return l.yt; }).map(function(l){ return 'https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg'; });
+    var cols = document.querySelectorAll('.wall .wc');
+    [].forEach.call(cols, function(c, ci){
+      var list = imgs.slice(ci).concat(imgs.slice(0, ci)); if (ci === 1) list.reverse();
+      var html = list.map(function(u){ return '<div class="wt"><img loading="lazy" alt="" src="' + u + '"></div>'; }).join('');
+      c.innerHTML = '<div class="wi" style="animation-duration:' + (38 + ci * 9) + 's">' + html + html + '</div>';
+    });
+    // liczniki: prawdziwe dane z biblioteki, animacja od 0 gdy pasek jest widoczny
+    var V = { projects: LESSONS.length, tutorials: LESSONS.filter(function(l){ return l.yt; }).length, pdfs: LESSONS.length,
+      prompts: LESSONS.reduce(function(a, l){ return a + (l.prompts ? l.prompts.length : 0); }, 0),
+      mins: LESSONS.reduce(function(a, l){ return a + (+l.min || 0); }, 0) };
+    var bs = document.querySelectorAll('#kpis b');
+    [].forEach.call(bs, function(b){ if (b.dataset.k) { b.dataset.n = V[b.dataset.k]; if (!V[b.dataset.k]) b.parentNode.style.display = 'none'; } });
+    function fmt(n){ try { return n.toLocaleString(window.VM_LANG || 'en'); } catch(_) { return String(n); } }
+    function run(){ var t0 = performance.now(), D = 1600;
+      (function step(t){ var k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3);
+        [].forEach.call(bs, function(b){ var n = Math.round(+b.dataset.n * e); b.textContent = fmt(n) + (b.hasAttribute('data-plus') && k === 1 ? '+' : ''); });
+        if (k < 1) requestAnimationFrame(step); })(t0); }
+    var el = document.getElementById('kpis');
+    if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function(es){ if (es[0].isIntersecting) { run(); io.disconnect(); } }, {threshold: .4}); io.observe(el); } else run();
+  })();
+  </script>
 
   <div class="sgn" data-signup="hero"></div>
   <div class="cont" id="cont"><div><small id="cont-l">The project you came from</small><b id="cont-t"></b></div><button class="btn" id="cont-b">Open lesson →</button></div>
