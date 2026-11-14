@@ -414,9 +414,12 @@ footer.vmf{background:var(--bg);margin-top:20px}
   @media (max-width:640px){#upd{left:12px;right:12px;bottom:12px;width:auto}}
 </style>
 <style>
-  .card.locked .thumb .g,.card.locked .thumb img.yt{filter:blur(3px) brightness(.55)}
-  .card .lk{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:8px 14px;border-radius:999px;background:rgba(3,13,22,.85);border:1px solid rgba(0,228,240,.5);color:var(--teal);font:700 13px Inter,sans-serif;white-space:nowrap;z-index:3}
-  .card.locked .lk{display:block} .card.locked .play{display:none}
+  .card .lk{display:none;position:absolute;left:10px;bottom:10px;padding:4px 9px;border-radius:999px;background:rgba(3,13,22,.85);border:1px solid rgba(0,228,240,.35);color:var(--teal);font:700 11px Inter,sans-serif;white-space:nowrap;z-index:3}
+  .card.locked .lk{display:block} .card.locked .tag-yt{display:none}
+  .ytlock{display:block;width:100%;border:0;padding:0;cursor:pointer;background-size:cover;background-position:center}
+  .ytlock .yl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(3,13,22,.62);color:#fff;font:600 14px Inter,sans-serif;transition:background .2s}
+  .ytlock:hover .yl{background:rgba(3,13,22,.45)} .ytlock .yl b{font-size:16px} .ytlock .yl small{color:var(--teal);font-weight:700}
+  .pdfbtn{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;width:100%;justify-content:center;margin:12px 0 4px;padding:11px 14px;min-height:44px;cursor:pointer} .pdfbtn small{font-weight:500;opacity:.7;margin-left:4px}
   #gate{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(0,6,12,.72);backdrop-filter:blur(6px);padding:16px}
   #gate.open{display:flex}
   #gate .gbox{position:relative;width:460px;max-width:100%;max-height:92vh;overflow:auto;background:linear-gradient(180deg,#06202b,#030d16);border:1px solid rgba(0,228,240,.4);border-radius:20px;padding:26px 24px 18px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 50px rgba(0,228,240,.15);animation:gin .35s cubic-bezier(.2,.9,.3,1.2)}
@@ -538,9 +541,9 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="gbox">
     <button class="x" id="gate-x" type="button" aria-label="Close">&times;</button>
     <div class="gic">🔓</div>
-    <h3>Unlock all 20 projects — free</h3>
-    <p>You've explored 3 free projects. Enter your email to unlock the whole library and get every new project.</p>
-    <ul class="gl"><li>✓ All projects in 3D + video tutorials</li><li>✓ Copy-ready prompts</li><li>✓ A new project every week</li></ul>
+    <h3>Get the tutorial + PDF — free</h3>
+    <p>You've used your 3 free projects. Enter your email to unlock video tutorials and PDFs for all projects.</p>
+    <ul class="gl"><li>✓ Video tutorials for every project</li><li>✓ Project PDFs: prompts + steps</li><li>✓ A new project every week</li></ul>
     <div class="sgn" data-signup="gate"></div>
     <div class="gfoot">No spam. Unsubscribe anytime.</div>
   </div>
@@ -553,6 +556,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
       <h2 id="l-title"></h2>
       <p id="l-desc"></p>
       <div id="l-yt"></div>
+      <button type="button" class="btn ghost pdfbtn" id="l-pdf">📄 Download project PDF</button>
       <a class="btn ghost open3d" id="l-3d" target="_blank" rel="noopener">Open the 3D project ↗ <small style="font-weight:500;opacity:.7">(best on PC)</small></a>
       <h4>Workflow</h4><ol id="l-steps"></ol>
       <div id="l-pr-wrap"><h4>Prompts used</h4><div id="l-prompts"></div></div>
@@ -688,12 +692,41 @@ const track=(function(){
   (function(){ var src=(qs.get('utm_source')||'').toLowerCase(), med=(qs.get('utm_medium')||'').toLowerCase();
     if (qs.get('unlock')==='1' || med==='email' || /mailchimp|email|newsletter/.test(src)) { try{localStorage.setItem('vm_lib_signed','1');}catch(_){} } })();
   function isSigned(){ try{ return localStorage.getItem('vm_lib_signed')==='1'; }catch(_){ return false; } }
-  function seenCount(){ return LESSONS.filter(function(l){ return seen[l.key]; }).length; }
-  function unlocked(l){ return isSigned() || seen[l.key] || seenCount() < FREE; }
-  function gate(idx){ pendingGate = idx; $('gate').classList.add('open'); document.body.style.overflow='hidden';
-    track.ev('gate_view',{name:'GateView'},{lesson:LESSONS[idx].key, explored:seenCount()}); }
-  function gateClose(){ $('gate').classList.remove('open'); document.body.style.overflow=''; }
+  function freeKeys(){ return Object.keys(seen).filter(function(k){ return LESSONS.some(function(l){ return l.key===k; }); }).slice(0, FREE); }
+  // pełny dostęp (tutorial + PDF): zapisany mailem, albo projekt jest wśród 3 pierwszych OTWARTYCH, albo jeszcze nie wykorzystano 3
+  function unlocked(l){ var f = freeKeys(); return isSigned() || f.indexOf(l.key) >= 0 || (!seen[l.key] && f.length < FREE); }
+  var pendingAct = null;
+  function gate(idx, what){ pendingGate = idx; pendingAct = what; $('gate').classList.add('open');
+    track.ev('gate_view',{name:'GateView'},{lesson:LESSONS[idx].key, asset:what, explored:freeKeys().length}); }
+  function gateClose(){ $('gate').classList.remove('open'); }
   $('gate-x').onclick = gateClose; $('gate').onclick = function(e){ if(e.target===$('gate')) gateClose(); };
+  var jsPdfP = null;
+  function loadPdf(){ return jsPdfP || (jsPdfP = new Promise(function(ok, no){ var sc = document.createElement('script'); sc.src = 'vendor/jspdf.umd.min.js'; sc.onload = function(){ ok(window.jspdf.jsPDF); }; sc.onerror = no; document.head.appendChild(sc); })); }
+  function cp(t){ return String(t || '').replace(/[\u2010-\u2015]/g, '-').replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/\u2026/g, '...').replace(/[^\x00-\xFF\u20AC]/g, ''); }
+  function makePdf(l){
+    track.ev('pdf_download',{name:'PdfDownload'},{lesson:l.key});
+    loadPdf().then(function(jsPDF){
+      var d = new jsPDF({unit:'mm', format:'a4'}), W = 210, M = 16, y = 0, url = 'https://vizmaker-ai-view.github.io/library/?p=' + l.key + '&utm_source=pdf&utm_medium=lead_magnet';
+      function need(h){ if (y + h > 280) { d.addPage(); y = 18; } }
+      d.setFillColor(3,13,22); d.rect(0,0,W,46,'F'); d.setFillColor(0,228,240); d.rect(0,46,W,1.2,'F');
+      d.setTextColor(0,228,240); d.setFont('helvetica','bold'); d.setFontSize(10); d.text('VIZMAKER AI  ·  FREE PROJECT LIBRARY', M, 14);
+      d.setTextColor(255,255,255); d.setFontSize(18); var tl = d.splitTextToSize(cp(l.title || 'VizMaker project'), W - 2*M); d.text(tl.slice(0,2), M, 26);
+      d.setFontSize(9.5); d.setFont('helvetica','normal'); d.setTextColor(150,190,200); d.text(cp(l.soft + '  ·  ' + l.cat + '  ·  ' + l.min + ' min'), M, 41);
+      y = 58; d.setTextColor(40,50,60); d.setFontSize(11); var dl = d.splitTextToSize(cp(l.desc), W - 2*M); d.text(dl, M, y); y += dl.length * 5.2 + 6;
+      d.setFillColor(230,252,254); d.roundedRect(M, y, W - 2*M, 14, 3, 3, 'F'); d.setTextColor(0,120,130); d.setFont('helvetica','bold'); d.setFontSize(10.5);
+      d.textWithLink('Open the full project in 3D  >', M + 5, y + 9, {url: url}); y += 24;
+      d.setTextColor(10,20,30); d.setFontSize(13); d.text('Workflow', M, y); y += 7; d.setFont('helvetica','normal'); d.setFontSize(10.5);
+      l.steps.forEach(function(st, i){ var sl = d.splitTextToSize(cp(st), W - 2*M - 10); need(sl.length * 5 + 3); d.setFillColor(0,228,240); d.circle(M + 3, y - 1.3, 2.9, 'F'); d.setTextColor(0,22,26); d.setFont('helvetica','bold'); d.setFontSize(8.5); d.text(String(i+1), M + 3, y - 0.2, {align:'center'}); d.setFont('helvetica','normal'); d.setFontSize(10.5); d.setTextColor(40,50,60); d.text(sl, M + 10, y); y += sl.length * 5 + 3; });
+      if (l.prompts.length) { y += 4; need(14); d.setTextColor(10,20,30); d.setFont('helvetica','bold'); d.setFontSize(13); d.text('Prompts used', M, y); y += 6; d.setFont('courier','normal'); d.setFontSize(9.5);
+        l.prompts.forEach(function(pr){ var pl = d.splitTextToSize(cp(pr), W - 2*M - 8); var h = pl.length * 4.4 + 6; need(h + 4); d.setFillColor(244,247,249); d.setDrawColor(210,225,230); d.roundedRect(M, y, W - 2*M, h, 2, 2, 'FD'); d.setTextColor(30,40,50); d.text(pl, M + 4, y + 5.5); y += h + 4; }); }
+      if (l.yt) { y += 2; need(10); d.setFont('helvetica','bold'); d.setFontSize(10.5); d.setTextColor(0,120,130); d.textWithLink('Watch the video tutorial on YouTube  >', M, y, {url:'https://youtu.be/' + l.yt}); y += 8; }
+      need(30); y += 4; d.setFillColor(3,13,22); d.roundedRect(M, y, W - 2*M, 24, 3, 3, 'F'); d.setTextColor(255,255,255); d.setFont('helvetica','bold'); d.setFontSize(12);
+      d.text('Try it yourself: 14 days of unlimited AI, free', M + 6, y + 10); d.setFont('helvetica','normal'); d.setFontSize(9.5); d.setTextColor(0,228,240);
+      d.textWithLink('vizmaker.com  >', M + 6, y + 17.5, {url: trialUrl(l.key).replace('src=', 'src=pdf_')});
+      var n = d.getNumberOfPages(); for (var i = 1; i <= n; i++) { d.setPage(i); d.setFont('helvetica','normal'); d.setFontSize(8); d.setTextColor(140,150,160); d.text('VizMaker AI · Free Project Library · vizmaker-ai-view.github.io/library', M, 291); d.text(i + '/' + n, W - M, 291, {align:'right'}); }
+      d.save('VizMaker-' + l.key + '.pdf');
+    }).catch(function(){ alert('PDF could not be created. Please try again.'); });
+  }
   function render() {
     var g = $('grid'); g.innerHTML = ''; var i = 0;
     if (filter !== 'Coming soon') LESSONS.forEach(function (l, idx) {
@@ -704,7 +737,7 @@ const track=(function(){
         '<div class="num">' + String(idx + 1).padStart(2, '0') + '</div>' +
         (l.yt ? '<span class="tag-yt">▶ Video tutorial</span>' : '') +
         '<div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>' +
-        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span><span class="lk">🔒 Free with email</span></div>' +
+        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span><span class="lk">📄 PDF + ▶ tutorial: free with email</span></div>' +
         '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span></div>' +
         '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p>' + addedTime(l) + '</div>';
       c.onclick = function () { open(idx); };
@@ -723,8 +756,9 @@ const track=(function(){
   var cur = 0;
   function open(idx) {
     var l = LESSONS[idx];
-    if (!unlocked(l)) { if ($('lesson').classList.contains('open')) close(); gate(idx); return; }
     cur = idx;
+    var full = unlocked(l);
+    seen[l.key] = 1; try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {}
     var mob = window.matchMedia('(max-width: 860px)').matches;
     $('l-frame').src = VIEWER + l.token;
     $('l-3d').href = VIEWER + l.token;
@@ -740,16 +774,20 @@ const track=(function(){
       d.appendChild(b); $('l-prompts').appendChild(d);
     });
     $('l-pr-wrap').style.display = l.prompts.length ? '' : 'none';
-    $('l-yt').innerHTML = l.yt
+    $('l-pdf').onclick = function(){ if (unlocked(l)) makePdf(l); else gate(idx, 'pdf'); };
+    $('l-yt').innerHTML = (l.yt && !full)
+      ? '<h4>Video tutorial</h4><button type="button" class="ytbox ytlock" id="l-ytlock" style="background-image:url(https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg)"><span class="yl"><b>▶ Watch the tutorial</b><small>Free with email</small></span></button>'
+      : l.yt
       ? '<h4>Video tutorial</h4><div class="ytbox"><iframe allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen src="https://www.youtube-nocookie.com/embed/' + l.yt + '?rel=0&start=' + (l.yt_t || 0) + '"></iframe></div>'
       : l.ytSoon
       ? '<h4>Video tutorial coming soon</h4><a class="ytlink" target="_blank" rel="noopener" href="' + YT_CHANNEL + '">▶ Meanwhile, watch our tutorials on YouTube →</a>'
       : '<h4>Learn more</h4><a class="ytlink" target="_blank" rel="noopener" href="' + YT_CHANNEL + '">▶ More tutorials on our YouTube →</a>';
+    if ($('l-ytlock')) $('l-ytlock').onclick = function(){ gate(idx, 'video'); };
+    $('l-pdf').innerHTML = full ? '📄 Download project PDF <small>prompts + steps</small>' : '📄 Download project PDF <small>free with email</small>';
     $('l-try').href = trialUrl(l.key);
     $('l-prev').disabled = idx === 0; $('l-next').disabled = idx === LESSONS.length - 1;
     $('lesson').classList.add('open'); document.body.style.overflow = 'hidden';
     track.ev('lesson_open',{name:'LessonOpen'},{lesson:l.key,lesson_no:idx+1});
-    seen[l.key] = 1; try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {}
     progress();
   }
   function close() { $('lesson').classList.remove('open'); $('l-frame').src = 'about:blank'; $('l-yt').innerHTML = ''; document.body.style.overflow = ''; render(); }
@@ -795,7 +833,7 @@ const track=(function(){
       f.querySelector('button').disabled = true; f.querySelector('button').textContent = 'Sending…';
       fetch(SIGNUP_HOOK, { method: 'POST', mode: 'no-cors', body: body }).catch(function () {}).then(function () {
         signed = true; try { localStorage.setItem('vm_lib_signed', '1'); } catch (_) {}
-        if (where === 'gate' && pendingGate >= 0) { var pg = pendingGate; pendingGate = -1; setTimeout(function(){ gateClose(); render(); open(pg); }, 1400); } else render();
+        if (where === 'gate' && pendingGate >= 0) { var pg = pendingGate, act = pendingAct; pendingGate = -1; pendingAct = null; setTimeout(function(){ gateClose(); render(); open(pg); if (act === 'pdf') makePdf(LESSONS[pg]); }, 1400); } else { render(); if ($('lesson').classList.contains('open')) open(cur); }
         track.ev('library_signup', { name: 'CompleteRegistration', std: true }, { place: where, lesson: proj, with_phone: f.consent_sms.checked ? 1 : 0 });
         box.innerHTML = okHtml(false) + '<div style="margin-top:10px"><a data-again style="color:var(--teal);cursor:pointer;text-decoration:underline;font-size:13px">+ Add another email</a></div>';
         var again = function () { if (box.querySelector('[data-again]')) renderSignup(box); };
@@ -806,7 +844,7 @@ const track=(function(){
   }
   document.querySelectorAll('[data-signup]').forEach(renderSignup);
   (function(){ var gb=document.querySelector('[data-signup="gate"]'); if(!gb) return; var h=gb.querySelector('h5'), p=gb.querySelector('p'), b=gb.querySelector('button[type=submit]');
-    if(h) h.remove(); if(p) p.remove(); if(b) b.textContent='Unlock all projects'; })();
+    if(h) h.remove(); if(p) p.remove(); if(b) b.textContent='Unlock tutorial + PDF'; })();
 
   render(); progress();
   if (latest && LESSONS.length) setTimeout(function () { open(0); }, 300);
