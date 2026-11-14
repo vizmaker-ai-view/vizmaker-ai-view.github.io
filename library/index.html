@@ -352,7 +352,8 @@ footer.vmf{background:var(--bg);margin-top:20px}
     });
     OneSignal.User.addTag('library', '1');
     function sync(){ var on = OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn;
-      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? '✓ Notifications on' : (b.dataset.lbl || '🔔 Push'); b.disabled = !!on; });
+      var st=document.querySelector('#upd-push .ot'); if(st) st.innerHTML = on ? '<b>✓ Notifications are on</b>You get every new project on this device' : '<b>Instant notifications</b>On this device · no email needed';
+      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? 'Turn off' : (b.dataset.lbl || '🔔 Push'); b.classList.toggle('off', !!on); });
       if (!OneSignal.Notifications.isPushSupported()) document.querySelectorAll('[data-push]').forEach(function(b){ b.hidden = true; }); }
     window.VM_PUSH_ON = function(){ return OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn; };
     window.VM_PUSH_OK = OneSignal.Notifications.isPushSupported();
@@ -360,7 +361,11 @@ footer.vmf{background:var(--bg);margin-top:20px}
     OneSignal.User.PushSubscription.addEventListener('change', function(e){ sync();
       if (e.current.optedIn) { try{localStorage.setItem('vm_upd','on');}catch(_){} var u=document.getElementById('upd'); if(u) setTimeout(function(){u.classList.remove('show');},1200); }
       if (e.current.optedIn && typeof track!=='undefined') track.ev('push_subscribe', {name:'Subscribe'}, {channel:'webpush'}); });
-    document.addEventListener('click', function(ev){ if (ev.target.closest('[data-push]')) OneSignal.Notifications.requestPermission(); });
+    document.addEventListener('click', function(ev){ if (!ev.target.closest('[data-push]')) return;
+      var ps = OneSignal.User.PushSubscription;
+      if (OneSignal.Notifications.permission && ps.optedIn) { ps.optOut(); try{localStorage.setItem('vm_upd', String(Date.now()));}catch(_){} }
+      else if (OneSignal.Notifications.permission) ps.optIn();
+      else OneSignal.Notifications.requestPermission(); });
   });
 </script>
 <style>
@@ -386,6 +391,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   #upd .opt .oi{font-size:20px;width:28px;text-align:center}
   #upd .opt .ot{flex:1;font-size:13px;color:var(--mut)} #upd .opt .ot b{display:block;color:var(--h);font-size:14px;margin-bottom:1px}
   #upd .go{padding:9px 14px;border-radius:999px;border:0;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:800 13px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+  #upd .go.off{background:transparent;border:1px solid rgba(0,228,240,.4);color:var(--teal)}
   #upd .go[disabled]{background:rgba(0,228,240,.15);color:var(--teal);cursor:default}
   #upd .cals{display:flex;gap:6px;flex-wrap:wrap}
   #upd .later{display:block;margin:8px auto 0;background:none;border:0;color:var(--mut);font:500 12.5px Inter,sans-serif;cursor:pointer;text-decoration:underline}
