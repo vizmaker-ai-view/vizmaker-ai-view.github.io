@@ -11,6 +11,8 @@ RELEASES = [(dt.date(2026, 11, 12), 17, 'New project: Turn any 3D scene into a r
              'Open the project: ' + URL + '?p=default')] + RELEASES
 RELEASES = [(dt.date(2026, 11, 12), 15, 'New project: Stop searching 3D Warehouse - make your own models with AI',
              'Generate your own 3D model with AI in VizMaker. Open the project: ' + URL + '?p=yt8')] + RELEASES
+RELEASES = [(dt.date(2026, 11, 15), 12, 'New project: Change exterior lighting in seconds (ArchiCAD + AI)',
+             'Open the project: ' + URL + '?p=yt10')] + RELEASES
 RELEASES = [(dt.date(2026, 11, 13), 15, 'New project: Cinematic exterior - AI architecture workflow',
              'Open the project: ' + URL + '?p=p6')] + RELEASES
 # TEST (12.11.2026): stare projekty co godzinę 17:00-21:00 Warszawa - usunąć po teście
@@ -43,7 +45,9 @@ print('ok', len(RELEASES), 'events')
 
 # ---- RSS dla Mailchimp (RSS-to-email): nowy projekt = nowy <item> na górze ----
 # (klucz projektu, data publikacji, tytuł, opis) - najnowszy pierwszy; dopisuj tu przy każdym nowym projekcie
-FEED = [('p6', dt.datetime(2026, 11, 13, 15, 25), 'Cinematic exterior: AI architecture workflow',
+FEED = [('yt10', dt.datetime(2026, 11, 15, 11, 0), 'Change exterior lighting in seconds (ArchiCAD + AI)',
+         'Turn one ArchiCAD exterior into day, sunset and night shots in seconds with AI. Watch the tutorial and open the project in 3D.'),
+        ('p6', dt.datetime(2026, 11, 13, 15, 25), 'Cinematic exterior: AI architecture workflow',
          'Turn an architectural exterior into cinematic AI visuals. Open the full project in 3D and repeat the workflow on your own building.'),
         ('yt9', dt.datetime(2026, 11, 12, 16, 56), 'Gemini Omni vs Seedance 2.0: battle of the AI video titans',
          'Two top AI video models head to head on the same architecture scene. See which one wins, then open the project and test both in VizMaker.'),
