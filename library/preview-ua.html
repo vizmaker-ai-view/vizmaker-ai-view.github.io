@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* Stop library emails: ?unsub=1&e=EMAIL&u=UNIQID -> remove tag 'library' (contact stays on the list). Strip params before any analytics loads. */
+(function () {
+  try {
+    var q = new URLSearchParams(location.search);
+    if (q.get('unsub') !== '1') return;
+    var e = q.get('e') || '', u = q.get('u') || '';
+    ['unsub', 'e', 'u'].forEach(function (k) { q.delete(k); });
+    history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q.toString() : '') + location.hash);
+    if (e && u) fetch('https://hooks.zapier.com/hooks/catch/4692325/KQTykuSlX4zQyVmH/', { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ e: e, u: u }) }).catch(function () {});
+    document.addEventListener('DOMContentLoaded', function () {
+      var d = document.createElement('div');
+      d.setAttribute('role', 'status');
+      d.style.cssText = 'position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:9999;max-width:92vw;background:#0d1b22;color:#e8f4f6;border:1px solid #00b8c4;border-radius:12px;padding:14px 18px;font:500 14px/1.5 Inter,Arial,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.4)';
+      d.innerHTML = '✅ <b>Done. You won’t get library update emails anymore.</b><br>The library stays open for you anytime. <a href="#" style="color:#00e4f0">Close</a>';
+      d.querySelector('a').onclick = function (ev) { ev.preventDefault(); d.remove(); };
+      document.body.appendChild(d);
+      setTimeout(function () { d.remove(); }, 12000);
+    });
+  } catch (err) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VizMaker AI Project Library – free mini-course (demo)</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="https://www.vizmaker.com/vizmaker-logo-line-white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  // ===== DEMO: bez trackingu. Lista lekcji = projekty z viewera (te same tokeny). =====
+  var VIEWER = 'https://viewer.svc.vizmaker.com/projectviewer?token=';
+  var TRIAL  = 'https://www.vizmaker.com/?src=library';
+  var TOTAL  = 20;
+  var YT_CHANNEL = 'https://www.youtube.com/@vizmaker-ai';   // gdy projekt nie ma tutorialu -> 'Learn more on YouTube'   // ile lekcji docelowo (reszta = "wkrótce")
+  // yt = ID filmu tutorialu (+ yt_t = start w s). Brak yt -> link do kanału. Brak title -> tytuł pobierany z YouTube.
+  // Każda lekcja: key (= ?p= w viewerze), tytuł, program, kategoria, czas, opis, kroki, prompty.
+  // TODO: tytuły / opisy / prompty do podmiany na prawdziwe (teraz przykładowe).
+  var LESSONS = [
+    { key: 'yt10', added: '2026-11-15T11:00', token: '-Pr0RsvkvaHzbBxHOM3b-0m0jTN6L9Th', yt: 'SsbnmX0c1aM', soft: 'ArchiCAD', cat: 'Exterior', min: 5,
+      title: 'Change exterior lighting in seconds (ArchiCAD + AI)',
+      desc: 'Turn one ArchiCAD exterior into day, sunset and night shots in seconds with AI. Watch the tutorial, open the project in 3D and repeat it on your own building.',
+      steps: ['Watch the tutorial', 'Open the project and explore the lighting nodes', 'Swap the light on your own ArchiCAD exterior'],
+      prompts: [] },
+    { key: 'p6', added: '2026-11-13T15:25', token: 'aGW3y3sA7BTGq6MFJCukEPG8q-ouXsLA', ytSoon: true, soft: 'VizMaker', cat: 'Exterior', min: 6,
+      title: 'Cinematic exterior: AI architecture workflow',
+      desc: 'Turn an architectural exterior into cinematic AI visuals. Open the full project in 3D, explore the workflow node by node and repeat it on your own building.',
+      steps: ['Open the project and explore the nodes', 'See how each cinematic shot is built', 'Repeat the workflow on your own exterior'],
+      prompts: [] },
+    { key: 'yt9', added: '2026-11-12T16:57', token: 'Ay1FlbeTIYn7xKXcFACCi5D3oRiNut8Q', yt: 'ADKQaBrFA1w', soft: 'VizMaker', cat: 'AI video', min: 6,
+      title: 'Gemini Omni vs Seedance 2.0: battle of the AI video titans',
+      desc: 'We put two top AI video models head to head on the same architecture scene. See which one wins, then open the project and test both yourself in VizMaker.',
+      steps: ['Watch the comparison', 'Open the project in 3D and see both outputs', 'Run the same prompt on your own scene'],
+      prompts: [] },
+    { key: 'default', added: '2026-11-12T16:50', token: 'YGUejv3XWkASVC86RyQH2BbWrVcmpVhT', yt: 'WRiuqYljDQ4', yt_t: 23, soft: 'Any 3D', cat: 'Basics', min: 6,
+      title: 'Turn any 3D scene into a realistic Live Preview',
+      desc: 'The VizMaker plugin turns any 3D scene into a photorealistic live preview. Open the guide project in 3D and see how it is built, node by node.',
+      steps: ['Watch the tutorial', 'Open the project and explore the nodes', 'Repeat it on your own scene'],
+      prompts: ['Photorealistic render of this scene, keep composition, realistic materials, soft shadows'] },
+    { key: 'yt8', added: '2026-11-12T15:00', token: 'ZjEguxuHcyAd8R73KZBlfIB1XVcIY15o', yt: 'Ht_DU8RARIw', yt_t: 14, soft: 'SketchUp', cat: '3D models', min: 6,
+      title: 'Stop searching 3D Warehouse: make your own models with AI',
+      desc: 'Can\'t find the right model? Generate your own 3D model with AI in VizMaker. Open the project in 3D and follow the tutorial.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Generate your own model for your scene'], prompts: [] },
+    { key: 'yt1', added: '2026-11-01', token: 'waOhpkqtSHhGrwtqF0LQGbQxHfGsPIel', yt: '-EnfwuPkmso', yt_t: 33, soft: 'VizMaker', cat: 'Tutorial', min: 6, featured: true,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'yt2', added: '2026-11-02', token: '0j3_l6jnugo-0Lh8NR8a-2dDJutZHrLg', yt: '6eeFLYZ2Br0', yt_t: 2, soft: 'VizMaker', cat: 'Tutorial', min: 6, featured: true,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'yt3', added: '2026-11-03', token: 'js3fYbAw-SJwHiL6Fqk1hRYbDp2Z84Dl', yt: 'rb1o_fax_Ko', yt_t: 13, soft: 'VizMaker', cat: 'Tutorial', min: 6,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'yt4', added: '2026-11-04', token: 'LXLFcwwqTu-pIPr99_OQXBj4maSr7l6M', yt: 'HImDOzcZ0ac', yt_t: 53, soft: 'VizMaker', cat: 'Tutorial', min: 6,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'yt5', token: 'zIvr37dc1MJhi6nVD2zybpvMAbzly4cK', yt: '8CAEfEjbPYo', yt_t: 8, soft: 'VizMaker', cat: 'Tutorial', min: 6,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'yt6', token: 'RnTZnBjd3PduycD1IEOaA0-_jqbbrV0_', yt: 'hAumV2qtKcA', yt_t: 19, soft: 'VizMaker', cat: 'Tutorial', min: 6,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'yt7', token: 'KiLcRX3s_-smGKJ7Ft9R8kuNALBF5ZjS', yt: 'EL3HGc4u6QQ', yt_t: 41, soft: 'VizMaker', cat: 'Tutorial', min: 6,
+      desc: 'Open the project in 3D, watch the tutorial and repeat it step by step.',
+      steps: ['Watch the tutorial', 'Explore the project nodes in 3D', 'Repeat it on your own scene'], prompts: [] },
+    { key: 'live', added: '2026-11-05', token: 'I7eatiV64hSWBtoxxOMYQbiyKAKaiKWo', title: 'Live Preview: 3D scene to realistic render',
+      soft: 'SketchUp', cat: 'Interior', min: 6,
+      desc: 'Turn a raw 3D scene into a photorealistic live preview in minutes.',
+      steps: ['Export the view from your 3D software', 'Upload it to VizMaker and pick Live Preview', 'Refine materials and light with prompts'],
+      prompts: ['Photorealistic interior, soft natural daylight, warm oak floor, linen textiles, 35mm lens, editorial photography',
+                'Keep geometry exactly, change only materials and lighting, evening mood, warm accent lamps'] },
+    { key: 'analysis', token: 'qJMOXaYM4PEPd8zX3Bs_FlVqwDqPl98X', title: 'Interior Analysis Boards',
+      soft: 'Any 3D', cat: 'Presentation', min: 5,
+      desc: 'Create client-ready analysis boards (materials, light, zoning) from one render.',
+      steps: ['Start from a finished render', 'Generate material and light analysis', 'Combine into a board for the client'],
+      prompts: ['Create a clean presentation board: material palette, lighting analysis and zoning diagram, minimal layout, white background'] },
+    { key: 'p5', token: 'PF4d-LwvvzyiyBoy4AhpohqnSZGlVMed', title: 'Revit Project: from BIM model to AI visuals',
+      soft: 'Revit', cat: 'Architecture', min: 7,
+      desc: 'Follow the full workflow from model to final visual.',
+      steps: ['Prepare the base model', 'Generate the first render', 'Iterate with prompts and variations'],
+      prompts: ['Scandinavian living room, bright and airy, white walls, light wood, green plants, photorealistic, 4K'] },
+    { key: 'kredyty', token: 'Y1uiuTrNmlJefSFO-ftyb1ALsJ_EnwNy', title: 'Smart credits: more renders for less',
+      soft: 'Any 3D', cat: 'Basics', min: 3,
+      desc: 'How to plan your renders so you get more variations from the same budget.',
+      steps: ['Test in low resolution first', 'Lock the best variation', 'Upscale only the final image'],
+      prompts: ['Quick draft render, same composition, focus on light direction only'] }
+  ];
+  // sortowanie: od najnowszego (pole added), projekty bez daty na końcu; NEW = dodane w ostatnich 7 dniach
+  LESSONS = LESSONS.map(function (l, i) { return [l, i]; }).sort(function (a, b) {
+    var da = a[0].added || '', db = b[0].added || '';
+    return da === db ? a[1] - b[1] : (da < db ? 1 : -1);
+  }).map(function (x) { return x[0]; });
+  LESSONS.forEach(function (l) { if (l.added && (Date.now() - Date.parse(l.added)) < 7 * 864e5) l.isNew = true; });
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function addedTime(l) { if (!l.added) return ''; var d = l.added.slice(0, 10).split('-');
+    return '<time class="added" datetime="' + l.added.slice(0, 10) + '" itemprop="datePublished">Added ' + (+d[2]) + ' ' + MON[+d[1] - 1] + ' ' + d[0] + '</time>'; }
+  // SEO/GEO: lista projektów z datami publikacji jako JSON-LD (ItemList + CreativeWork)
+  (function () { try { var ld = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'VizMaker AI Library – projects',
+      itemListOrder: 'https://schema.org/ItemListOrderDescending',
+      itemListElement: LESSONS.map(function (l, i) { var it = { '@type': 'CreativeWork', name: l.title, description: l.desc,
+        url: location.origin + location.pathname + '?p=' + l.key };
+        if (l.added) it.datePublished = l.added.slice(0, 10);
+        if (l.yt) it.thumbnailUrl = 'https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg';
+        return { '@type': 'ListItem', position: i + 1, item: it }; }) };
+    var sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.text = JSON.stringify(ld); document.head.appendChild(sc); } catch (e) {} })();
+  var SOON = ['Kitchen Japandi', 'Facade from Revit massing', 'Bathroom spa mood', 'Bedroom evening light', 'Video from a still render',
+              'Office open space', 'Exterior at dusk', 'Moodboard to render', 'Before / after for social media', 'Sketch to render',
+              'Retail interior', 'Landscape & garden', 'Product in interior', 'Restaurant ambience', 'Client variations in 10 min'];
+</script>
+<style>
+  :root { --teal: #00e4f0; --teal-d: #19cada; --teal-l: #8af6fb; --bg: #010713; --card: #04131d; --line: rgba(82,205,220,.16); --txt: #eafcff; --mut: rgba(225,235,239,.62);
+    --b: #00e4f0; --b2: #19cada; --b3: #8af6fb; --h: #f4f8fa; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, system-ui, -apple-system, sans-serif; }
+  a { color: inherit; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+  /* top bar */
+  .top { position: sticky; top: 0; z-index: 20; background: rgba(1,7,19,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .top .wrap { display: flex; align-items: center; gap: 14px; height: 60px; }
+  .top img { height: 22px; }
+  .srch{position:relative;display:flex;align-items:center}
+  #grid .card{transition:opacity .25s}
+  .snone{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 14px;padding:16px 18px;border-radius:14px;border:1px solid rgba(255,201,77,.35);background:linear-gradient(180deg,rgba(255,201,77,.08),rgba(255,201,77,.02))}
+  .snone .sn-ic{font-size:26px} .snone .sn-t{flex:1;min-width:220px;display:flex;flex-direction:column;gap:3px}
+  .snone b{color:var(--h);font-size:16px} .snone span{color:var(--mut);font-size:13.5px} .snone em{color:var(--teal);font-style:normal;font-weight:700}
+  .smore{margin:4px 0 12px;color:var(--h);font-weight:700;font-size:15px}
+  .srch input{width:220px;height:36px;padding:0 12px 0 34px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--h);font:500 13.5px Inter,sans-serif;outline:none}
+  .srch input:focus{border-color:rgba(0,228,240,.6);background:rgba(0,228,240,.06)}
+  .srch .sb{position:absolute;left:4px;width:28px;height:28px;border:0;background:none;font-size:14px;cursor:default;opacity:.8}
+  .srch .sx{display:none}
+  html[dir=rtl] .srch input{padding:0 34px 0 12px} html[dir=rtl] .srch .sb{left:auto;right:4px}
+  @media (max-width:1100px){.srch input{width:160px}}
+  @media (max-width:640px){
+    .srch .sb{position:static;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);cursor:pointer;opacity:1}
+    .srch input,.srch .sx{display:none}
+    .srch.on{position:absolute;left:10px;right:10px;top:12px;z-index:30}
+    .srch.on .sb{display:none} .srch.on input{display:block;width:100%;padding:0 40px 0 14px;background:#06141d;height:38px}
+    .srch.on .sx{display:block;position:absolute;right:4px;width:32px;height:32px;border:0;background:none;color:var(--mut);font-size:22px;cursor:pointer}
+    html[dir=rtl] .srch.on .sx{right:auto;left:4px}
+  }
+  .top .pr { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--mut); }
+  .bar { width: 120px; height: 6px; border-radius: 9px; background: rgba(0,228,240,.15); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--teal-d), var(--teal)); transition: width .5s ease; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 42px; padding: 0 18px; border-radius: 10px; border: 0;
+    background: linear-gradient(90deg, var(--teal-d), var(--teal)); color: #061316; font: 700 14px/1 Inter, sans-serif; text-decoration: none; cursor: pointer;
+    box-shadow: 0 0 24px rgba(0,228,240,.25); transition: transform .15s ease; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--txt); border: 1px solid var(--line); box-shadow: none; }
+  .top .btn { height: 36px; font-size: 13px; }
+  /* promo bar (Nano Banana unlimited) */
+  .promo { position: relative; display: flex; align-items: center; justify-content: center; gap: 12px; height: 40px; padding: 0 14px; overflow: hidden;
+    background: linear-gradient(90deg, #02202b, #003b48 50%, #02202b); border-bottom: 1px solid var(--line); color: var(--txt); text-decoration: none; font-size: 13.5px; }
+  .promo::after { content: ''; position: absolute; top: 0; bottom: 0; left: -40%; width: 30%; pointer-events: none;
+    background: linear-gradient(100deg, transparent, rgba(138,246,251,.25), transparent); animation: shine 4s ease-in-out infinite; }
+  @keyframes shine { 0%,55% { left: -40%; } 100% { left: 130%; } }
+  .promo b { color: var(--teal); }
+  .promo .ps { color: var(--mut); }
+  .promo .pg { padding: 5px 12px; border-radius: 999px; background: var(--teal); color: #001117; font-weight: 700; font-size: 12.5px; }
+  .promo .pe { display: inline-block; animation: wob 2.4s ease-in-out infinite; }
+  @keyframes wob { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-14deg); } 50% { transform: rotate(10deg); } }
+  @media (max-width: 640px) { .promo .ps { display: none; } .promo { gap: 8px; font-size: 12.5px; } }
+  /* hero */
+  .hero { padding: 56px 0 30px; position: relative; }
+  .hero::before { content: ''; position: absolute; inset: -60px 0 auto; height: 360px; pointer-events: none;
+    background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba(0,228,240,.14), transparent 70%); }
+  .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(0,228,240,.1);
+    color: var(--teal); font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
+  .badge i { width: 7px; height: 7px; border-radius: 50%; background: #39d98a; animation: live 1.6s infinite; }
+  @keyframes live { 50% { opacity: .3; } }
+  h1 { font-size: clamp(30px, 5vw, 50px); line-height: 1.08; letter-spacing: -1.2px; margin: 16px 0 12px; max-width: 760px; }
+  h1 span { background: linear-gradient(90deg, var(--teal), var(--teal-l)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p { color: var(--mut); font-size: 17px; line-height: 1.55; max-width: 620px; margin: 0 0 22px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 26px; color: var(--mut); font-size: 13px; }
+  .stats b { display: block; color: var(--txt); font-size: 20px; }
+  /* continue / came-from */
+  .cont { display: none; margin: 10px 0 6px; padding: 16px 18px; border-radius: 14px; border: 1px solid rgba(0,228,240,.35);
+    background: linear-gradient(90deg, rgba(0,228,240,.1), transparent); align-items: center; gap: 14px; }
+  .cont.on { display: flex; }
+  .cont small { display: block; color: var(--teal); font-weight: 700; font-size: 11px; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 3px; }
+  .cont .btn { margin-left: auto; flex: none; }
+  /* filters */
+  .filters { display: flex; flex-wrap: nowrap; gap: 8px; margin: 26px 0 18px; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; padding: 2px 0;
+    -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); }
+  .filters::-webkit-scrollbar { display: none; }
+  .filters .chip { flex: 0 0 auto; white-space: nowrap; }
+  html[dir=rtl] .filters { -webkit-mask-image: linear-gradient(270deg, #000 88%, transparent); mask-image: linear-gradient(270deg, #000 88%, transparent); }
+  .chip { height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--mut);
+    font: 600 13px Inter, sans-serif; cursor: pointer; }
+  .chip.on { border-color: var(--teal); color: var(--teal); background: rgba(0,228,240,.08); }
+  /* grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; padding-bottom: 40px; }
+  .card { position: relative; border-radius: 16px; background: linear-gradient(180deg, #061c27, var(--card)); border: 1px solid var(--line); overflow: hidden; cursor: pointer;
+    transition: transform .2s ease, border-color .2s ease; animation: up .5s ease both; }
+  .card:hover { transform: translateY(-3px); border-color: rgba(0,228,240,.4); }
+  @keyframes up { from { opacity: 0; transform: translateY(10px); } }
+  .thumb { position: relative; aspect-ratio: 16/10; background: #0e1519; overflow: hidden; }
+  .thumb .g { position: absolute; inset: 0; }
+  .thumb .num { position: absolute; left: 14px; bottom: 10px; font-size: 44px; font-weight: 800; color: rgba(255,255,255,.12); letter-spacing: -2px; }
+  .thumb .play { position: absolute; inset: 0; display: grid; place-items: center; }
+  .thumb .play span { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: rgba(0,228,240,.92);
+    box-shadow: 0 0 30px rgba(0,228,240,.5); transition: transform .2s ease; }
+  .card:hover .play span { transform: scale(1.1); }
+  .thumb .play svg { width: 18px; height: 18px; fill: #061316; margin-left: 3px; }
+  .thumb img.yt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .8; }
+  .tag-yt { position: absolute; right: 10px; bottom: 10px; padding: 4px 9px; border-radius: 999px; background: rgba(0,0,0,.65); color: #fff; font-size: 10.5px; font-weight: 700; }
+  .ytbox { position: relative; aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: #000; margin-bottom: 4px; }
+  .ytbox iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .ytlink { display: inline-flex; align-items: center; gap: 8px; color: var(--teal); font-size: 13.5px; font-weight: 600; text-decoration: none; }
+  .tag-f { position: absolute; top: 10px; left: 10px; padding: 4px 9px; border-radius: 999px; background: #ff4f00; color: #fff; font-size: 10.5px; font-weight: 700; }
+  .done { position: absolute; top: 10px; right: 10px; padding: 4px 9px; border-radius: 999px; background: rgba(57,217,138,.18); color: #39d98a;
+    font-size: 10.5px; font-weight: 700; display: none; }
+  .card.seen .done { display: block; }
+  .body { padding: 14px 16px 16px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 8px; font-size: 11.5px; color: var(--mut); margin-bottom: 8px; }
+  .added { display: block; margin-top: 10px; font-size: 11.5px; color: var(--mut); letter-spacing: .02em; }
+  .meta span { white-space: nowrap; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,.05); }
+  .card h3 { margin: 0 0 6px; font-size: 16px; line-height: 1.3; }
+  .card p { margin: 0; color: var(--mut); font-size: 13px; line-height: 1.45; }
+  .card.soon { cursor: default; opacity: .55; }
+  .card.soon:hover { transform: none; border-color: var(--line); }
+  .lock { position: absolute; inset: 0; display: grid; place-items: center; color: var(--mut); font-size: 12px; font-weight: 600; }
+  .lock div { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(0,0,0,.4); }
+  /* lesson modal */
+  #lesson { position: fixed; inset: 0; z-index: 50; display: none; background: var(--bg); padding: 0; }
+  #lesson.open { display: flex; align-items: center; justify-content: center; animation: fade .2s ease; }
+  @keyframes fade { from { opacity: 0; } }
+  .lbox { width: 100%; height: 100%; display: grid; grid-template-columns: 1fr minmax(360px, 26vw); overflow: hidden; background: var(--card); }
+  .lbox iframe { width: 100%; height: 100%; border: 0; background: #000; }
+  .side { display: flex; flex-direction: column; position: relative; overflow-y: auto; padding: 20px; border-left: 1px solid var(--line); }
+  .side .hd { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .side .x { margin-left: auto; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--mut); font-size: 20px; cursor: pointer; }
+  .side h2 { font-size: 21px; line-height: 1.25; margin: 0 0 8px; }
+  .side > p { color: var(--mut); font-size: 13.5px; line-height: 1.5; margin: 0 0 16px; }
+  .side h4 { margin: 14px 0 8px; font-size: 12px; letter-spacing: .6px; text-transform: uppercase; color: var(--teal); }
+  ol { margin: 0; padding-left: 20px; color: #c9d6d7; font-size: 13.5px; line-height: 1.6; }
+  .pr-box { position: relative; margin-bottom: 8px; padding: 12px 40px 12px 12px; border-radius: 10px; background: rgba(0,0,0,.3); border: 1px solid var(--line);
+    font: 500 12.5px/1.5 ui-monospace, Menlo, monospace; color: #c9d6d7; }
+  .pr-box button { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--line); background: rgba(255,255,255,.05);
+    color: var(--mut); cursor: pointer; font-size: 12px; }
+  .pr-box.ok button { color: #39d98a; border-color: #39d98a; }
+  .side .cta { margin-top: auto; padding-top: 16px; display: grid; gap: 8px; }
+  .side .cta .btn { width: 100%; }
+  .nav { display: flex; gap: 8px; }
+  .nav .btn { flex: 1; }
+footer.vmf{background:var(--bg);margin-top:20px}
+.vmf-band{height:clamp(70px,9vw,140px);background:url(data:image/jpeg;base64,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) center/cover no-repeat}
+.vmf-in{max-width:1240px;margin:0 auto;padding:28px 32px 0;display:flex;flex-wrap:wrap;gap:40px}
+.vmf-brand{flex:1.4 1 260px}
+.vmf-brand p{margin:16px 0 0;font-size:15px;color:rgba(225,235,239,.62)}
+.vmf-brand .mail{display:inline-block;margin-top:12px;font-size:15px;color:var(--b2);text-decoration:none}
+.vmf-brand .co{margin-top:6px;font-size:14px;color:rgba(225,235,239,.5)}
+.vmf-brand .soc{margin-top:20px;display:flex;gap:18px}
+.vmf-brand .soc a{color:var(--b2);display:inline-flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:8px;transition:background .2s}
+.vmf-brand .soc a:hover{background:rgba(0,228,240,.12)}
+.vmf-col{flex:1 1 150px}
+.vmf-col b{font-size:14px;color:var(--h)}
+.vmf-col div{margin-top:14px;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.vmf-col a{color:rgba(225,235,239,.62);text-decoration:none}
+.vmf-col a:hover{color:var(--h)}
+.vmf-copy{max-width:1240px;margin:36px auto 0;padding:20px 32px 34px;border-top:1px solid rgba(82,205,220,.12);font-size:12px;color:rgba(225,235,239,.5)}
+@media (max-width:820px){.vmf-in{padding:24px 18px 0;gap:28px}.vmf-copy{padding:18px}}
+  .open3d { display: none; }
+  @media (max-width: 860px) {
+    /* telefon: lekcja na pełny ekran, bez viewera w ramce (na telefonie słabo widać) - film na górze + przycisk 3D */
+    #lesson { padding: 0; background: var(--bg); backdrop-filter: none; height: 100vh; height: 100dvh; }
+    #lesson.open { align-items: stretch; }
+    .lbox { display: block; width: 100%; height: 100%; border: 0; border-radius: 0; box-shadow: none; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .lbox iframe#l-frame { display: block; height: 64vh; height: 64dvh; margin-top: env(safe-area-inset-top); }
+    .side { height: auto; overflow: visible; border: 0; border-top: 1px solid var(--line); padding: 14px 16px calc(24px + env(safe-area-inset-bottom)); }
+    .side .x { position: fixed; z-index: 60; top: calc(10px + env(safe-area-inset-top)); right: 12px; width: 42px; height: 42px; font-size: 24px;
+      color: var(--txt); background: rgba(1,7,19,.85); border-color: rgba(0,228,240,.4); }
+    .side h2 { font-size: 19px; }
+    .open3d { display: flex; width: 100%; margin: 12px 0 4px; }
+    #l-yt h4:first-child { margin-top: 4px; }
+    .top .pr { font-size: 11.5px; gap: 6px; } .top .pr .bar { width: 46px; } .top img { height: 18px; } .top .btn { padding: 0 12px; font-size: 12px; }
+    .cont { flex-wrap: wrap; } .cont .btn { margin-left: 0; width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+/* ==== 1:1 z minikursu: kalendarz / motywacja / zgoda ====
+.eyebrow{font-size:14px;font-weight:750;letter-spacing:.08em;color:var(--b2);text-transform:uppercase}
+.btn-ghost{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(19,204,224,.78);color:var(--h);font-weight:650;font-size:17px;padding:17px 24px;border-radius:10px;text-decoration:none;background:rgba(0,13,22,.28);cursor:pointer;font-family:inherit;min-height:48px}
+.motiv{border-radius:22px;border:1px solid rgba(82,205,220,.22);background:linear-gradient(135deg,rgba(0,120,160,.18),rgba(4,19,29,.9));padding:44px;display:flex;flex-wrap:wrap;gap:32px;align-items:center;justify-content:space-between}
+.motiv q{display:block;font-size:clamp(24px,3vw,34px);line-height:1.25;font-weight:750;color:var(--h);letter-spacing:-.01em;quotes:"„" "”"}
+.motiv .who{margin-top:14px;font-size:15px;color:var(--t2)}
+/* v4: calendar block */
+.motiv{padding:52px;gap:44px;align-items:stretch}
+.mv-l{flex:1 1 520px;min-width:0}
+.motiv q{margin-top:14px;font-size:clamp(26px,3.2vw,40px)}
+.cal-big{margin-top:28px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.calbtn{display:flex;align-items:center;gap:14px;text-align:left;background:rgba(1,7,19,.55);border:1px solid rgba(19,204,224,.55);border-radius:14px;padding:16px 16px;color:var(--h);text-decoration:none;font:inherit;cursor:pointer;min-height:76px;transition:background .2s,border-color .2s,transform .2s}
+.calbtn:hover{background:rgba(0,228,240,.12);border-color:var(--b);transform:translateY(-2px)}
+.calbtn .ci{flex:none;width:42px;height:42px;border-radius:12px;background:var(--b);color:#001117;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px}
+.calbtn b{display:block;font-size:16px}
+.calbtn small{display:block;margin-top:2px;font-size:12px;color:var(--t3)}
+.cal-note{margin-top:12px;font-size:14px}
+.mv-r{flex:0 1 330px;display:flex;align-items:center;justify-content:center}
+.calcard{width:100%;max-width:330px;background:#f4f8fa;color:#0b1a22;border-radius:22px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 8px rgba(0,228,240,.08);transform:rotate(2.5deg)}
+.cc-hd{display:flex;align-items:center;justify-content:space-between;background:var(--b);padding:14px 20px;font-weight:800;letter-spacing:.12em;font-size:14px}
+.cc-hd .rings{display:flex;gap:10px}.cc-hd .rings i{width:10px;height:10px;border-radius:50%;background:#001117;opacity:.6}
+.cc-day{display:flex;align-items:baseline;gap:12px;padding:16px 20px 8px}
+.cc-day b{font-size:64px;line-height:1;font-weight:800;letter-spacing:-.04em}
+.cc-day span{font-size:18px;font-weight:600;color:#4a5d66}
+.cc-ev{margin:10px 16px 0;border-left:4px solid #00b8c4;background:#e3f7f9;border-radius:10px;padding:12px 14px}
+.cc-ev .t{display:block;font-size:12px;font-weight:700;color:#00808a}
+.cc-ev b{display:block;margin-top:2px;font-size:16px;line-height:1.3}
+.cc-ev .s{display:block;margin-top:2px;font-size:13px;color:#4a5d66}
+.cc-ev.ghost{background:#eef2f4;border-left-color:#b8c6cc}
+.cc-chk{margin:14px 16px 18px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#2a3d46}
+.cc-chk span{width:22px;height:22px;border-radius:6px;background:#00b8c4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
+@media (max-width:980px){.wf{grid-template-columns:1fr;gap:28px}.cal-big{grid-template-columns:1fr}.mv-r{flex-basis:100%}}
+@media (max-width:820px){.motiv{padding:28px 20px}.calcard{transform:none}.sq{padding:16px}.sq .no{font-size:32px}.sq h3{font-size:16px}.sq p{display:none}}
+.consent{position:fixed;left:16px;right:16px;bottom:16px;z-index:120;max-width:720px;margin:0 auto;background:var(--s2);border:1px solid rgba(0,228,240,.45);border-radius:16px;padding:18px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.consent[hidden]{display:none}
+.consent p{flex:1 1 320px;margin:0;font-size:14px;line-height:1.5;color:var(--t2)}
+.consent div{display:flex;gap:10px}
+.consent .btn{font-size:15px;padding:12px 18px;min-height:44px;width:auto}
+.consent .btn-ghost{font-size:14px;padding:11px 14px;min-height:44px}
+.motiv .cal{display:grid}
+.motiv .cal-note{margin-top:10px;font-size:13px;color:var(--t3)}
+:root{--t2:#c8dee2;--t3:#b8cfd3;--s2:#04131d}
+  .subrow{margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:12px 14px;border-radius:12px;border:1px dashed rgba(0,228,240,.35);background:rgba(1,7,19,.4);font-size:13.5px;color:var(--t2)}
+  .subrow b{color:var(--h)} .sub-t{flex:1 1 300px}
+  /* notification bar (aktualizacje biblioteki) */
+  .nbar{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 12px;padding:9px 44px 9px 14px;position:relative;background:#04131d;border-bottom:1px solid var(--line);font-size:13px;color:var(--t2)}
+  .nbar[hidden]{display:none}
+  .nbar b{color:var(--h)}
+  .nb-ic{display:inline-block;animation:wob 2.4s ease-in-out infinite}
+  .nb-go{padding:5px 11px;border-radius:999px;border:1px solid rgba(0,228,240,.5);background:transparent;color:var(--teal);font:700 12px Inter,sans-serif;text-decoration:none;cursor:pointer}
+  .nb-go:hover{background:rgba(0,228,240,.12)}
+  .nb-x{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:0;background:transparent;color:var(--mut);font-size:20px;cursor:pointer}
+  .sgn{margin:18px 0;padding:16px 18px;border-radius:14px;border:1px solid rgba(0,228,240,.35);background:linear-gradient(180deg,rgba(0,228,240,.07),rgba(0,228,240,.02))}
+  .sgn h5{margin:0 0 4px;font:800 16px Inter,sans-serif;color:var(--txt)}
+  .sgn p{margin:0 0 10px;font-size:13px;color:var(--mut)}
+  .sgn form{display:flex;flex-wrap:wrap;gap:8px}
+  .sgn input[type=email],.sgn input[type=tel]{flex:1 1 220px;min-width:0;padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:#020d16;color:var(--txt);font:500 14px Inter,sans-serif}
+  .sgn input:focus{outline:2px solid var(--teal);outline-offset:0}
+  .sgn button{padding:11px 16px;border-radius:10px;border:0;background:var(--teal);color:#00161a;font:800 14px Inter,sans-serif;cursor:pointer}
+  .sgn .sg-more{flex-basis:100%;font-size:12px;color:var(--mut);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .sgn .sg-more a{color:var(--teal);cursor:pointer;text-decoration:underline}
+  .sgn .sg-ph{flex-basis:100%;display:none;gap:8px;flex-wrap:wrap}
+  .sgn .sg-ph.on{display:flex;animation:fade .25s ease}
+  .sgn .sg-push{flex-basis:100%;display:flex;gap:8px;align-items:center;font-size:13px;color:var(--h);font-weight:600}
+  .sgn .sg-push input{width:16px;height:16px;accent-color:var(--teal)}
+  html.nopush .sgn .sg-push{display:none}
+  .sgn label{font-size:12px;color:var(--mut);display:flex;gap:6px;align-items:flex-start}
+  .sgn .sg-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .sgn .sg-err{flex-basis:100%;font-size:12px;color:#ff8a8a;display:none}
+  .sgn .sg-ok{font:600 14px Inter,sans-serif;color:var(--txt)}
+  .sgn .sg-ok b{color:var(--teal)}
+</style>
+<script>
+/* Push niedostępny: iPhone/iPad poza ekranem głównym, przeglądarki w aplikacjach (IG/FB/LinkedIn), brak API -> chowamy push, zostaje kalendarz */
+(function(){var ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),
+  sa=window.navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches),
+  inapp=/FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|TikTok|; wv\)/.test(ua),
+  api=('Notification' in window)&&('serviceWorker' in navigator)&&('PushManager' in window);
+  window.VM_NO_PUSH=(ios&&!sa)||inapp||!api; if(window.VM_NO_PUSH)document.documentElement.classList.add('nopush');})();
+</script>
+<style>html.nopush [data-push],html.nopush #upd-push{display:none!important} html.nopush #upd .calrow{border-top:0;padding-top:0;margin-bottom:4px} html.nopush #upd .calrow span{flex-basis:100%;text-align:center;font-size:13.5px;color:var(--h);margin-bottom:4px}</style>
+<!-- OneSignal web push (app: VizMaker AI App) -->
+<script>if(!window.VM_NO_PUSH){var os=document.createElement('script');os.src='https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';os.defer=true;document.head.appendChild(os);}</script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    if (window.VM_NO_PUSH) return;
+    try { await OneSignal.init({
+      appId: 'f731215b-2bee-485d-9885-819c21484aeb',
+      requiresUserPrivacyConsent: true,   // RODO: SDK nic nie wysyła do OneSignal, dopóki user nie kliknie 'Turn on'
+      serviceWorkerPath: '/OneSignalSDKWorker.js', serviceWorkerParam: { scope: '/' },
+      notifyButton: { enable: false },
+      promptOptions: { slidedown: { prompts: [{ type: 'push', autoPrompt: false,
+        text: { actionMessage: "🔔 Get a notification when a new FREE project drops. No email needed.", acceptButton: 'Notify me', cancelButton: 'Later' },
+        delay: { pageViews: 1, timeDelay: 20 } }] } }
+    }); } catch (e) { console.warn('OneSignal init failed', e); window.VM_OS_ERR = e; return; }
+    function sync(){ var on = OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn;
+      var pk=document.querySelector('#upd-push .perk'); if(pk) pk.innerHTML = on ? '✓ Notifications are on for this device' : '✓ Instant &nbsp;·&nbsp; ✓ No email needed &nbsp;·&nbsp; ✓ Turn off anytime';
+      document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? (b.classList.contains('big') ? 'Turn off notifications' : 'Turn off') : (b.dataset.lbl || '🔔 Push'); b.classList.toggle('off', !!on); });
+      if (!OneSignal.Notifications.isPushSupported()) document.querySelectorAll('[data-push]').forEach(function(b){ b.hidden = true; }); }
+    if (OneSignal.Notifications.permission) OneSignal.setConsentGiven(true);
+    window.VM_PUSH_ON = function(){ return OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn; };
+    window.VM_PUSH_OK = OneSignal.Notifications.isPushSupported();
+    sync();
+    OneSignal.User.PushSubscription.addEventListener('change', function(e){ sync();
+      if (e.current.optedIn) { OneSignal.User.addTag('library', '1'); try{localStorage.setItem('vm_upd','on');}catch(_){} var u=document.getElementById('upd'); if(u) setTimeout(function(){u.classList.remove('show');},1200); }
+      if (e.current.optedIn && typeof track!=='undefined') track.ev('push_subscribe', {name:'Subscribe'}, {channel:'webpush'}); });
+    window.VM_OS_READY = true;
+  });
+</script>
+<script>
+  // Klik "Notify me" - poza OneSignalDeferred, żeby Safari dostało natywne pytanie od razu w geście kliknięcia
+  document.addEventListener('click', function(ev){
+    var b = ev.target.closest('[data-push]'); if (!b || window.VM_NO_PUSH) return;
+    var OS = window.OneSignal, ready = window.VM_OS_READY && OS && OS.User;
+    var msg = function(t){ var o = document.querySelector('#upd-push .ot'); if (o) { o.textContent = t; o.style.display = 'block'; } };
+    if (ready && OS.Notifications.permission && OS.User.PushSubscription.optedIn) {
+      OS.User.PushSubscription.optOut(); try{localStorage.setItem('vm_upd', String(Date.now()));}catch(_){} return; }
+    if (!('Notification' in window)) { msg('Notifications are not supported in this browser. Use the calendar option below.'); return; }
+    if (Notification.permission === 'denied') { msg('Notifications are blocked for this site. Allow them in your browser settings, then try again.'); return; }
+    var done = false, finish = function(){ if (done) return; done = true;
+      if (!ready) { msg(window.VM_OS_ERR ? 'Push is not available in this browser yet. Use the calendar option below.' : 'Almost there – please reload the page and click again.'); return; }
+      OS.setConsentGiven(true); OS.User.PushSubscription.optIn(); };
+    if (Notification.permission === 'granted') { finish(); return; }
+    try { var r = Notification.requestPermission(function(p){ if (p === 'granted') finish(); });   // natywne pytanie w geście (Safari)
+      if (r && r.then) r.then(function(p){ if (p === 'granted') finish(); }); } catch (e) { msg('Could not ask for permission: ' + e.message); }
+  });
+</script>
+<style>
+  /* header: updates button */
+  .hb-upd{position:relative;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(0,228,240,.45);background:rgba(0,228,240,.06);color:var(--teal);font:700 13px Inter,sans-serif;cursor:pointer;transition:background .2s}
+  .hb-upd:hover{background:rgba(0,228,240,.14)}
+  .hb-upd .dot{position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 0 rgba(0,228,240,.7);animation:pulse 1.8s infinite}
+  .hb-upd.on .dot{display:none}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,228,240,.6)}70%{box-shadow:0 0 0 8px rgba(0,228,240,0)}100%{box-shadow:0 0 0 0 rgba(0,228,240,0)}}
+  @media (max-width:640px){.hb-upd .t{display:none}.hb-upd{padding:0 11px}}
+  /* updates popup */
+  #upd{position:fixed;right:20px;bottom:20px;z-index:60;width:380px;max-width:calc(100vw - 24px);background:linear-gradient(180deg,#06202b,#030d16);border:1px solid rgba(0,228,240,.35);border-radius:18px;
+       box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 0 1px rgba(0,228,240,.05),0 0 40px rgba(0,228,240,.12);padding:20px 20px 16px;color:var(--txt);
+       transform:translateY(24px) scale(.98);opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.2,.9,.3,1.2)}
+  #upd.show{transform:none;opacity:1;pointer-events:auto}
+  #upd .x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--mut);font-size:22px;cursor:pointer;line-height:1}
+  #upd .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.3);margin-bottom:12px;animation:ring 2.6s ease-in-out 1s infinite}
+  @keyframes ring{0%,100%{transform:rotate(0)}5%{transform:rotate(14deg)}10%{transform:rotate(-12deg)}15%{transform:rotate(8deg)}20%{transform:rotate(0)}}
+  #upd h3{margin:0 0 4px;font-size:18px;color:var(--h);letter-spacing:-.2px}
+  #upd h3 span{background:linear-gradient(90deg,var(--teal),var(--teal-l));-webkit-background-clip:text;background-clip:text;color:transparent}
+  #upd p{margin:0 0 14px;font-size:13.5px;color:var(--mut);line-height:1.45}
+  #upd .opt{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.02);margin-bottom:8px}
+  #upd .opt .oi{font-size:20px;width:28px;text-align:center}
+  #upd .opt .ot{flex:1;font-size:13px;color:var(--mut)} #upd .opt .ot b{display:block;color:var(--h);font-size:14px;margin-bottom:1px}
+  #upd .go{padding:9px 14px;border-radius:999px;border:0;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:800 13px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+  #upd .go.big{display:block;width:100%;padding:14px;font-size:15px;border-radius:12px;box-shadow:0 8px 24px rgba(0,228,240,.25);animation:glow 2.4s ease-in-out infinite}
+  @keyframes glow{50%{box-shadow:0 8px 32px rgba(0,228,240,.45)}}
+  #upd .go.big.off{animation:none;box-shadow:none}
+  #upd .perk{margin:9px 0 12px;font-size:11.5px;color:var(--mut);text-align:center}
+  #upd .calrow{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--mut);padding-top:10px;border-top:1px solid var(--line)}
+  #upd .go.off{background:transparent;border:1px solid rgba(0,228,240,.4);color:var(--teal)}
+  #upd .go[disabled]{background:rgba(0,228,240,.15);color:var(--teal);cursor:default}
+  #upd .cals{display:flex;gap:6px;flex-wrap:wrap}
+  #upd .later{display:block;margin:8px auto 0;background:none;border:0;color:var(--mut);font:500 12.5px Inter,sans-serif;cursor:pointer;text-decoration:underline}
+  @media (max-width:640px){#upd{left:12px;right:12px;bottom:12px;width:auto}}
+</style>
+<style>
+  .card .lk{display:none;position:absolute;left:10px;bottom:10px;padding:4px 9px;border-radius:999px;background:rgba(3,13,22,.85);border:1px solid rgba(0,228,240,.35);color:var(--teal);font:700 11px Inter,sans-serif;white-space:nowrap;z-index:3}
+  .card.locked .lk{display:block} .card.locked .tag-yt{display:none}
+  .ytlock{display:block;width:100%;border:0;padding:0;cursor:pointer;background-size:cover;background-position:center}
+  .ytlock .yl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:rgba(3,13,22,.62);color:#fff;font:600 14px Inter,sans-serif;transition:background .2s}
+  .ytlock:hover .yl{background:rgba(3,13,22,.45)} .ytlock .yl b{font-size:16px} .ytlock .yl small{color:var(--teal);font-weight:700}
+  .pdfbtn{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;width:100%;justify-content:center;margin:12px 0 4px;padding:11px 14px;min-height:44px;cursor:pointer} .pdfbtn small{font-weight:500;opacity:.7;margin-left:4px}
+  #scta{display:none}
+  @media (max-width:860px){ #scta{display:block;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:45;height:50px;border:0;border-radius:14px;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:800 15px Inter,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.5);transform:translateY(140%);transition:transform .35s cubic-bezier(.2,.9,.3,1.1)}
+    #scta.on{transform:none} }
+  #nudge{position:fixed;left:50%;bottom:20px;z-index:46;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 24px);padding:10px 10px 10px 16px;border-radius:14px;background:#06202b;border:1px solid rgba(0,228,240,.45);box-shadow:0 14px 40px rgba(0,0,0,.55);color:var(--h);font:600 13.5px Inter,sans-serif;transform:translate(-50%,160%);transition:transform .4s cubic-bezier(.2,.9,.3,1.2)}
+  #nudge.on{transform:translate(-50%,0)} #nudge button{border:0;cursor:pointer;font:800 13px Inter,sans-serif}
+  #nudge-b{height:36px;padding:0 14px;border-radius:10px;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;white-space:nowrap}
+  #nudge-x{background:none;color:var(--mut);font-size:20px!important;padding:0 4px}
+  @media (max-width:860px){ #nudge{bottom:calc(72px + env(safe-area-inset-bottom))} }
+  #ph{position:fixed;inset:0;z-index:72;display:none;align-items:center;justify-content:center;background:rgba(0,6,12,.72);backdrop-filter:blur(6px);padding:16px}
+  #ph.open{display:flex} #ph .gbox{animation:gin .35s cubic-bezier(.2,.9,.3,1.2)}
+  #ph input[type=tel]{width:100%;height:46px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--h);font:500 16px Inter,sans-serif;margin:4px 0 10px}
+  #ph .phc{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--mut);line-height:1.4;margin-bottom:12px} #ph .go{width:100%;height:48px;border:0;border-radius:12px;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:800 15px Inter,sans-serif;cursor:pointer}
+  #ph .later{display:block;margin:10px auto 0;background:none;border:0;color:var(--mut);font:500 13px Inter,sans-serif;cursor:pointer;text-decoration:underline}
+  #gate{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(0,6,12,.72);backdrop-filter:blur(6px);padding:16px}
+  #gate.open{display:flex}
+  #gate .gbox{position:relative;width:460px;max-width:100%;max-height:92vh;overflow:auto;background:linear-gradient(180deg,#06202b,#030d16);border:1px solid rgba(0,228,240,.4);border-radius:20px;padding:26px 24px 18px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 50px rgba(0,228,240,.15);animation:gin .35s cubic-bezier(.2,.9,.3,1.2)}
+  @keyframes gin{from{transform:translateY(20px) scale(.97);opacity:0}}
+  #ph .gbox{position:relative;width:440px;max-width:100%;background:linear-gradient(180deg,#06202b,#030d16);border:1px solid rgba(0,228,240,.4);border-radius:20px;padding:26px 24px 18px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  #ph .x{position:absolute;top:10px;right:14px;background:none;border:0;color:var(--mut);font-size:24px;cursor:pointer} #ph .gic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.3);margin-bottom:12px}
+  #ph h3{margin:0 0 6px;font-size:20px;color:var(--h)} #ph p{margin:0 0 12px;color:var(--mut);font-size:14px;line-height:1.5} #ph .sg-err{display:none;color:#ff8a8a;font-size:12.5px;margin:-4px 0 10px}
+  #gate .x{position:absolute;top:10px;right:14px;background:none;border:0;color:var(--mut);font-size:24px;cursor:pointer}
+  #gate .gic{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.3);margin-bottom:12px}
+  #gate h3{margin:0 0 6px;font-size:22px;color:var(--h)} #gate p{margin:0 0 12px;color:var(--mut);font-size:14px;line-height:1.5}
+  #gate .gl{list-style:none;padding:0;margin:0 0 6px;font-size:13.5px;color:var(--txt)} #gate .gl li{margin:4px 0}
+  #gate .sgn{margin:12px 0 6px} #gate .gfoot{text-align:center;font-size:11.5px;color:var(--mut)}
+  html[dir=rtl] #gate .x{right:auto;left:14px}
+</style>
+<style>
+  /* up next */
+  .upnext{display:flex;gap:12px;align-items:center;width:100%;margin:10px 0 2px;padding:10px;border-radius:12px;border:1px solid rgba(0,228,240,.35);background:rgba(0,228,240,.06);color:var(--txt);text-align:left;cursor:pointer;font:inherit;transition:background .2s}
+  .upnext:hover{background:rgba(0,228,240,.12)}
+  .upnext .uth{flex:0 0 96px;height:54px;border-radius:8px;background-size:cover;background-position:center;background-color:#0a1013}
+  .upnext .utx{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .upnext small{color:var(--teal);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  .upnext b{color:var(--h);font-size:14px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .upnext em{font-style:normal;color:var(--teal);font-size:12.5px;font-weight:700}
+  html[dir=rtl] .upnext{text-align:right}
+  .card.hl{box-shadow:0 0 0 2px var(--teal),0 0 30px rgba(0,228,240,.35);transition:box-shadow .3s}
+  .lbar,.nxbar,.todet{display:none}
+  @media (max-width:860px){
+    .side .x{display:none}
+    .lbar{display:flex;align-items:center;gap:10px;position:fixed;top:0;left:0;right:0;z-index:61;height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;background:rgba(1,7,19,.96);border-bottom:1px solid var(--line)}
+    .lback{height:38px;padding:0 14px;border-radius:999px;border:1px solid rgba(0,228,240,.45);background:rgba(0,228,240,.08);color:var(--h);font:700 14px Inter,sans-serif;cursor:pointer}
+    .lbadge{margin-left:auto;color:var(--mut);font-size:12px;font-weight:600}
+    html[dir=rtl] .lbadge{margin-left:0;margin-right:auto}
+    .lbox{padding-top:calc(52px + env(safe-area-inset-top));padding-bottom:64px}
+    .lbox iframe#l-frame{height:75vh;height:75dvh;margin-top:0}
+    .todet{display:flex;position:relative;z-index:2;margin:-18px auto 0;width:max-content;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:999px;border:1px solid rgba(0,228,240,.5);background:rgba(1,7,19,.95);color:var(--teal);font:700 13px Inter,sans-serif;cursor:pointer}
+    .nxbar{display:flex;align-items:center;gap:8px;position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:61;height:48px;padding:0 14px;border-radius:14px;border:0;background:linear-gradient(90deg,var(--teal-d),var(--teal));color:#001117;font:700 14px Inter,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer}
+    .nxbar .nk{flex:0 0 auto;font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.75}
+    .nxbar .nt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+    html[dir=rtl] .nxbar .nt{text-align:right}
+  }
+</style>
+<style>
+  .hero-a{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center;padding:40px 0 24px}
+  .hero-a h1{max-width:620px}
+  .hero-a .hx{min-width:0} .aud{max-width:min(620px,100%)} #top-cta{white-space:nowrap}
+  .btn.big{padding:16px 26px;font-size:16px;box-shadow:0 10px 30px rgba(0,228,240,.3)}
+  .hero-a .acts{display:flex;flex-wrap:wrap;gap:10px}
+  .proof{margin-top:18px;color:var(--mut);font-size:13.5px} .proof .stars{color:#ffc94d;letter-spacing:1px;margin-right:6px}
+  .wall{position:relative;height:500px;overflow:hidden;transform:perspective(1200px) rotateY(-8deg) rotateX(4deg);
+    -webkit-mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(180deg,transparent,#000 14%,#000 86%,transparent)}
+  .wz{position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;transform:scale(2);transform-origin:33.333% 50%;transition:transform .9s cubic-bezier(.65,0,.35,1)}
+  .wz.out{transform:scale(1)}
+  .wc{overflow:hidden} .wi{display:flex;flex-direction:column;gap:6px;animation:wup linear infinite} .wc:nth-child(even) .wi{animation-name:wdown}
+  @keyframes wup{from{transform:translateY(0)}to{transform:translateY(-50%)}} @keyframes wdown{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+  .wt{aspect-ratio:16/10;border-radius:6px;overflow:hidden;border:.5px solid rgba(0,228,240,.22);box-shadow:0 5px 15px rgba(0,0,0,.45);background:#0a1013}
+  .wt img{width:100%;height:100%;object-fit:cover;display:block}
+  .aud{position:relative;margin:0 0 14px;overflow:hidden;pointer-events:none;user-select:none;max-width:620px;isolation:isolate}
+  .aud .at{display:flex;gap:6px;width:max-content;animation:kmove 22s linear infinite;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden} html[dir=rtl] .aud .at{animation-name:kmover}
+  .aud span{white-space:nowrap;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--txt);font-size:12.5px;font-weight:600}
+  .kpis{position:relative;margin:6px 0 22px;padding:9px 0;border-radius:999px;border:1px solid var(--line);background:linear-gradient(90deg,rgba(0,228,240,.07),rgba(0,228,240,.02));overflow:hidden;pointer-events:none;user-select:none;isolation:isolate}
+  .kpis::before,.kpis::after,.aud::before,.aud::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none}
+  .kpis::before,.aud::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)} .kpis::after,.aud::after{right:0;background:linear-gradient(270deg,var(--bg),transparent)}
+  .kt{display:flex;width:max-content;animation:kmove 40s linear infinite;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+  .kt>div{display:flex;align-items:baseline;gap:7px;padding:0 22px;white-space:nowrap;border-right:1px solid rgba(0,228,240,.15)}
+  .kt b{font-size:17px;color:var(--h);font-variant-numeric:tabular-nums} .kt span{font-size:12.5px;color:var(--mut)}
+  @keyframes kmove{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+  html[dir=rtl] .kt{animation-name:kmover} @keyframes kmover{from{transform:translate3d(0,0,0)}to{transform:translate3d(50%,0,0)}}
+  @media (prefers-reduced-motion: reduce){.kt{animation:none}}
+  html[dir=rtl] .wall{transform:perspective(1200px) rotateY(8deg) rotateX(4deg)}
+  @media (max-width:900px){
+    .hero-a{grid-template-columns:minmax(0,1fr);gap:18px;padding-top:22px}
+    .wall{order:-1;height:210px;transform:none} .wz{gap:4px}
+    .wi{gap:4px} .wt{border-radius:4.5px}
+    .kpis{padding:7px 0} .kt b{font-size:15px} .kt span{font-size:11.5px} .kt>div{padding:0 16px}
+  }
+  @media (prefers-reduced-motion: reduce){.wi{animation:none}}
+</style>
+</head>
+<body>
+<div id="upd" role="dialog" aria-label="Get updates">
+  <button class="x" type="button" data-upd-x aria-label="Close">&times;</button>
+  <div class="ic">🔔</div>
+  <h3>Never miss a new <span>FREE project</span></h3>
+  <p>New AI projects for architects &amp; interior designers every week. Get them the moment they drop.</p>
+  <div id="upd-push"><div class="ot" style="display:none"></div>
+    <button class="go big" type="button" data-push data-lbl="🔔 Yes, notify me">🔔 Yes, notify me</button>
+    <div class="perk">✓ Instant &nbsp;·&nbsp; ✓ No email needed &nbsp;·&nbsp; ✓ Turn off anytime</div>
+  </div>
+  <div class="calrow" data-sub><span>or add to calendar:</span><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a></div>
+  <button class="later" type="button" data-upd-x>Maybe later</button>
+  <div style="font-size:11px;color:var(--mut);text-align:center;margin-top:6px"><a href="https://www.vizmaker.com/privacy-policy?src=library_push" target="_blank" rel="noopener" style="color:var(--teal)">Privacy</a></div>
+</div>
+
+<div class="nbar" id="nbar" hidden>
+  <span class="nb-ic">🔔</span><span class="nb-t"><b>New projects every week.</b> Subscribe to library updates so you don't miss them.</span>
+  <span data-sub style="display:contents"><a class="nb-go" data-push role="button">🔔 Push</a><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a></span>
+  <button class="nb-x" type="button" id="nbar-x" aria-label="Close">&times;</button>
+</div>
+<a class="promo" id="promo" hidden style="display:none" target="_blank" rel="noopener">
+  <span class="pe">🍌</span><b>Nano Banana 2 · Unlimited</b><span class="ps">14 days free · no limits while you learn</span><span class="pg">Create free account →</span>
+</a>
+<header class="top"><div class="wrap">
+  <img src="https://www.vizmaker.com/vizmaker-logo-line-white.png" alt="VizMaker">
+  <div class="srch" id="srch"><button type="button" class="sb" id="srch-b" aria-label="Search">🔍</button><input type="search" id="srch-i" placeholder="Search projects…" autocomplete="off" enterkeyhint="search"><button type="button" class="sx" id="srch-x" aria-label="Close">&times;</button></div>
+  <div class="pr"><span id="pr-t">0 of 20 projects explored</span><div class="bar"><i id="pr-bar"></i></div></div>
+  <button class="hb-upd" id="upd-open" type="button"><span class="dot"></span>🔔 <span class="t">Get updates</span></button>
+  <a class="btn" id="top-cta" target="_blank" rel="noopener">Create free account</a>
+</div></header>
+
+<main class="wrap">
+  <section class="hero hero-a">
+    <div class="hx">
+      <span class="badge"><i></i>Free mini-course · New project every week</span>
+      <h1>Ready-to-use <span>AI presets</span> for creative pros</h1>
+      <div class="aud" aria-hidden="true"><div class="at"><span>Architects</span><span>Interior designers</span><span>Designers</span><span>Furniture</span><span>VFX artists</span><span>E-commerce</span></div></div>
+      <p>Money-printing, problem-solving presets, PDFs, prompts and tutorials. Open, copy, render. Free.</p>
+      <div class="acts">
+        <a class="btn big" href="#lessons">Get the free presets →</a>
+        <a class="btn ghost" href="#plan">📅 Plan your learning time</a>
+      </div>
+      <div class="proof"><span class="stars">★★★★★</span> Used by 500,000+ creatives in 155 countries</div>
+    </div>
+    <div class="wall" aria-hidden="true"><div class="wz"><div class="wc"></div><div class="wc"></div><div class="wc"></div><div class="wc"></div><div class="wc"></div><div class="wc"></div></div></div>
+  </section>
+  <div class="kpis" id="kpis" aria-hidden="true"><div class="kt">
+    <div><b data-n="500000" data-plus>0</b><span>creatives use VizMaker</span></div>
+    <div><b data-k="projects">0</b><span>projects in 3D</span></div>
+    <div><b data-k="tutorials">0</b><span>video tutorials</span></div>
+    <div><b data-k="pdfs">0</b><span>PDF guides</span></div>
+    <div><b data-k="prompts">0</b><span>ready prompts</span></div>
+    <div><b data-k="mins">0</b><span>min of learning</span></div>
+    <div><b data-n="155">0</b><span>countries</span></div>
+  </div></div>
+  <script>
+  (function(){
+    (function(){ var at = document.querySelector('.aud .at'); if (at) at.innerHTML = at.innerHTML + at.innerHTML + at.innerHTML + at.innerHTML; })();
+    // kolaż okładek: miniatury filmów projektów, 3 kolumny przewijane w pętli
+    var imgs = LESSONS.filter(function(l){ return l.yt; }).map(function(l){ return 'https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg'; });
+    var cols = document.querySelectorAll('.wall .wc');
+    [].forEach.call(cols, function(c, ci){
+      var off = (ci * 3) % Math.max(1, imgs.length), list = imgs.slice(off).concat(imgs.slice(0, off)); if (ci % 2) list.reverse();
+      var html = list.map(function(u){ return '<div class="wt"><img loading="lazy" alt="" src="' + u + '"></div>'; }).join('');
+      c.innerHTML = '<div class="wi" style="animation-duration:' + (38 + (ci % 3) * 9) + 's">' + html + html + '</div>';
+    });
+    // start: szybki zoom out (3 kolumny -> cała ściana ~30+ okładek) i z powrotem, żeby pokazać skalę
+    var wz = document.querySelector('.wall .wz');
+    if (wz && !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+      setTimeout(function(){ wz.classList.add('out'); }, 700);
+      setTimeout(function(){ wz.classList.remove('out'); }, 700 + 900 + 1500);
+    }
+    // liczniki: prawdziwe dane z biblioteki, animacja od 0 gdy pasek jest widoczny
+    var V = { projects: LESSONS.length, tutorials: LESSONS.filter(function(l){ return l.yt; }).length, pdfs: LESSONS.length,
+      prompts: LESSONS.reduce(function(a, l){ return a + (l.prompts ? l.prompts.length : 0); }, 0),
+      mins: LESSONS.reduce(function(a, l){ return a + (+l.min || 0); }, 0) };
+    var kt = document.querySelector('#kpis .kt');
+    [].slice.call(kt.children).forEach(function(d){ var b = d.querySelector('b'); if (b.dataset.k) { b.dataset.n = V[b.dataset.k]; if (!V[b.dataset.k] || (b.dataset.k === 'prompts' && V.prompts < 20)) d.remove(); } });
+    // karuzela: treść ×4, przesuwa się w pętli o połowę (bez przycisków, bez klikania)
+    var one = kt.innerHTML; kt.innerHTML = one + one + one + one;
+    var bs = document.querySelectorAll('#kpis b');
+    function fmt(n){ try { return n.toLocaleString(window.VM_LANG || 'en'); } catch(_) { return String(n); } }
+    function run(){ var t0 = performance.now(), D = 1600;
+      (function step(t){ var k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3);
+        [].forEach.call(bs, function(b){ var n = Math.round(+b.dataset.n * e), t = fmt(n) + (b.hasAttribute('data-plus') && k === 1 ? '+' : ''); if (b.textContent !== t) b.textContent = t; });
+        if (k < 1) requestAnimationFrame(step); })(t0); }
+    var el = document.getElementById('kpis');
+    if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function(es){ if (es[0].isIntersecting) { run(); io.disconnect(); } }, {threshold: .4}); io.observe(el); } else run();
+  })();
+  </script>
+
+  <div class="sgn" data-signup="hero"></div>
+  <div class="cont" id="cont"><div><small id="cont-l">The project you came from</small><b id="cont-t"></b></div><button class="btn" id="cont-b">Open lesson →</button></div>
+
+  <div class="filters" id="lessons"></div>
+  <div id="srch-none" class="snone" style="display:none">
+    <div class="sn-ic">🛠️</div>
+    <div class="sn-t"><b>Sorry, we're working on it!</b><span>We don't have a project about “<em id="srch-q"></em>” yet. Tell us and we'll prioritise it.</span></div>
+    <a class="btn" id="srch-mail" href="#">✉️ Suggest this topic</a>
+  </div>
+  <div id="srch-more" class="smore" style="display:none">Meanwhile, start with one of these 👇</div>
+  <div class="grid" id="grid"></div>
+</main>
+<section id="plan" style="padding:20px 0 56px">
+  <div class="wrap">
+    <div class="motiv">
+      <div class="mv-l">
+        <div class="eyebrow">Plan your learning</div>
+        <q>You don't need to master new software. 30 minutes a day and one project at a time are enough to make AI part of your design workflow.</q>
+        <div class="who">20 projects · 3–7 min each · learn at your own pace</div>
+        <div class="cal cal-big" data-cal>
+          <a class="calbtn" data-cal-google href="#" target="_blank" rel="noopener"><span class="ci">G</span><span><b>Google Calendar</b><small>add in one click</small></span></a>
+          <button class="calbtn" type="button" data-cal-ics><span class="ci"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span><span><b>Apple Calendar</b><small>.ics file</small></span></button>
+          <a class="calbtn" data-cal-outlook href="#" target="_blank" rel="noopener"><span class="ci">O</span><span><b>Outlook</b><small>outlook.com / Microsoft 365</small></span></a>
+        </div>
+        <div class="sgn" data-signup="plan"></div>
+        <div class="subrow" data-sub>
+          <span class="sub-t">🔔 <b>Never miss a new project.</b> Get a push notification or add new lessons to your calendar automatically:</span>
+          <a class="nb-go" data-push role="button">🔔 Push</a><a class="nb-go" data-sub-google target="_blank" rel="noopener">Google</a><a class="nb-go" data-sub-apple>Apple</a><a class="nb-go" data-sub-outlook target="_blank" rel="noopener">Outlook</a><a data-sub-feed style="font-size:11px;opacity:.7;text-decoration:underline;margin-left:8px;color:inherit;white-space:nowrap">or subscribe to project list</a>
+        </div>
+        <div class="cal-note">Block 30 minutes tomorrow at 7 PM. Starting is the hardest part, so let your calendar remind you. You can change the time in one click.</div>
+      </div>
+      <div class="mv-r" aria-hidden="true">
+        <div class="calcard">
+          <div class="cc-hd"><span>TOMORROW · 7 PM</span><span class="rings"><i></i><i></i></span></div>
+          <div class="cc-day"><b>Time</b><span>to learn</span></div>
+          <div class="cc-ev"><span class="t">7:00 – 7:30 PM · just for me</span><b>My first AI project from the library</b><span class="s">VizMaker · Nano Banana 2</span></div>
+          <div class="cc-ev ghost"><span class="t">Result</span><b>A workflow I can use in my next project</b></div>
+          <div class="cc-chk"><span>✓</span>Starting now. No more putting it off.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="vmf">
+  <div class="vmf-band" aria-hidden="true"></div>
+  <div class="vmf-in">
+    <div class="vmf-brand">
+      <a href="https://www.vizmaker.com/?src=library" aria-label="VizMaker home page"><img src="https://www.vizmaker.com/vizmaker-logo-wordmark.png" alt="VizMaker" width="170" height="56"></a>
+      <p>Present your projects better than ever.</p>
+      <a class="mail" href="mailto:office@vizmaker.com">office@vizmaker.com</a>
+      <div class="soc">
+        <a href="https://www.instagram.com/vizmaker.ai" aria-label="VizMaker on Instagram" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="https://www.youtube.com/@vizmaker-ai" aria-label="VizMaker on YouTube" target="_blank" rel="noopener"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></a>
+        <a href="https://vizmaker.com/discord?src=library" aria-label="VizMaker on Discord" target="_blank" rel="noopener"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M7 7.5c3-1.3 7-1.3 10 0l1.5 9c-1.6 1.2-3.2 1.8-4.5 2l-1-1.8M7 7.5L5.5 16.5c1.6 1.2 3.2 1.8 4.5 2l1-1.8"/><circle cx="9.5" cy="12.5" r="1" fill="currentColor"/><circle cx="14.5" cy="12.5" r="1" fill="currentColor"/></svg></a>
+      </div>
+    </div>
+    <div class="vmf-col"><b>VizMaker</b><div><a href="https://www.vizmaker.com/?src=library">Home</a><a href="https://www.vizmaker.com/?src=library#pricing">Pricing &amp; trial</a><a href="https://www.vizmaker.com/?src=library">Download the app</a></div></div>
+    <div class="vmf-col"><b>Resources</b><div><a href="https://www.vizmaker.com/blog?src=library">VizMaker blog</a><a href="https://www.youtube.com/@vizmaker-ai" target="_blank" rel="noopener">VizMaker on YouTube</a><a href="https://vizmaker.com/discord?src=library" target="_blank" rel="noopener">Discord</a></div></div>
+    <div class="vmf-col"><b>Legal</b><div><a href="https://www.vizmaker.com/privacy-policy?src=library">Privacy policy</a><a href="https://www.vizmaker.com/terms-conditions?src=library">Terms &amp; conditions</a></div></div>
+  </div>
+  <div class="vmf-copy">© 2026 VizMaker. All rights reserved.</div>
+</footer>
+
+<div class="consent" id="consent" hidden role="dialog" aria-label="Cookie consent">
+  <p>We use analytics and marketing cookies (Google Analytics, Meta, OpenAI Ads) to measure how this course and our ads perform. <a href="https://www.vizmaker.com/privacy-policy?src=library">Privacy policy</a></p>
+  <div><button type="button" class="btn-ghost" data-consent="0">Essential only</button><button type="button" class="btn" data-consent="1">Accept</button></div>
+</div>
+
+<button type="button" id="scta">🎁 Get full access — free</button>
+<div id="nudge" role="status"><span>🔥 You've explored 2 of 3 free projects.</span><button type="button" id="nudge-b">Get full access</button><button type="button" id="nudge-x" aria-label="Close">&times;</button></div>
+<div id="ph" role="dialog" aria-modal="true">
+  <div class="gbox">
+    <button class="x" id="ph-x" type="button" aria-label="Close">&times;</button>
+    <div class="gic">📱</div>
+    <h3>One more step: get new presets on WhatsApp</h3>
+    <p>Be the first to know when a new free preset drops. 1–2 messages a week, no spam.</p>
+    <form id="ph-f" novalidate>
+      <input type="tel" name="phone" placeholder="+44 7700 900123" autocomplete="tel" inputmode="tel">
+      <label class="phc"><input type="checkbox" name="consent_sms"> I agree to receive new project updates from VizMaker via WhatsApp/SMS. Reply STOP to opt out.</label>
+      <div class="sg-err" id="ph-err"></div>
+      <button type="submit" class="go">Send me presets on WhatsApp</button>
+      <button type="button" class="later" id="ph-skip">No thanks</button>
+    </form>
+  </div>
+</div>
+<div id="gate" role="dialog" aria-modal="true">
+  <div class="gbox">
+    <button class="x" id="gate-x" type="button" aria-label="Close">&times;</button>
+    <div class="gic">🔓</div>
+    <h3>Get full access — free</h3>
+    <p>One email and you're in: every project, plus new presets each week to win more clients.</p>
+    <ul class="gl"><li>✓ All projects, tutorials &amp; PDFs</li><li>✓ New presets every week</li><li>✓ Workflows that win clients</li></ul>
+    <div class="sgn" data-signup="gate"></div>
+    <div class="gfoot">No spam. Unsubscribe anytime.</div>
+  </div>
+</div>
+<div id="lesson" role="dialog" aria-modal="true">
+  <div class="lbar"><button type="button" class="lback" id="l-back">← Projects</button><span class="lbadge" id="l-badge2"></span></div>
+  <button type="button" class="nxbar" id="l-nxbar"><span class="nk">Up next</span><span class="nt" id="l-nxbar-t"></span><span class="ng">→</span></button>
+  <div class="lbox">
+    <iframe id="l-frame" allow="fullscreen; clipboard-write" allowfullscreen title="3D project"></iframe>
+    <button type="button" class="todet" id="l-todet">▼ Details &amp; steps</button>
+    <aside class="side">
+      <div class="hd"><span class="badge" id="l-badge"></span><button class="x" id="l-x" aria-label="Close">&times;</button></div>
+      <h2 id="l-title"></h2>
+      <p id="l-desc"></p>
+      <div id="l-yt"></div>
+      <button type="button" class="upnext" id="l-upnext"><span class="uth" id="l-up-th"></span><span class="utx"><small>Up next</small><b id="l-up-t"></b><em>Open →</em></span></button>
+      <button type="button" class="btn ghost pdfbtn" id="l-pdf">📄 Download project PDF</button>
+      <a class="btn ghost open3d" id="l-3d" target="_blank" rel="noopener">Open the 3D project ↗ <small style="font-weight:500;opacity:.7">(best on PC)</small></a>
+      <h4>Workflow</h4><ol id="l-steps"></ol>
+      <div id="l-pr-wrap"><h4>Prompts used</h4><div id="l-prompts"></div></div>
+      <div class="cta">
+        <div class="sgn" data-signup="lesson"></div>
+        <a class="btn" id="l-try" target="_blank" rel="noopener">Do this on your own model → 14 days of unlimited AI</a>
+        <div class="nav"><button class="btn ghost" id="l-prev">← Previous</button><button class="btn ghost" id="l-next">Next lesson →</button></div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+// ===== ANALITYKA (1:1 jak minikursy) =====
+const TRACK={
+  course:'library_ai_projects',  // id "kursu" - biblioteka projektów
+  lang:'en',
+  GA4_ID:'',          // GA4 „VizMaker Mini Course”
+  META_PIXEL_ID:'', // piksel Meta „VizMaker Mini Kursy”
+  OAI_PIXEL_ID:'' // OpenAI Ads „VizMaker Mini Course”
+};
+// Pasek "aktualizacje biblioteki w kalendarzu" - na razie WYŁĄCZONY (true = włącz)
+const UPDATES_BAR=false;
+const track=(function(){
+  let on=false;const q=[];
+  function load(){
+    if(on)return;on=true;
+    if(TRACK.GA4_ID){const s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+TRACK.GA4_ID;document.head.appendChild(s);
+      window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());
+      gtag('config',TRACK.GA4_ID,{course_id:TRACK.course,course_lang:TRACK.lang,content_group:'mini_kurs'});}
+    if(TRACK.META_PIXEL_ID){!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init',TRACK.META_PIXEL_ID);fbq('track','PageView');fbq('track','ViewContent',{content_name:TRACK.course,content_category:'mini_kurs',language:TRACK.lang});}
+    if(TRACK.OAI_PIXEL_ID){!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+      oaiq('init',{pixelId:TRACK.OAI_PIXEL_ID});}
+    q.splice(0).forEach(f=>f());
+  }
+  function ev(name,meta,params){
+    const p=Object.assign({course_id:TRACK.course,course_lang:TRACK.lang},params||{});
+    const run=()=>{if(window.gtag&&TRACK.GA4_ID)gtag('event',name,p);
+      if(window.oaiq&&TRACK.OAI_PIXEL_ID&&meta&&meta.oai){oaiq('measure',meta.oai,{type:'customer_action'},{event_id:TRACK.course+'_'+meta.oai+'_'+Date.now()});}
+      if(window.fbq&&TRACK.META_PIXEL_ID&&meta){meta.std?fbq('track',meta.name,{content_name:TRACK.course,content_category:'mini_kurs',language:TRACK.lang}):fbq('trackCustom',meta.name,p);}};
+    on?run():q.push(run);
+  }
+  const box=document.getElementById('consent');let c=null;
+  try{c=localStorage.getItem('vm_consent');}catch(_){}
+  if(!TRACK.GA4_ID&&!TRACK.META_PIXEL_ID&&!TRACK.OAI_PIXEL_ID){}           // brak ID = brak analityki i banera
+  else if(c==='1')load();else if(c!=='0')box.hidden=false;
+  box.addEventListener('click',e=>{const v=e.target.dataset.consent;if(v==null)return;try{localStorage.setItem('vm_consent',v);}catch(_){}box.hidden=true;if(v==='1')load();else q.length=0;});
+  return {ev};
+})();
+</script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var qs = new URLSearchParams(location.search);
+  var KEY = 'vm_lib_seen', seen = {};
+  try { seen = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  var hues = [[178,72],[200,70],[160,60],[190,80],[170,65],[210,60]];
+  function trialUrl(k) { return TRIAL + '&utm_source=library&utm_medium=email&utm_content=' + encodeURIComponent(k || 'library'); }
+  $('top-cta').href = trialUrl('top');
+  if (window.matchMedia('(max-width: 640px)').matches) $('top-cta').textContent = 'Start free';
+  $('promo').href = trialUrl('promo_bar');
+  // ===== kalendarz (1:1 jak minikurs): jutro 19:00, 30 min =====
+  (function(){
+    var d=new Date();d.setDate(d.getDate()+1);d.setHours(19,0,0,0);var e=new Date(d.getTime()+30*60000);
+    var z=function(t){return t.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');};
+    var url=location.href.split('#')[0].split('?')[0];
+    function links(title,desc,d,e,rrule){
+      var g='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+z(d)+'/'+z(e)+'&details='+encodeURIComponent(desc)+'&location='+encodeURIComponent(url)+(rrule?'&recur='+encodeURIComponent('RRULE:'+rrule):'');
+      var o='https://outlook.live.com/calendar/0/action/compose?subject='+encodeURIComponent(title)+'&startdt='+encodeURIComponent(d.toISOString())+'&enddt='+encodeURIComponent(e.toISOString())+'&body='+encodeURIComponent(desc)+'&location='+encodeURIComponent(url);
+      var ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//VizMaker//Library//EN','BEGIN:VEVENT','UID:library-'+Date.now()+'@vizmaker.com','DTSTAMP:'+z(new Date()),'DTSTART:'+z(d),'DTEND:'+z(e)].concat(rrule?['RRULE:'+rrule]:[]).concat(['SUMMARY:'+title,'DESCRIPTION:'+desc,'URL:'+url,'BEGIN:VALARM','TRIGGER:-PT15M','ACTION:DISPLAY','DESCRIPTION:'+title,'END:VALARM','END:VEVENT','END:VCALENDAR']).join('\r\n');
+      return {g:g,o:o,ics:ics};
+    }
+    function dl(ics,name){var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);}
+    var L1=links('Time to learn: my first AI project (VizMaker AI Project Library)','30 minutes just for you. Open the next lesson: '+url,d,e);
+    document.querySelectorAll('[data-cal-google]').forEach(function(a){a.href=L1.g;});
+    document.querySelectorAll('[data-cal-outlook]').forEach(function(a){a.href=L1.o;});
+    document.querySelectorAll('[data-cal-ics]').forEach(function(b){b.addEventListener('click',function(){dl(L1.ics,'vizmaker-library.ics');});});
+    document.querySelectorAll('[data-cal]').forEach(function(w){w.addEventListener('click',function(ev){var t=ev.target.closest('[data-cal-google],[data-cal-ics],[data-cal-outlook]');if(t)track.ev('calendar_add',{name:'CalendarAdd'},{calendar:t.hasAttribute('data-cal-google')?'google':t.hasAttribute('data-cal-ics')?'apple_ics':'outlook'});});});
+    // subskrypcja kalendarza aktualizacji (plik library/updates.ics, generowany przez build_ics.py)
+    var feed=location.origin+location.pathname.replace(/[^/]*$/,'')+'updates.ics', webcal=feed.replace(/^https?:/,'webcal:');
+    var isPhone=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    // telefon: aplikacja Google Calendar nie umie subskrybować z URL -> wydarzenie cykliczne (pon 18:00) z linkiem do biblioteki
+    var md=new Date();md.setDate(md.getDate()+((8-md.getDay())%7||7));md.setHours(18,0,0,0);var me=new Date(md.getTime()+30*60000);
+    var LW=links('\uD83C\uDD95 New AI project in the VizMaker Library','A new project with a video tutorial and prompts is live: '+url+'?p=latest',md,me,'FREQ=WEEKLY;BYDAY=MO');
+    // Google (PC i telefon): wydarzenie cykliczne we WŁASNYM kalendarzu -> działają domyślne powiadomienia (subskrypcje w Google ich nie mają)
+    var isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+    // iPhone: Safari zwykle nie jest zalogowane do Google (link przekierowuje na Workspace) -> plik .ics z wydarzeniem cyklicznym
+    document.querySelectorAll('[data-sub-google]').forEach(function(a){
+      if(isIOS){a.removeAttribute('target');a.href='#';a.addEventListener('click',function(e){e.preventDefault();dl(LW.ics,'vizmaker-library-weekly.ics');});}
+      else a.href=LW.g;
+    });
+    // Apple: wydarzenie cykliczne we WŁASNYM kalendarzu (.ics) -> alert działa; subskrypcja iPhone często usuwa alerty
+    document.querySelectorAll('[data-sub-apple]').forEach(function(a){a.href='#';a.addEventListener('click',function(e){e.preventDefault();dl(LW.ics,'vizmaker-library-weekly.ics');});});
+    // mały link: subskrypcja listy projektów (nazwy projektów, bez gwarancji powiadomień)
+    document.querySelectorAll('[data-sub-feed]').forEach(function(a){a.href=webcal;});
+    document.querySelectorAll('[data-sub-outlook]').forEach(function(a){a.href='https://outlook.live.com/calendar/0/addfromweb?url='+encodeURIComponent(feed)+'&name='+encodeURIComponent('VizMaker AI Project Library');});
+    document.querySelectorAll('[data-sub]').forEach(function(w){w.addEventListener('click',function(ev){var t=ev.target.closest('.nb-go');if(t)track.ev('calendar_subscribe',{name:'CalendarSubscribe'},{calendar:t.textContent.toLowerCase()});});});
+    if(UPDATES_BAR){
+      var closed=false;try{closed=localStorage.getItem('vm_lib_nbar')==='1';}catch(_){}
+      if(!closed)$('nbar').hidden=false;
+      $('nbar-x').onclick=function(){$('nbar').hidden=true;try{localStorage.setItem('vm_lib_nbar','1');}catch(_){}};
+    }
+  })();
+
+
+
+  var milestone = false;
+  function progress() {
+    var n = LESSONS.filter(function (l) { return seen[l.key]; }).length;
+    if (n >= 3 && !milestone) { milestone = true; track.ev('lessons_explored_3',{name:'Lead',std:true},{explored:n}); }
+    $('pr-t').textContent = window.matchMedia('(max-width: 640px)').matches ? n + '/' + TOTAL : n + ' of ' + TOTAL + ' projects explored';
+    $('pr-bar').style.width = (n / TOTAL * 100) + '%';
+  }
+
+  // karty
+  var cats = ['All'], filter = 'All';
+  LESSONS.forEach(function (l) { if (cats.indexOf(l.soft) < 0) cats.push(l.soft); if (cats.indexOf(l.cat) < 0) cats.push(l.cat); });
+  cats.push('Coming soon');
+  cats.forEach(function (c) {
+    var b = document.createElement('button'); b.className = 'chip' + (c === 'All' ? ' on' : ''); b.textContent = c;
+    b.onclick = function () { if (window.__fdrag) return; b.scrollIntoView({block:'nearest', inline:'center', behavior:'smooth'}); filter = c; [].forEach.call(document.querySelectorAll('.chip'), function (x) { x.classList.toggle('on', x === b); }); render(); };
+    $('lessons').appendChild(b);
+  });
+  (function(){ var f = $('lessons'), down = false, sx = 0, sl = 0, moved = 0;
+    f.addEventListener('mousedown', function(e){ down = true; moved = 0; sx = e.pageX; sl = f.scrollLeft; });
+    window.addEventListener('mousemove', function(e){ if (!down) return; var d = e.pageX - sx; moved = Math.max(moved, Math.abs(d)); f.scrollLeft = sl - d; });
+    window.addEventListener('mouseup', function(){ if (!down) return; down = false; window.__fdrag = moved > 6; setTimeout(function(){ window.__fdrag = false; }, 0); });
+  })();
+  function thumb(i) {
+    var h = hues[i % hues.length];
+    return 'radial-gradient(circle at 25% 30%, hsla(' + h[0] + ',' + h[1] + '%,55%,.45), transparent 55%),' +
+           'radial-gradient(circle at 80% 75%, hsla(' + (h[0] + 30) + ',' + h[1] + '%,45%,.35), transparent 55%),' +
+           'linear-gradient(135deg,#0f1a1e,#0a1013)';
+  }
+  // ---- soft gate: 3 dowolne projekty za darmo, kolejne po zapisie mailem ----
+  var FREE = 3, pendingGate = -1;
+  (function(){ var src=(qs.get('utm_source')||'').toLowerCase(), med=(qs.get('utm_medium')||'').toLowerCase();
+    if (qs.get('unlock')==='1' || med==='email' || /mailchimp|email|newsletter/.test(src)) { try{localStorage.setItem('vm_lib_signed','1');}catch(_){} } })();
+  function isSigned(){ try{ return localStorage.getItem('vm_lib_signed')==='1'; }catch(_){ return false; } }
+  function freeKeys(){ return Object.keys(seen).filter(function(k){ return LESSONS.some(function(l){ return l.key===k; }); }).slice(0, FREE); }
+  // pełny dostęp (tutorial + PDF): zapisany mailem, albo projekt jest wśród 3 pierwszych OTWARTYCH, albo jeszcze nie wykorzystano 3
+  function unlocked(l){ var f = freeKeys(); return isSigned() || f.indexOf(l.key) >= 0 || (!seen[l.key] && f.length < FREE); }
+  var pendingAct = null;
+  function gate(idx, what){ pendingGate = idx; pendingAct = what; $('gate').classList.add('open');
+    track.ev('gate_view',{name:'GateView'},{lesson:LESSONS[idx].key, asset:what, explored:freeKeys().length}); }
+  function gateClose(){ $('gate').classList.remove('open'); }
+  var GATE_T = null;
+  // otwarcie okna z mailem bez blokowania projektu (przyklejony przycisk, okno przy wyjściu, podpowiedź po 2. projekcie)
+  function openSignup(src, title){ if (isSigned()) return; pendingGate = -1; pendingAct = null;
+    var h = document.querySelector('#gate h3'); if (GATE_T === null) GATE_T = h.textContent; h.textContent = title || GATE_T;
+    $('gate').classList.add('open'); track.ev('signup_prompt',{name:'SignupPrompt'},{src:src}); }
+  // 1) telefon: przyklejony przycisk po przewinięciu za górny blok
+  (function(){ var b = $('scta'); b.onclick = function(){ openSignup('sticky'); };
+    function upd(){ var show = !isSigned() && scrollY > 650 && !$('lesson').classList.contains('open') && !$('gate').classList.contains('open') && !$('ph').classList.contains('open');
+      b.classList.toggle('on', show); }
+    addEventListener('scroll', upd, {passive:true}); setInterval(upd, 1000); })();
+  // 2) PC: okno przy próbie wyjścia (kursor ucieka do góry), raz na urządzenie, po min. 8 s na stronie
+  (function(){ var t0 = Date.now();
+    document.addEventListener('mouseout', function(e){ if (e.relatedTarget || e.clientY > 0 || Date.now() - t0 < 8000 || isSigned()) return;
+      if ($('lesson').classList.contains('open') || $('gate').classList.contains('open') || $('ph').classList.contains('open')) return;
+      try { if (localStorage.getItem('vm_exit')) return; localStorage.setItem('vm_exit', '1'); } catch(_) {}
+      openSignup('exit', 'Before you go: get full access — free'); }); })();
+  // 3) po 2. projekcie: krótka podpowiedź (raz)
+  function nudge2(){ if (isSigned() || freeKeys().length !== 2) return; try { if (localStorage.getItem('vm_nudge2')) return; localStorage.setItem('vm_nudge2', '1'); } catch(_) {}
+    var n = $('nudge'); n.classList.add('on'); track.ev('nudge_view',{name:'NudgeView'},{});
+    $('nudge-b').onclick = function(){ n.classList.remove('on'); openSignup('nudge2'); }; $('nudge-x').onclick = function(){ n.classList.remove('on'); };
+    setTimeout(function(){ n.classList.remove('on'); }, 12000); }
+  $('gate-x').onclick = gateClose; $('gate').onclick = function(e){ if(e.target===$('gate')) gateClose(); };
+  var jsPdfP = null;
+  function loadPdf(){ return jsPdfP || (jsPdfP = new Promise(function(ok, no){ var sc = document.createElement('script'); sc.src = 'vendor/jspdf.umd.min.js'; sc.onload = function(){ ok(window.jspdf.jsPDF); }; sc.onerror = no; document.head.appendChild(sc); })); }
+  function cp(t){ return String(t || '').replace(/[\u2010-\u2015]/g, '-').replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/\u2026/g, '...').replace(/[^\x00-\xFF\u20AC]/g, ''); }
+  function makePdf(l){
+    track.ev('pdf_download',{name:'PdfDownload'},{lesson:l.key});
+    loadPdf().then(function(jsPDF){
+      var d = new jsPDF({unit:'mm', format:'a4'}), W = 210, M = 16, y = 0, url = 'https://vizmaker-ai-view.github.io/library/?p=' + l.key + '&utm_source=pdf&utm_medium=lead_magnet';
+      function need(h){ if (y + h > 280) { d.addPage(); y = 18; } }
+      d.setFillColor(3,13,22); d.rect(0,0,W,46,'F'); d.setFillColor(0,228,240); d.rect(0,46,W,1.2,'F');
+      d.setTextColor(0,228,240); d.setFont('helvetica','bold'); d.setFontSize(10); d.text('VIZMAKER AI  ·  FREE PROJECT LIBRARY', M, 14);
+      d.setTextColor(255,255,255); d.setFontSize(18); var tl = d.splitTextToSize(cp(l.title || 'VizMaker project'), W - 2*M); d.text(tl.slice(0,2), M, 26);
+      d.setFontSize(9.5); d.setFont('helvetica','normal'); d.setTextColor(150,190,200); d.text(cp(l.soft + '  ·  ' + l.cat + '  ·  ' + l.min + ' min'), M, 41);
+      y = 58; d.setTextColor(40,50,60); d.setFontSize(11); var dl = d.splitTextToSize(cp(l.desc), W - 2*M); d.text(dl, M, y); y += dl.length * 5.2 + 6;
+      d.setFillColor(230,252,254); d.roundedRect(M, y, W - 2*M, 14, 3, 3, 'F'); d.setTextColor(0,120,130); d.setFont('helvetica','bold'); d.setFontSize(10.5);
+      d.textWithLink('Open the full project in 3D  >', M + 5, y + 9, {url: url}); y += 24;
+      d.setTextColor(10,20,30); d.setFontSize(13); d.text('Workflow', M, y); y += 7; d.setFont('helvetica','normal'); d.setFontSize(10.5);
+      l.steps.forEach(function(st, i){ var sl = d.splitTextToSize(cp(st), W - 2*M - 10); need(sl.length * 5 + 3); d.setFillColor(0,228,240); d.circle(M + 3, y - 1.3, 2.9, 'F'); d.setTextColor(0,22,26); d.setFont('helvetica','bold'); d.setFontSize(8.5); d.text(String(i+1), M + 3, y - 0.2, {align:'center'}); d.setFont('helvetica','normal'); d.setFontSize(10.5); d.setTextColor(40,50,60); d.text(sl, M + 10, y); y += sl.length * 5 + 3; });
+      if (l.prompts.length) { y += 4; need(14); d.setTextColor(10,20,30); d.setFont('helvetica','bold'); d.setFontSize(13); d.text('Prompts used', M, y); y += 6; d.setFont('courier','normal'); d.setFontSize(9.5);
+        l.prompts.forEach(function(pr){ var pl = d.splitTextToSize(cp(pr), W - 2*M - 8); var h = pl.length * 4.4 + 6; need(h + 4); d.setFillColor(244,247,249); d.setDrawColor(210,225,230); d.roundedRect(M, y, W - 2*M, h, 2, 2, 'FD'); d.setTextColor(30,40,50); d.text(pl, M + 4, y + 5.5); y += h + 4; }); }
+      if (l.yt) { y += 2; need(10); d.setFont('helvetica','bold'); d.setFontSize(10.5); d.setTextColor(0,120,130); d.textWithLink('Watch the video tutorial on YouTube  >', M, y, {url:'https://youtu.be/' + l.yt}); y += 8; }
+      need(30); y += 4; d.setFillColor(3,13,22); d.roundedRect(M, y, W - 2*M, 24, 3, 3, 'F'); d.setTextColor(255,255,255); d.setFont('helvetica','bold'); d.setFontSize(12);
+      d.text('Try it yourself: 14 days of unlimited AI, free', M + 6, y + 10); d.setFont('helvetica','normal'); d.setFontSize(9.5); d.setTextColor(0,228,240);
+      d.textWithLink('vizmaker.com  >', M + 6, y + 17.5, {url: trialUrl(l.key).replace('src=', 'src=pdf_')});
+      var n = d.getNumberOfPages(); for (var i = 1; i <= n; i++) { d.setPage(i); d.setFont('helvetica','normal'); d.setFontSize(8); d.setTextColor(140,150,160); d.text('VizMaker AI · Free Project Library · vizmaker-ai-view.github.io/library', M, 291); d.text(i + '/' + n, W - M, 291, {align:'right'}); }
+      d.save('VizMaker-' + l.key + '.pdf');
+    }).catch(function(){ alert('PDF could not be created. Please try again.'); });
+  }
+  // wyszukiwarka: szuka w tytule, opisie, kategoriach i w przetłumaczonym tekście karty
+  var sq = '';
+  function applySearch(){ var q = sq.toLowerCase(), n = 0, cards = document.querySelectorAll('#grid .card');
+    [].forEach.call(cards, function(c){ var k = (c.querySelector('h3') || {}).dataset; var l = k && LESSONS.filter(function(x){ return x.key === k.k; })[0];
+      var hay = (c.textContent + ' ' + (l ? [l.title, l.desc, l.soft, l.cat].concat(l.steps || []).join(' ') : '')).toLowerCase();
+      var ok = !q || hay.indexOf(q) >= 0; c.style.display = ok ? '' : 'none'; if (ok) n++; });
+    var none = !!(q && !n);
+    // brak wyników: przeprosiny + prośba o temat mailem, a pod spodem zwykła lista projektów (żeby od razu coś zacząć)
+    if (none) [].forEach.call(cards, function(c){ c.style.display = ''; });
+    $('srch-none').style.display = none ? 'flex' : 'none'; $('srch-more').style.display = none ? 'block' : 'none';
+    if (none) { $('srch-q').textContent = sq;
+      $('srch-mail').href = 'mailto:edu@vizmaker.com?subject=' + encodeURIComponent('Library request: ' + sq) + '&body=' + encodeURIComponent("Hi VizMaker team,\n\nI'd love a project / tutorial about: " + sq + "\n\nThanks!");
+      $('srch-mail').onclick = function(){ track.ev('search_request',{name:'Contact',std:true},{q:sq.slice(0,60)}); }; } }
+  (function(){ var i = $('srch-i'), w = $('srch'), t;
+    // wyniki dopiero gdy ktoś przestanie pisać (0,8 s) albo od razu po Enter; min. 3 znaki; przewijanie tylko raz na wyszukiwanie
+    var scrolled = false, last = '';
+    function go(now){ var v = i.value.trim(); if (v.length && v.length < 3 && !now) return; if (v === last) return; last = v; sq = v;
+      if (sq && filter !== 'All') { filter = 'All'; [].forEach.call(document.querySelectorAll('.chip'), function(x, j){ x.classList.toggle('on', j === 0); }); render(); }
+      applySearch();
+      if (!sq) { scrolled = false; return; }
+      if (!scrolled) { scrolled = true; var g = $('lessons'); if (g.getBoundingClientRect().top > innerHeight * .6 || g.getBoundingClientRect().top < 0) g.scrollIntoView({block:'start', behavior:'smooth'}); }
+      track.ev('search',{name:'Search',std:true},{q:sq.slice(0,60)}); }
+    i.addEventListener('input', function(){ clearTimeout(t); t = setTimeout(go, i.value.trim() ? 800 : 300); });
+    i.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); clearTimeout(t); go(true); i.blur(); } });
+    $('srch-b').onclick = function(){ w.classList.add('on'); setTimeout(function(){ i.focus(); }, 30); };
+    $('srch-x').onclick = function(){ i.value = ''; sq = ''; last = ''; scrolled = false; applySearch(); w.classList.remove('on'); };
+  })();
+  function render() {
+    var g = $('grid'); g.innerHTML = ''; var i = 0;
+    if (filter !== 'Coming soon') LESSONS.forEach(function (l, idx) {
+      if (filter !== 'All' && l.soft !== filter && l.cat !== filter) return;
+      var c = document.createElement('article'); c.className = 'card' + (seen[l.key] ? ' seen' : '') + (unlocked(l) ? '' : ' locked'); c.style.animationDelay = (i++ * 50) + 'ms';
+      c.innerHTML = '<div class="thumb"><div class="g" style="background:' + thumb(idx) + '"></div>' +
+        (l.yt ? '<img class="yt" loading="lazy" alt="" src="https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg">' : '') +
+        '<div class="num">' + String(idx + 1).padStart(2, '0') + '</div>' +
+        (l.yt ? '<span class="tag-yt">▶ Video tutorial</span>' : '') +
+        '<div class="play"><span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span></div>' +
+        (l.isNew ? '<span class="tag-f" style="background:#00e4f0;color:#00161a">NEW</span>' : l.featured ? '<span class="tag-f">Start here</span>' : '') + '<span class="done">✓ Explored</span><span class="lk">🔒 Free with email</span></div>' +
+        '<div class="body"><div class="meta"><span>' + l.soft + '</span><span>' + l.cat + '</span><span>' + l.min + ' min</span></div>' +
+        '<h3 data-k="' + l.key + '">' + (l.title || 'Loading…') + '</h3><p>' + l.desc + '</p>' + addedTime(l) + '</div>';
+      c.onclick = function () { open(idx); };
+      g.appendChild(c);
+    });
+    if (filter === 'All' || filter === 'Coming soon') SOON.slice(0, TOTAL - LESSONS.length).forEach(function (t, j) {
+      var idx = LESSONS.length + j, c = document.createElement('article'); c.className = 'card soon'; c.style.animationDelay = (i++ * 50) + 'ms';
+      c.innerHTML = '<div class="thumb"><div class="g" style="background:' + thumb(idx) + '"></div><div class="num">' + String(idx + 1).padStart(2, '0') + '</div>' +
+        '<div class="lock"><div>🔒 Unlocks soon</div></div></div><div class="body"><div class="meta"><span>Coming soon</span></div><h3>' + t + '</h3>' +
+        '<p>We\'ll email you when this lesson is live.</p></div>';
+      g.appendChild(c);
+    });
+  }
+
+  // lekcja
+  var cur = 0;
+  function open(idx) {
+    var l = LESSONS[idx];
+    if (!unlocked(l)) { gate(idx, 'project'); return; }
+    cur = idx;
+    var full = unlocked(l);
+    seen[l.key] = 1; try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (e) {}
+    var mob = window.matchMedia('(max-width: 860px)').matches;
+    setFrame(VIEWER + l.token);
+    $('l-3d').href = VIEWER + l.token;
+    $('lesson').querySelector('.side').scrollTop = 0; $('lesson').querySelector('.lbox').scrollTop = 0;
+    $('l-badge').textContent = 'Lesson ' + String(idx + 1).padStart(2, '0') + ' · ' + l.min + ' min';
+    $('l-title').textContent = l.title || ''; $('l-desc').textContent = l.desc;
+    $('l-steps').innerHTML = l.steps.map(function (s) { return '<li>' + s + '</li>'; }).join('');
+    $('l-prompts').innerHTML = '';
+    l.prompts.forEach(function (p) {
+      var d = document.createElement('div'); d.className = 'pr-box'; d.textContent = p;
+      var b = document.createElement('button'); b.textContent = '⧉'; b.title = 'Copy';
+      b.onclick = function () { track.ev('prompt_copy',{name:'PromptCopy'},{lesson:l.key}); try { navigator.clipboard.writeText(p); } catch (e) {} d.classList.add('ok'); b.textContent = '✓'; setTimeout(function () { d.classList.remove('ok'); b.textContent = '⧉'; }, 1500); };
+      d.appendChild(b); $('l-prompts').appendChild(d);
+    });
+    $('l-pr-wrap').style.display = l.prompts.length ? '' : 'none';
+    $('l-pdf').onclick = function(){ if (unlocked(l)) makePdf(l); else gate(idx, 'pdf'); };
+    $('l-yt').innerHTML = (l.yt && !full)
+      ? '<h4>Video tutorial</h4><button type="button" class="ytbox ytlock" id="l-ytlock" style="background-image:url(https://i.ytimg.com/vi/' + l.yt + '/hqdefault.jpg)"><span class="yl"><b>▶ Watch the tutorial</b><small>Free with email</small></span></button>'
+      : l.yt
+      ? '<h4>Video tutorial</h4><div class="ytbox"><iframe allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen src="https://www.youtube-nocookie.com/embed/' + l.yt + '?rel=0&start=' + (l.yt_t || 0) + '"></iframe></div>'
+      : l.ytSoon
+      ? '<h4>Video tutorial coming soon</h4><a class="ytlink" target="_blank" rel="noopener" href="' + YT_CHANNEL + '">▶ Meanwhile, watch our tutorials on YouTube →</a>'
+      : '<h4>Learn more</h4><a class="ytlink" target="_blank" rel="noopener" href="' + YT_CHANNEL + '">▶ More tutorials on our YouTube →</a>';
+    if ($('l-ytlock')) $('l-ytlock').onclick = function(){ gate(idx, 'video'); };
+    $('l-pdf').innerHTML = full ? '📄 Download project PDF <small>prompts + steps</small>' : '📄 Download project PDF <small>free with email</small>';
+    $('l-try').href = trialUrl(l.key);
+    $('l-prev').disabled = idx === 0; $('l-next').disabled = idx === LESSONS.length - 1;
+    $('l-badge2').textContent = $('l-badge').textContent;
+    lastNext = fillNext(idx);
+    try { var u = new URL(location.href); u.searchParams.set('p', l.key);
+      if (history.state && history.state.vmL) history.replaceState({vmL:1}, '', u); else history.pushState({vmL:1}, '', u); } catch (_) {}
+    $('lesson').classList.add('open'); document.body.style.overflow = 'hidden';
+    track.ev('lesson_open',{name:'LessonOpen'},{lesson:l.key,lesson_no:idx+1});
+    progress();
+  }
+  // nowa ramka zamiast zmiany src: zmiana src dopisuje wpisy do historii i psuje przycisk "wstecz"
+  function setFrame(url){ var o = $('l-frame'), f = o.cloneNode(false); if (url) f.src = url; else f.removeAttribute('src'); o.parentNode.replaceChild(f, o); }
+  // następny proponowany projekt: pierwszy nieobejrzany po bieżącym, potem od początku
+  function nextIdx(i){ for (var k = 1; k < LESSONS.length; k++) { var j = (i + k) % LESSONS.length; if (!seen[LESSONS[j].key]) return j; } return (i + 1) % LESSONS.length; }
+  function fillNext(i){ var n = nextIdx(i), l = LESSONS[n];
+    $('l-up-t').textContent = l.title || '…'; $('l-nxbar-t').textContent = l.title || '…';
+    $('l-up-th').style.backgroundImage = l.yt ? 'url(https://i.ytimg.com/vi/' + l.yt + '/mqdefault.jpg)' : thumb(n);
+    $('l-upnext').onclick = $('l-nxbar').onclick = function(){ track.ev('next_click',{name:'NextProject'},{from:LESSONS[i].key, to:l.key}); open(n); };
+    return n; }
+  var lastNext = -1;
+  function doClose() { setTimeout(nudge2, 700); $('lesson').classList.remove('open'); setFrame(''); $('l-yt').innerHTML = ''; document.body.style.overflow = ''; render();
+    // po zamknięciu: przewiń do proponowanego następnego projektu i podświetl go
+    if (lastNext >= 0) { var h = document.querySelector('#grid h3[data-k="' + LESSONS[lastNext].key + '"]'), c = h && h.closest('.card');
+      if (c) { c.classList.add('hl'); c.scrollIntoView({block:'center', behavior:'smooth'}); setTimeout(function(){ c.classList.remove('hl'); }, 4000); } } }
+  // przycisk "wstecz" w telefonie/przeglądarce zamyka projekt zamiast wychodzić ze strony
+  var _render = render; render = function(){ _render(); setTimeout(applySearch, 0); };
+  function close() { if (history.state && history.state.vmL) history.back(); else doClose(); }
+  window.addEventListener('popstate', function () { if ($('lesson').classList.contains('open') && !(history.state && history.state.vmL)) doClose(); });
+  $('l-back').onclick = close;
+  $('l-todet').onclick = function(){ var sd = $('lesson').querySelector('.side'); $('lesson').querySelector('.lbox').scrollTo({top: sd.offsetTop - 56, behavior: 'smooth'}); };
+  $('l-x').onclick = close;
+  $('lesson').onclick = function (e) { if (e.target === $('lesson')) close(); };
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  $('l-prev').onclick = function () { if (cur > 0) open(cur - 1); };
+  $('l-next').onclick = function () { if (cur < LESSONS.length - 1) open(cur + 1); };
+
+  // ?p=klucz -> "projekt, z którego przyszedłeś" na górze (link z maila: ?p=*|PROJ|*)
+  var pk = qs.get('p'), latest = pk === 'latest' || pk === 'new';
+  // ?p=latest -> najnowszy projekt (pierwszy na liście LESSONS) i od razu go otwiera
+  var from = latest ? 0 : LESSONS.findIndex(function (l) { return l.key === pk; });
+  if (from < 0) { var next = LESSONS.findIndex(function (l) { return !seen[l.key]; }); if (next > 0) { from = next; $('cont-l').textContent = 'Continue where you left off'; } }
+  if (from >= 0) { $('cont').classList.add('on'); $('cont-t').textContent = LESSONS[from].title || '…'; $('cont-b').onclick = function () { open(from); }; }
+
+  // ---- zapis e-mail -> Zapier (Catch Hook) -> Mailchimp Kontakty UK, tag 'library', double opt-in ----
+  var SIGNUP_HOOK = 'https://hooks.zapier.com/hooks/catch/4692325/JrpUevp58mV2bPFP/';
+  var signed = false; try { signed = localStorage.getItem('vm_lib_signed') === '1'; } catch (_) {}
+  function okHtml(again) { return '<div class="sg-ok">✅ <b>You\'re in!</b> Check your inbox for a welcome email from <b>edu@vizmaker.com</b>. We\'ll only write when a new project is added.</div>'; }
+  function renderSignup(box) {
+    box.innerHTML = '<h5>🎁 Get full access + new presets every week</h5><p>All projects, tutorials and PDFs, plus new presets to win more clients. Free. Unsubscribe anytime.</p>' +
+      '<form novalidate><input type="email" name="email" placeholder="your@email.com" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required>' +
+      '<input class="sg-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+      '<button type="submit">Get full access →</button>' +
+      '<div class="sg-more"><a data-ph>+ Also notify me on WhatsApp / SMS</a></div>' +
+      '<div class="sg-ph"><label class="sg-push"><input type="checkbox" name="push" checked> 🔔 Notify me on this device when new presets drop</label><input type="tel" name="phone" placeholder="+48 600 000 000" autocomplete="tel">' +
+      '<label><input type="checkbox" name="consent_sms"> I agree to receive new project updates from VizMaker via WhatsApp/SMS. Reply STOP to opt out.</label></div>' +
+      '<div class="sg-err"></div></form>';
+    var f = box.querySelector('form'), err = box.querySelector('.sg-err');
+    function reveal(){ box.querySelector('.sg-ph').classList.add('on'); var m = box.querySelector('.sg-more'); if (m) m.style.display = 'none'; }
+    box.querySelector('[data-ph]').onclick = reveal;
+    f.email.addEventListener('input', function(){ if (f.email.value.length) reveal(); }, {once:true});
+    f.onsubmit = function (e) {
+      e.preventDefault();
+      var email = (f.email.value || '').trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'Please enter a valid email address.'; err.style.display = 'block'; return; }
+      var phone = (f.phone.value || '').trim();
+      if (phone && !f.consent_sms.checked) { err.textContent = 'Tick the WhatsApp/SMS consent box, or leave the phone field empty.'; err.style.display = 'block'; return; }
+      err.style.display = 'none';
+      if (f.push && f.push.checked && !window.VM_NO_PUSH && window.OneSignal && OneSignal.Notifications && !OneSignal.Notifications.permission) {
+        try { OneSignal.setConsentGiven(true); OneSignal.Notifications.requestPermission(); track.ev('push_prompt',{name:'PushPrompt'},{place:box.getAttribute('data-signup')}); } catch (_) {}
+      }
+      var where = box.getAttribute('data-signup');
+      var proj = where === 'lesson' && LESSONS[cur] ? LESSONS[cur].key : (qs.get('p') && qs.get('p') !== 'latest' ? qs.get('p') : 'library');
+      var body = new URLSearchParams({ email: email, phone: f.consent_sms.checked ? phone : '', consent_sms: f.consent_sms.checked ? 'true' : 'false',
+        proj: proj, lang: window.VM_LANG || 'en', src: (qs.get('utm_source') || 'www') + (qs.get('utm_campaign') ? ':' + qs.get('utm_campaign') : ''), place: where, website: f.website.value || '' });
+      f.querySelector('button').disabled = true; f.querySelector('button').textContent = 'Sending…';
+      fetch(SIGNUP_HOOK, { method: 'POST', mode: 'no-cors', body: body }).catch(function () {}).then(function () {
+        signed = true; try { localStorage.setItem('vm_lib_signed', '1'); } catch (_) {}
+        if (where === 'gate' && pendingGate < 0) { setTimeout(gateClose, 1500); }
+        if (where === 'gate' && pendingGate >= 0) { var pg = pendingGate, act = pendingAct; pendingGate = -1; pendingAct = null; setTimeout(function(){ gateClose(); render(); open(pg); if (act === 'pdf') makePdf(LESSONS[pg]); }, 1400); } else { render(); if ($('lesson').classList.contains('open')) open(cur); }
+        track.ev('library_signup', { name: 'CompleteRegistration', std: true }, { place: where, lesson: proj, with_phone: f.consent_sms.checked ? 1 : 0 });
+        if (!f.consent_sms.checked) askPhone(email, proj, where === 'gate' ? 1700 : 900);
+        box.innerHTML = okHtml(false) + '<div style="margin-top:10px"><a data-again style="color:var(--teal);cursor:pointer;text-decoration:underline;font-size:13px">+ Add another email</a></div>';
+        var again = function () { if (box.querySelector('[data-again]')) renderSignup(box); };
+        box.querySelector('[data-again]').onclick = again;
+        setTimeout(again, 8000);
+      });
+    };
+  }
+  // krok 2 po zapisie mailem: prośba o numer WhatsApp (raz na urządzenie)
+  function askPhone(email, proj, delay){
+    try { if (localStorage.getItem('vm_lib_phone')) return; } catch(_) {}
+    var m = $('ph'), f = $('ph-f'), er = $('ph-err');
+    function done(v){ try { localStorage.setItem('vm_lib_phone', v); } catch(_) {} m.classList.remove('open'); }
+    $('ph-x').onclick = $('ph-skip').onclick = function(){ track.ev('phone_skip',{name:'PhoneSkip'},{lesson:proj}); done('skip'); };
+    f.onsubmit = function(e){ e.preventDefault(); var ph = (f.phone.value || '').replace(/[\s()-]/g, '');
+      if (!/^\+?\d{7,15}$/.test(ph)) { er.textContent = 'Please enter your phone number with country code, e.g. +44…'; er.style.display = 'block'; return; }
+      if (!f.consent_sms.checked) { er.textContent = 'Please tick the consent box.'; er.style.display = 'block'; return; }
+      er.style.display = 'none';
+      fetch(SIGNUP_HOOK, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ email: email, phone: ph, consent_sms: 'true', proj: proj, lang: window.VM_LANG || 'en', src: (qs.get('utm_source') || 'www'), place: 'phone_step', website: '' }) }).catch(function(){});
+      track.ev('phone_submit',{name:'Contact',std:true},{lesson:proj});
+      f.innerHTML = '<div class="sg-ok">✅ <b>Done!</b> We\'ll send new presets to your WhatsApp.</div>'; setTimeout(function(){ done('1'); }, 1600); };
+    setTimeout(function(){ m.classList.add('open'); }, delay);
+  }
+  document.querySelectorAll('[data-signup]').forEach(renderSignup);
+  (function(){ var gb=document.querySelector('[data-signup="gate"]'); if(!gb) return; var h=gb.querySelector('h5'), p=gb.querySelector('p'), b=gb.querySelector('button[type=submit]');
+    if(h) h.remove(); if(p) p.remove(); if(b) b.textContent='Get full access →'; })();
+
+  render(); progress();
+  if (latest && LESSONS.length) setTimeout(function () { open(0); }, 300);
+  document.addEventListener('click', function (ev) {
+    var a = ev.target.closest('#top-cta,#promo,#l-try'); if (a) track.ev('signup_click',{name:'InitiateCheckout',std:true,oai:'sign_up'},{place:a.id, lesson:a.id==='l-try'?LESSONS[cur].key:''});
+    var o = ev.target.closest('#l-3d'); if (o) track.ev('open_3d',{name:'Open3D'},{lesson:LESSONS[cur].key});
+  });
+  // brak tytułu -> pobierz tytuł filmu z YouTube
+  LESSONS.forEach(function (l) {
+    if (l.title || !l.yt) return;
+    fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + l.yt))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        l.title = (d && d.title) || 'VizMaker project';
+        [].forEach.call(document.querySelectorAll('h3[data-k="' + l.key + '"]'), function (h) { h.textContent = l.title; });
+        if ($('cont').classList.contains('on') && LESSONS[from] === l) $('cont-t').textContent = l.title;
+      }).catch(function () { l.title = 'VizMaker project'; });
+  });
+})();
+</script>
+<script>
+(function(){
+  var u=document.getElementById('upd'),b=document.getElementById('upd-open');
+  if(window.VM_NO_PUSH){var cs=u.querySelector('.calrow span'); if(cs) cs.textContent='📅 Get a weekly reminder in your calendar:';}
+  function st(){try{return localStorage.getItem('vm_upd');}catch(_){return null;}}
+  function open(){ if(window.VM_NO_PUSH||window.VM_PUSH_OK===false) document.getElementById('upd-push').style.display='none'; u.classList.add('show'); }
+  function close(){ u.classList.remove('show'); if(st()!=='on'){try{localStorage.setItem('vm_upd',String(Date.now()));}catch(_){}} }
+  b.onclick=function(){ u.classList.contains('show')?close():open(); };
+  u.addEventListener('click',function(e){ if(e.target.closest('[data-upd-x]')) close(); });
+  var s=st(), WEEK=7*864e5;
+  // automatyczny dymek tylko na PC; na telefonie zostaje dzwonek w nagłówku
+  if(!matchMedia('(max-width: 860px)').matches && s!=='on' && !(s && Date.now()-(+s)<WEEK)) setTimeout(function(){ if(!(window.VM_PUSH_ON&&window.VM_PUSH_ON())) open(); }, 8000);
+  setInterval(function(){ if(window.VM_PUSH_ON&&window.VM_PUSH_ON()) b.classList.add('on'); }, 2000);
+})();
+</script>
+<script src="i18n-preview.js"></script>
+</body>
+</html>
