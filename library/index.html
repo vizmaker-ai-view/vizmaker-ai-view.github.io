@@ -384,7 +384,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
     if (window.VM_NO_PUSH) return;
-    await OneSignal.init({
+    try { await OneSignal.init({
       appId: 'f731215b-2bee-485d-9885-819c21484aeb',
       requiresUserPrivacyConsent: true,   // RODO: SDK nic nie wysyła do OneSignal, dopóki user nie kliknie 'Turn on'
       serviceWorkerPath: '/OneSignalSDKWorker.js', serviceWorkerParam: { scope: '/' },
@@ -392,7 +392,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
       promptOptions: { slidedown: { prompts: [{ type: 'push', autoPrompt: false,
         text: { actionMessage: "🔔 Get a notification when a new FREE project drops. No email needed.", acceptButton: 'Notify me', cancelButton: 'Later' },
         delay: { pageViews: 1, timeDelay: 20 } }] } }
-    });
+    }); } catch (e) { console.warn('OneSignal init failed', e); window.VM_OS_ERR = e; return; }
     function sync(){ var on = OneSignal.Notifications.permission && OneSignal.User.PushSubscription.optedIn;
       var pk=document.querySelector('#upd-push .perk'); if(pk) pk.innerHTML = on ? '✓ Notifications are on for this device' : '✓ Instant &nbsp;·&nbsp; ✓ No email needed &nbsp;·&nbsp; ✓ Turn off anytime';
       document.querySelectorAll('[data-push]').forEach(function(b){ b.textContent = on ? (b.classList.contains('big') ? 'Turn off notifications' : 'Turn off') : (b.dataset.lbl || '🔔 Push'); b.classList.toggle('off', !!on); });
@@ -404,11 +404,25 @@ footer.vmf{background:var(--bg);margin-top:20px}
     OneSignal.User.PushSubscription.addEventListener('change', function(e){ sync();
       if (e.current.optedIn) { OneSignal.User.addTag('library', '1'); try{localStorage.setItem('vm_upd','on');}catch(_){} var u=document.getElementById('upd'); if(u) setTimeout(function(){u.classList.remove('show');},1200); }
       if (e.current.optedIn && typeof track!=='undefined') track.ev('push_subscribe', {name:'Subscribe'}, {channel:'webpush'}); });
-    document.addEventListener('click', function(ev){ if (!ev.target.closest('[data-push]')) return;
-      var ps = OneSignal.User.PushSubscription;
-      if (OneSignal.Notifications.permission && ps.optedIn) { ps.optOut(); try{localStorage.setItem('vm_upd', String(Date.now()));}catch(_){} }
-      else if (OneSignal.Notifications.permission) ps.optIn();
-      else { OneSignal.setConsentGiven(true); OneSignal.Notifications.requestPermission(); } });
+    window.VM_OS_READY = true;
+  });
+</script>
+<script>
+  // Klik "Notify me" - poza OneSignalDeferred, żeby Safari dostało natywne pytanie od razu w geście kliknięcia
+  document.addEventListener('click', function(ev){
+    var b = ev.target.closest('[data-push]'); if (!b || window.VM_NO_PUSH) return;
+    var OS = window.OneSignal, ready = window.VM_OS_READY && OS && OS.User;
+    var msg = function(t){ var o = document.querySelector('#upd-push .ot'); if (o) { o.textContent = t; o.style.display = 'block'; } };
+    if (ready && OS.Notifications.permission && OS.User.PushSubscription.optedIn) {
+      OS.User.PushSubscription.optOut(); try{localStorage.setItem('vm_upd', String(Date.now()));}catch(_){} return; }
+    if (!('Notification' in window)) { msg('Notifications are not supported in this browser. Use the calendar option below.'); return; }
+    if (Notification.permission === 'denied') { msg('Notifications are blocked for this site. Allow them in your browser settings, then try again.'); return; }
+    var done = false, finish = function(){ if (done) return; done = true;
+      if (!ready) { msg(window.VM_OS_ERR ? 'Push is not available in this browser yet. Use the calendar option below.' : 'Almost there – please reload the page and click again.'); return; }
+      OS.setConsentGiven(true); OS.User.PushSubscription.optIn(); };
+    if (Notification.permission === 'granted') { finish(); return; }
+    try { var r = Notification.requestPermission(function(p){ if (p === 'granted') finish(); });   // natywne pytanie w geście (Safari)
+      if (r && r.then) r.then(function(p){ if (p === 'granted') finish(); }); } catch (e) { msg('Could not ask for permission: ' + e.message); }
   });
 </script>
 <style>
