@@ -774,7 +774,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 // ===== ANALITYKA (1:1 jak minikursy) =====
 const TRACK={
   course:'library_ai_projects',  // id "kursu" - biblioteka projektów
-  lang:'en',
+  lang:(function(){var L=['en','pl','de','tr','es','fr','ar','uk','ru'],q=(new URLSearchParams(location.search).get('lang')||'').toLowerCase();if(q==='ua')q='uk';if(L.indexOf(q)>=0)return q;try{var s=localStorage.getItem('vm_lang');if(L.indexOf(s)>=0)return s;}catch(e){}var n=navigator.languages||[navigator.language||'en'];for(var i=0;i<n.length;i++){var c=String(n[i]).slice(0,2).toLowerCase();if(L.indexOf(c)>=0)return c;}return 'en';})(), // realny język strony (jak w i18n.js)
   GA4_ID:'G-M4JT8D4NNC',          // GA4 „VizMaker Mini Course”
   META_PIXEL_ID:'1335493635334924', // piksel Meta „VizMaker Mini Kursy”
   OAI_PIXEL_ID:'6msDXFx25TWabFByppdNTg' // OpenAI Ads „VizMaker Mini Course”
