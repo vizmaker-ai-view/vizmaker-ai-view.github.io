@@ -106,6 +106,12 @@
     'p6': {   // Project (13-11-2026)
       desktop: 'https://viewer.svc.vizmaker.com/projectviewer?token=aGW3y3sA7BTGq6MFJCukEPG8q-ouXsLA',
       mobile:  'https://viewer.svc.vizmaker.com/projectviewer?token=aGW3y3sA7BTGq6MFJCukEPG8q-ouXsLA'
+    },
+    'p7': {   // Project (17-11-2026)
+      desktop: 'https://viewer.svc.vizmaker.com/projectviewer?token=IU28NsIuMrfYhXyhYc3jbA-jwTESoALh',
+      mobile:  'https://viewer.svc.vizmaker.com/projectviewer?token=IU28NsIuMrfYhXyhYc3jbA-jwTESoALh',
+      tutorial: 'Ht_DU8RARIw',
+      tutorialStart: 81
     }
     // ,'kuchnia': { desktop: 'https://...token=AAA', mobile: 'https://...token=BBB' }
   };
@@ -758,9 +764,10 @@
   (function () {
     var ov = document.getElementById('tut-overlay'), media = document.getElementById('tut-media');
     var vid = (PROJECTS[projectKey] && PROJECTS[projectKey].tutorial) || TUTORIAL.video;
+    var vst = (PROJECTS[projectKey] && PROJECTS[projectKey].tutorialStart) || 0;
     document.getElementById('tut-title').textContent = TUTORIAL.title;
     document.getElementById('tut-sub').textContent = TUTORIAL.subtitle;
-    document.getElementById('tut-yt').href = 'https://www.youtube.com/watch?v=' + vid;
+    document.getElementById('tut-yt').href = 'https://www.youtube.com/watch?v=' + vid + (vst ? '&t=' + vst + 's' : '');
     var KEY = 'vm_tut_seen', recent = false;
     try { recent = Date.now() - (+localStorage.getItem(KEY) || 0) < TUTORIAL.everyDays * 864e5; } catch (e) {}
 
@@ -773,7 +780,7 @@
     function play() {
       if (media.dataset.state === 'play') return;
       media.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + vid +
-        '?autoplay=1&rel=0&modestbranding=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+        '?autoplay=1&rel=0&modestbranding=1' + (vst ? '&start=' + vst : '') + '" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>';
       media.dataset.state = 'play';
       gtag('event', 'tutorial_play', P);
     }
