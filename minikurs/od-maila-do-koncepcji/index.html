@@ -18,7 +18,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://i.ytimg.com/vi/D5GahPW53CU/maxresdefault.jpg">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Czy minikurs jest naprawdę darmowy?","acceptedAnswer":{"@type":"Answer","text":"Tak. Do wyczerpania zapasów cały minikurs kosztuje 0 zł zamiast 199 zł. Wystarczy adres e-mail, bez karty płatniczej."}},{"@type":"Question","name":"Dla kogo jest ten kurs?","acceptedAnswer":{"@type":"Answer","text":"Dla architektów wnętrz, architektów i studentów, którzy chcą szybciej przygotowywać koncepcje z AI. Wystarczą podstawy SketchUpa, kurs przeprowadza krok po kroku przez cały workflow."}},{"@type":"Question","name":"Jakich programów potrzebuję?","acceptedAnswer":{"@type":"Answer","text":"SketchUpa, Claude i VizMakera. W VizMakerze pracujesz na silnikach AI Nano Banana 2 (Gemini) i GPT Image. Po zapisie dostajesz 7 dni VizMakera bez limitu."}},{"@type":"Question","name":"Ile trwa minikurs?","acceptedAnswer":{"@type":"Answer","text":"10 lekcji wideo, łącznie 1 godz. 21 min. Po zapisie masz 10 dni dostępu do wszystkich lekcji."}},{"@type":"Question","name":"Co dostanę po zapisie?","acceptedAnswer":{"@type":"Answer","text":"Wszystkie 10 lekcji, plik projektu VizMaker, plik SketchUpa, gotowe prompty AI do Claude i VizMakera oraz bonusy."}},{"@type":"Question","name":"Kto prowadzi minikurs?","acceptedAnswer":{"@type":"Answer","text":"Julia Cierniak, architektka i absolwentka Politechniki Krakowskiej, która na co dzień przygotowuje koncepcje dla klientów w workflow SketchUp + Claude + VizMaker."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Czy minikurs jest naprawdę darmowy?","acceptedAnswer":{"@type":"Answer","text":"Tak. Do wyczerpania zapasów cały minikurs kosztuje 0 zł zamiast 199 zł. Wystarczy adres e-mail, bez karty płatniczej."}},{"@type":"Question","name":"Dla kogo jest ten kurs?","acceptedAnswer":{"@type":"Answer","text":"Dla architektów wnętrz, architektów i studentów, którzy chcą szybciej przygotowywać koncepcje z AI. Wystarczą podstawy SketchUpa, kurs przeprowadza krok po kroku przez cały workflow."}},{"@type":"Question","name":"Jakich programów potrzebuję?","acceptedAnswer":{"@type":"Answer","text":"SketchUpa, Claude i VizMakera. W VizMakerze pracujesz na silnikach AI Nano Banana 2 (Gemini) i GPT Image. Po zapisie dostajesz 7 dni VizMakera bez limitu."}},{"@type":"Question","name":"Ile trwa minikurs?","acceptedAnswer":{"@type":"Answer","text":"10 lekcji wideo, łącznie 1 godz. 21 min. Po zapisie masz 10 dni dostępu do wszystkich lekcji."}},{"@type":"Question","name":"Dlaczego dostęp jest na 10 dni?","acceptedAnswer":{"@type":"Answer","text":"Bo nauka potrzebuje motywacji. Kurs dostępny „na zawsze” łatwo odłożyć na później, a termin pomaga go skończyć i od razu wykorzystać w pracy. 10 dni spokojnie wystarczy na wszystkie lekcje. Po założeniu darmowego konta w VizMakerze możesz przedłużyć dostęp o kolejne 10 dni."}},{"@type":"Question","name":"Co dostanę po zapisie?","acceptedAnswer":{"@type":"Answer","text":"Wszystkie 10 lekcji, plik projektu VizMaker, plik SketchUpa, gotowe prompty AI do Claude i VizMakera oraz bonusy."}},{"@type":"Question","name":"Kto prowadzi minikurs?","acceptedAnswer":{"@type":"Answer","text":"Julia Cierniak, architektka i absolwentka Politechniki Krakowskiej, która na co dzień przygotowuje koncepcje dla klientów w workflow SketchUp + Claude + VizMaker."}}]}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -559,7 +559,35 @@ footer.vmf{background:var(--bg);margin-top:20px}
 .mkt-lock p{color:var(--t2);margin:0 auto 26px;max-width:480px}
 .mkt-lock .mkt-cta{display:inline-block;background:var(--b);color:#001117;padding:15px 30px;border-radius:10px;font-weight:800;text-decoration:none}
 .mkt-lock .mkt-x{display:block;margin:18px auto 0;background:none;border:0;color:var(--t3);font:inherit;text-decoration:underline;cursor:pointer}
+
+.mk-why{margin:16px 0 0;padding:14px 16px;border-radius:12px;background:rgba(255,204,0,.07);border:1px solid rgba(255,204,0,.3);font-size:15px;line-height:1.55;color:var(--t2)}
+.mk-why b{color:#ffcc00}
+.mk-push{position:fixed;right:16px;bottom:16px;z-index:110;max-width:360px;background:var(--s2);border:1px solid rgba(0,228,240,.5);border-radius:16px;padding:18px 18px 16px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.mk-push[hidden]{display:none!important}
+.mk-push b{display:block;font-size:17px;color:var(--h);margin-bottom:6px}
+.mk-push p{margin:0 0 14px;font-size:14px;line-height:1.5;color:var(--t2)}
+.mk-push div{display:flex;gap:10px}
+.mk-push button{font:inherit;font-size:15px;font-weight:700;border-radius:10px;padding:11px 16px;min-height:44px;cursor:pointer}
+.mk-push .y{background:var(--b);color:#001117;border:0}
+.mk-push .n{background:none;color:var(--t3);border:1px solid rgba(184,207,211,.35)}
+@media (max-width:520px){.mk-push{left:12px;right:12px;bottom:12px;max-width:none}}
+/* ===== /MINIKURS TIMER ===== */
 </style>
+<!-- OneSignal web push: przypomnienia minikursu (app: VizMaker AI App) -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+window.OneSignalDeferred=window.OneSignalDeferred||[];
+OneSignalDeferred.push(async function(OneSignal){
+  try{await OneSignal.init({appId:'%(app)s',requiresUserPrivacyConsent:true,
+    serviceWorkerPath:'/OneSignalSDKWorker.js',serviceWorkerParam:{scope:'/'},notifyButton:{enable:false}});}
+  catch(e){console.warn('OneSignal init failed',e);return;}
+  if(OneSignal.Notifications.permission)OneSignal.setConsentGiven(true);
+  window.MK_OS=OneSignal;
+  OneSignal.User.PushSubscription.addEventListener('change',function(e){if(e.current.optedIn){MKP.tag();MKP.hide();try{track.ev('push_subscribe',{name:'Subscribe'},{channel:'webpush',course:TRACK.course});}catch(_){}}});
+  if(OneSignal.Notifications.permission&&OneSignal.User.PushSubscription.optedIn)MKP.tag();
+  MKP.ready();
+});
+</script>
 </head>
 <body>
 
@@ -726,6 +754,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
         <h2 style="margin:0">Odbierz cały minikurs</h2>
         <div class="price" style="margin-top:12px"><span class="old" style="font-size:28px">199 zł</span><span class="zero" style="font-size:56px">0 zł</span></div>
         <p class="lead" style="margin:10px 0 0;font-size:17px">10 lekcji, plik projektu VizMaker i gotowe prompty. Cały workflow SketchUp + Claude + VizMaker na silnikach Nano Banana 2 i GPT Image. Podaj e-mail i zaczynasz od razu.</p>
+        <p class="mk-why">⏳ <b>Dlaczego 10 dni?</b> Wiemy, że nauka potrzebuje motywacji. Kurs dostępny „na zawsze” zwykle zostaje na „kiedyś”. Dlatego masz 10 dni dostępu: to w zupełności wystarczy, żeby spokojnie przejść wszystkie lekcje (1 godz. 21 min) i od razu użyć workflow w swoim projekcie. Będziemy Ci przypominać, ile zostało.</p>
       </div>
       <div style="flex:1 1 400px;min-width:0" id="formslot">
         <form id="signup" novalidate>
@@ -796,7 +825,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="wrap">
     <div class="eyebrow">FAQ</div>
     <h2>Najczęstsze pytania</h2>
-    <div class="faq"><details open><summary>Czy minikurs jest naprawdę darmowy?</summary><p>Tak. Do wyczerpania zapasów cały minikurs kosztuje 0 zł zamiast 199 zł. Wystarczy adres e-mail, bez karty płatniczej.</p></details><details><summary>Dla kogo jest ten kurs?</summary><p>Dla architektów wnętrz, architektów i studentów, którzy chcą szybciej przygotowywać koncepcje z AI. Wystarczą podstawy SketchUpa, kurs przeprowadza krok po kroku przez cały workflow.</p></details><details><summary>Jakich programów potrzebuję?</summary><p>SketchUpa, Claude i VizMakera. W VizMakerze pracujesz na silnikach AI Nano Banana 2 (Gemini) i GPT Image. Po zapisie dostajesz 7 dni VizMakera bez limitu.</p></details><details><summary>Ile trwa minikurs?</summary><p>10 lekcji wideo, łącznie 1 godz. 21 min. Po zapisie masz 10 dni dostępu do wszystkich lekcji.</p></details><details><summary>Co dostanę po zapisie?</summary><p>Wszystkie 10 lekcji, plik projektu VizMaker, plik SketchUpa, gotowe prompty AI do Claude i VizMakera oraz bonusy.</p></details><details><summary>Kto prowadzi minikurs?</summary><p>Julia Cierniak, architektka i absolwentka Politechniki Krakowskiej, która na co dzień przygotowuje koncepcje dla klientów w workflow SketchUp + Claude + VizMaker.</p></details></div>
+    <div class="faq"><details open><summary>Czy minikurs jest naprawdę darmowy?</summary><p>Tak. Do wyczerpania zapasów cały minikurs kosztuje 0 zł zamiast 199 zł. Wystarczy adres e-mail, bez karty płatniczej.</p></details><details><summary>Dla kogo jest ten kurs?</summary><p>Dla architektów wnętrz, architektów i studentów, którzy chcą szybciej przygotowywać koncepcje z AI. Wystarczą podstawy SketchUpa, kurs przeprowadza krok po kroku przez cały workflow.</p></details><details><summary>Jakich programów potrzebuję?</summary><p>SketchUpa, Claude i VizMakera. W VizMakerze pracujesz na silnikach AI Nano Banana 2 (Gemini) i GPT Image. Po zapisie dostajesz 7 dni VizMakera bez limitu.</p></details><details><summary>Ile trwa minikurs?</summary><p>10 lekcji wideo, łącznie 1 godz. 21 min. Po zapisie masz 10 dni dostępu do wszystkich lekcji.</p></details><details><summary>Dlaczego dostęp jest na 10 dni?</summary><p>Bo nauka potrzebuje motywacji. Kurs dostępny „na zawsze” łatwo odłożyć na później, a termin pomaga go skończyć i od razu wykorzystać w pracy. 10 dni spokojnie wystarczy na wszystkie lekcje. Po założeniu darmowego konta w VizMakerze możesz przedłużyć dostęp o kolejne 10 dni.</p></details><details><summary>Co dostanę po zapisie?</summary><p>Wszystkie 10 lekcji, plik projektu VizMaker, plik SketchUpa, gotowe prompty AI do Claude i VizMakera oraz bonusy.</p></details><details><summary>Kto prowadzi minikurs?</summary><p>Julia Cierniak, architektka i absolwentka Politechniki Krakowskiej, która na co dzień przygotowuje koncepcje dla klientów w workflow SketchUp + Claude + VizMaker.</p></details></div>
   </div>
 </section>
 </main>
@@ -834,9 +863,13 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="box"><div class="x"><button type="button" id="mclose" aria-label="Zamknij">✕</button></div><div class="vframe" id="mframe"></div></div>
 </div>
 
+<div class="mk-push" id="mk-push" hidden role="dialog" aria-label="🔔 Włącz przypomnienia">
+  <b>🔔 Włącz przypomnienia</b><p>Damy Ci znać, ile dni dostępu zostało i co obejrzeć dalej. Bez spamu, wyłączysz jednym kliknięciem.</p>
+  <div><button type="button" class="y" id="mk-push-y">Włącz</button><button type="button" class="n" id="mk-push-n">Nie teraz</button></div>
+</div>
 <div class="mkt-lock" id="mkt-lock" hidden role="dialog" aria-label="Dostęp do minikursu wygasł"><div>
-  <h2>Dostęp do minikursu wygasł</h2><p>Twoje 10 dni minęło. Kontynuuj naukę i projektuj z AI w VizMakerze.</p>
-  <a class="mkt-cta" href="#">Załóż darmowe konto</a>
+  <h2>Dostęp do minikursu wygasł</h2><p id="mkt-p">Twoje 10 dni minęło. Kontynuuj naukę i projektuj z AI w VizMakerze.</p>
+  <a class="mkt-cta" href="#" target="_blank" rel="noopener">Załóż darmowe konto</a>
   <button type="button" class="mkt-x" onclick="document.getElementById('mkt-lock').hidden=true">Zamknij</button>
 </div></div>
 <script>
@@ -1089,6 +1122,8 @@ const MKT=(function(){
   const get=()=>{try{return parseInt(localStorage.getItem(KEY),10)||0;}catch(_){return 0;}};
   const end=()=>get()+DAYS*864e5;
   const expired=()=>get()>0&&Date.now()>=end();
+  const EXT=KEY.replace('_start','_ext');
+  const extUsed=()=>{try{return localStorage.getItem(EXT)==='1';}catch(_){return false;}};
   function start(){if(!get()){try{localStorage.setItem(KEY,String(Date.now()));}catch(_){}}tick();}
   function tick(){
     const bar=document.getElementById('mkt-bar');if(!bar||!get())return;
@@ -1099,17 +1134,49 @@ const MKT=(function(){
   }
   function lock(){
     const el=document.getElementById('mkt-lock');if(!el)return;
-    el.querySelector('.mkt-cta').href=CTA;el.hidden=false;
+    const a=el.querySelector('.mkt-cta'),p=document.getElementById('mkt-p');a.href=CTA;
+    if(extUsed()){p.textContent="Dostęp do kursu się zakończył. Kontynuuj naukę i projektuj z AI w VizMakerze.";a.textContent="Przejdź do VizMakera";a.onclick=null;}
+    else{p.textContent="Twoje 10 dni minęło. Załóż darmowe konto w VizMakerze, a odblokujemy kurs na kolejne 10 dni.";a.textContent="Załóż konto i odblokuj +10 dni";a.onclick=function(){
+      try{localStorage.setItem(EXT,'1');localStorage.setItem(KEY,String(Date.now()));}catch(_){}
+      try{track.ev('minicourse_extended',null,{course:TRACK.course});}catch(_){}
+      try{MKP.tag();}catch(_){}
+      setTimeout(function(){el.hidden=true;openAccess();},300);};}
+    el.hidden=false;
     try{track.ev('minicourse_expired',null,{course:TRACK.course});}catch(_){}
   }
-  return {expired,start,lock};
+  return {expired,start,lock,startTs:get};
 })();
 
+
+// ===== PUSH: karta po odblokowaniu lekcji (nieobowiązkowa) =====
+const MKP=(function(){
+  const DKEY='mk_od_maila_push_later';let want=false,isReady=false;
+  const os=()=>window.MK_OS;
+  function on(){const o=os();return !!(o&&o.Notifications.permission&&o.User.PushSubscription.optedIn);}
+  function snoozed(){try{return Date.now()<parseInt(localStorage.getItem(DKEY)||'0',10);}catch(_){return false;}}
+  function show(){want=true;if(!isReady)return;const o=os(),el=document.getElementById('mk-push');
+    if(!el||!o||!o.Notifications.isPushSupported()||on()||snoozed()||MKT.expired())return;
+    if(o.Notifications.permissionNative==='denied')return;
+    const c=document.getElementById('consent');
+    if(c&&!c.hidden){setTimeout(show,3000);return;}
+    el.hidden=false;try{track.ev('push_prompt_shown',null,{course:TRACK.course});}catch(_){}}
+  function hide(){const el=document.getElementById('mk-push');if(el)el.hidden=true;}
+  function tag(){const o=os();if(!o)return;const st=MKT.startTs();
+    o.User.addTags({mk_course:'od_maila',mk_lang:'pl',mk_start:String(Math.floor((st||Date.now())/1000))});}
+  function ready(){isReady=true;if(want)setTimeout(show,1500);}
+  document.addEventListener('click',function(ev){
+    if(ev.target.id==='mk-push-y'){const o=os();if(!o)return;hide();
+      o.setConsentGiven(true);o.Notifications.requestPermission();}
+    if(ev.target.id==='mk-push-n'){hide();try{localStorage.setItem(DKEY,String(Date.now()+3*864e5));}catch(_){}}
+  });
+  return {show,hide,tag,ready};
+})();
 function openAccess(){
   if(MKT.expired()){MKT.lock();return;}
 renderProgram(true);
 try{localStorage.setItem('mk_od_maila','1');}catch(_){}
 MKT.start();
+MKP.show();
 }
 function unlock(email){
 track.ev('generate_lead',{std:true,name:'Lead',oai:'lead_created'},{method:'minikurs_form'});
