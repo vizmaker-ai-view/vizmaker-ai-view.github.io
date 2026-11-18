@@ -18,7 +18,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://i.ytimg.com/vi/32EQ7pK-ks0/maxresdefault.jpg">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is the mini-course really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. While spots last the full course costs $0 instead of $199. You only need an email address, no credit card."}},{"@type":"Question","name":"Do I need animation experience?","acceptedAnswer":{"@type":"Answer","text":"No. The course is beginner friendly. You start from a single image and follow one project step by step."}},{"@type":"Question","name":"What software do I need?","acceptedAnswer":{"@type":"Answer","text":"VizMaker, where you use Nano Banana Pro, Kling AI, Seedream, GPT Image and Magnific. VizMaker gives you 40 free credits to start, no card needed. The 7-day trial adds 100 credits and unlimited Nano Banana 2. Your base image can be a render from SketchUp, 3ds Max or Revit, or a photo."}},{"@type":"Question","name":"How long is the course?","acceptedAnswer":{"@type":"Answer","text":"9 video lessons, 2 h 11 min in total. Learn at your own pace with lifetime access."}},{"@type":"Question","name":"What will I be able to create?","acceptedAnswer":{"@type":"Answer","text":"Cinematic AI animations of architecture: golden hour, storm, snow, fog and night versions of one render, camera moves, and vertical clips for Reels and TikTok."}},{"@type":"Question","name":"Who teaches the course?","acceptedAnswer":{"@type":"Answer","text":"Anthony Rewucki, CEO and Co-Founder of VizMaker AI and VizAcademy Group, with more than 10 years in 3D graphics, archviz and EdTech."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is the mini-course really free?","acceptedAnswer":{"@type":"Answer","text":"Yes. While spots last the full course costs $0 instead of $199. You only need an email address, no credit card."}},{"@type":"Question","name":"Do I need animation experience?","acceptedAnswer":{"@type":"Answer","text":"No. The course is beginner friendly. You start from a single image and follow one project step by step."}},{"@type":"Question","name":"What software do I need?","acceptedAnswer":{"@type":"Answer","text":"VizMaker, where you use Nano Banana Pro, Kling AI, Seedream, GPT Image and Magnific. VizMaker gives you 40 free credits to start, no card needed. The 7-day trial adds 100 credits and unlimited Nano Banana 2. Your base image can be a render from SketchUp, 3ds Max or Revit, or a photo."}},{"@type":"Question","name":"How long is the course?","acceptedAnswer":{"@type":"Answer","text":"9 video lessons, 2 h 11 min in total. After signing up you get 10 days of access to all lessons."}},{"@type":"Question","name":"What will I be able to create?","acceptedAnswer":{"@type":"Answer","text":"Cinematic AI animations of architecture: golden hour, storm, snow, fog and night versions of one render, camera moves, and vertical clips for Reels and TikTok."}},{"@type":"Question","name":"Who teaches the course?","acceptedAnswer":{"@type":"Answer","text":"Anthony Rewucki, CEO and Co-Founder of VizMaker AI and VizAcademy Group, with more than 10 years in 3D graphics, archviz and EdTech."}}]}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -562,12 +562,22 @@ footer.vmf{background:var(--bg);margin-top:20px}
 .langbar .ls span{background:rgba(0,228,240,.12);border:1px solid rgba(0,228,240,.35);border-radius:999px;padding:2px 8px;font-size:12px;white-space:nowrap}
 .langbar small{color:#b8cfd3;font-size:12px}
 @media (max-width:720px){.langbar .ls{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;max-width:100%;padding-bottom:2px;scrollbar-width:none}.langbar .ls::-webkit-scrollbar{display:none}}
+
+/* ===== MINIKURS TIMER 10 dni ===== */
+.mkt-bar{background:#0a1a22;border-bottom:1px solid rgba(255,204,0,.35);color:#fff;font-size:14px;font-weight:600;text-align:center;padding:7px 12px}
+.mkt-bar b{color:#ffcc00}
+.mkt-lock{position:fixed;inset:0;z-index:9999;background:rgba(1,7,13,.96);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+.mkt-lock[hidden]{display:none!important}
+.mkt-lock h2{font-size:clamp(24px,4vw,34px);margin:0 0 12px;color:var(--h)}
+.mkt-lock p{color:var(--t2);margin:0 auto 26px;max-width:480px}
+.mkt-lock .mkt-cta{display:inline-block;background:var(--b);color:#001117;padding:15px 30px;border-radius:10px;font-weight:800;text-decoration:none}
+.mkt-lock .mkt-x{display:block;margin:18px auto 0;background:none;border:0;color:var(--t3);font:inherit;text-decoration:underline;cursor:pointer}
 </style>
 </head>
 <body>
 
 <div class="langbar" role="note" aria-label="Course languages"><div class="in"><span aria-hidden="true">🌐</span><span class="ls"><span>English</span><span>Deutsch</span><span>Español</span><span>Français</span><span>Italiano</span><span>Português</span><span>Nederlands</span><span>Polski</span><span>Українська</span><span>हिन्दी</span><span>Bahasa Indonesia</span><span>日本語</span><span>മലയാളം</span></span><small>Choose your language in the video settings after signup</small></div></div>
-<div class="topbar"><div class="in">
+<div class="topbar"><div class="mkt-bar" id="mkt-bar" hidden></div><div class="in">
   <div class="nm">Free AI Course: Viral Architecture Animation <span>· Nano Banana Pro + Kling + VizMaker</span></div>
   <a class="cta" href="#signup-sec"><span class="old">$199</span> $0 · Get<span class="cx"> the course</span></a>
 </div></div>
@@ -657,7 +667,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="wrap">
     <div class="eyebrow">Full curriculum · 9 lessons · 2 h 11 min</div>
     <h2>The whole workflow, lesson by lesson</h2>
-    <ul class="getlist"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>VizMaker project file</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Ready-to-use AI prompts</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Base render to practice on</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Lifetime access</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Bonus: 40 free credits + 7-day trial (100 credits, Nano Banana 2 unlimited)</li></ul>
+    <ul class="getlist"><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>VizMaker project file</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Ready-to-use AI prompts</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Base render to practice on</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>10-day access</li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Bonus: 40 free credits + 7-day trial (100 credits, Nano Banana 2 unlimited)</li></ul>
     <p class="lead" style="margin:14px 0 0;font-size:16px"><b style="color:var(--h)">Project files and all links are in the description of each lesson video</b> on YouTube, so you can follow along step by step.</p>
   </div>
   <div class="cc" data-cc data-auto="1" data-speed="36" id="progcar" style="--w:360px">
@@ -788,7 +798,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="wrap">
     <div class="eyebrow">FAQ</div>
     <h2>Frequently asked questions</h2>
-    <div class="faq"><details open><summary>Is the mini-course really free?</summary><p>Yes. While spots last the full course costs $0 instead of $199. You only need an email address, no credit card.</p></details><details><summary>Do I need animation experience?</summary><p>No. The course is beginner friendly. You start from a single image and follow one project step by step.</p></details><details><summary>What software do I need?</summary><p>VizMaker, where you use Nano Banana Pro, Kling AI, Seedream, GPT Image and Magnific. VizMaker gives you 40 free credits to start, no card needed. The 7-day trial adds 100 credits and unlimited Nano Banana 2. Your base image can be a render from SketchUp, 3ds Max or Revit, or a photo.</p></details><details><summary>How long is the course?</summary><p>9 video lessons, 2 h 11 min in total. Learn at your own pace with lifetime access.</p></details><details><summary>What will I be able to create?</summary><p>Cinematic AI animations of architecture: golden hour, storm, snow, fog and night versions of one render, camera moves, and vertical clips for Reels and TikTok.</p></details><details><summary>Who teaches the course?</summary><p>Anthony Rewucki, CEO and Co-Founder of VizMaker AI and VizAcademy Group, with more than 10 years in 3D graphics, archviz and EdTech.</p></details></div>
+    <div class="faq"><details open><summary>Is the mini-course really free?</summary><p>Yes. While spots last the full course costs $0 instead of $199. You only need an email address, no credit card.</p></details><details><summary>Do I need animation experience?</summary><p>No. The course is beginner friendly. You start from a single image and follow one project step by step.</p></details><details><summary>What software do I need?</summary><p>VizMaker, where you use Nano Banana Pro, Kling AI, Seedream, GPT Image and Magnific. VizMaker gives you 40 free credits to start, no card needed. The 7-day trial adds 100 credits and unlimited Nano Banana 2. Your base image can be a render from SketchUp, 3ds Max or Revit, or a photo.</p></details><details><summary>How long is the course?</summary><p>9 video lessons, 2 h 11 min in total. After signing up you get 10 days of access to all lessons.</p></details><details><summary>What will I be able to create?</summary><p>Cinematic AI animations of architecture: golden hour, storm, snow, fog and night versions of one render, camera moves, and vertical clips for Reels and TikTok.</p></details><details><summary>Who teaches the course?</summary><p>Anthony Rewucki, CEO and Co-Founder of VizMaker AI and VizAcademy Group, with more than 10 years in 3D graphics, archviz and EdTech.</p></details></div>
   </div>
 </section>
 </main>
@@ -822,6 +832,11 @@ footer.vmf{background:var(--bg);margin-top:20px}
   <div class="box"><div class="x"><button type="button" id="mclose" aria-label="Close">✕</button></div><div class="vframe" id="mframe"></div></div>
 </div>
 
+<div class="mkt-lock" id="mkt-lock" hidden role="dialog" aria-label="Your course access has expired"><div>
+  <h2>Your course access has expired</h2><p>Your 10 days are up. Keep creating with AI in VizMaker.</p>
+  <a class="mkt-cta" href="#">Create free account</a>
+  <button type="button" class="mkt-x" onclick="document.getElementById('mkt-lock').hidden=true">Close</button>
+</div></div>
 <script>
 // ===== ANALITYKA: wpisz ID i gotowe =====
 const TRACK={
@@ -1064,9 +1079,34 @@ const HOOK='https://hooks.zapier.com/hooks/catch/4692325/45y5jv2/';
 let okT=null;
 function resetForm(){clearTimeout(okT);const f=document.getElementById('signup'),b=f.querySelector('button');
  document.getElementById('ok').hidden=true;f.hidden=false;f.reset();b.disabled=false;b.textContent='Get the full course for free';document.getElementById('err').textContent='';}
+
+// ===== MINIKURS TIMER: 10 dni od pierwszego otwarcia lekcji =====
+const MKT=(function(){
+  const KEY='mk_viral_anim_start',DAYS=10,CTA='https://vizmaker.com/?src=viral-architecture-animation';
+  const get=()=>{try{return parseInt(localStorage.getItem(KEY),10)||0;}catch(_){return 0;}};
+  const end=()=>get()+DAYS*864e5;
+  const expired=()=>get()>0&&Date.now()>=end();
+  function start(){if(!get()){try{localStorage.setItem(KEY,String(Date.now()));}catch(_){}}tick();}
+  function tick(){
+    const bar=document.getElementById('mkt-bar');if(!bar||!get())return;
+    const left=end()-Date.now();if(left<=0){bar.hidden=true;lock();return;}
+    const d=Math.floor(left/864e5),h=Math.floor(left%864e5/36e5),m=Math.floor(left%36e5/6e4);
+    bar.innerHTML=d>0?'⏳ Course access: <b>{d} days {h} h</b> left'.replace('{d}',d).replace('{h}',h):'⏳ Course access: <b>{h} h {m} min</b> left'.replace('{h}',h).replace('{m}',m);
+    bar.hidden=false;clearTimeout(tick.t);tick.t=setTimeout(tick,60000);
+  }
+  function lock(){
+    const el=document.getElementById('mkt-lock');if(!el)return;
+    el.querySelector('.mkt-cta').href=CTA;el.hidden=false;
+    try{track.ev('minicourse_expired',null,{course:TRACK.course});}catch(_){}
+  }
+  return {expired,start,lock};
+})();
+
 function openAccess(){
+  if(MKT.expired()){MKT.lock();return;}
 renderProgram(true);
 try{localStorage.setItem('mk_viral_anim','1');}catch(_){}
+MKT.start();
 }
 function unlock(email){
 if(HOOK)track.ev('generate_lead',{std:true,name:'Lead',oai:'lead_created'},{method:'minikurs_form'});
