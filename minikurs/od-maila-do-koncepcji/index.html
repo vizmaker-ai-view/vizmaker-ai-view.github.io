@@ -581,8 +581,9 @@ OneSignalDeferred.push(async function(OneSignal){
   try{await OneSignal.init({appId:'f731215b-2bee-485d-9885-819c21484aeb',requiresUserPrivacyConsent:true,
     serviceWorkerPath:'/OneSignalSDKWorker.js',serviceWorkerParam:{scope:'/'},notifyButton:{enable:false}});}
   catch(e){console.warn('OneSignal init failed',e);return;}
-  if(OneSignal.Notifications.permission)OneSignal.setConsentGiven(true);
   window.MK_OS=OneSignal;
+  if(OneSignal.Notifications.permission){OneSignal.setConsentGiven(true);
+    if(!OneSignal.User.PushSubscription.optedIn){try{await OneSignal.User.PushSubscription.optIn();}catch(e){console.warn('optIn',e);}}}
   OneSignal.User.PushSubscription.addEventListener('change',function(e){if(e.current.optedIn){MKP.tag();MKP.hide();try{track.ev('push_subscribe',{name:'Subscribe'},{channel:'webpush',course:TRACK.course});}catch(_){}}});
   if(OneSignal.Notifications.permission&&OneSignal.User.PushSubscription.optedIn)MKP.tag();
   MKP.ready();
@@ -1166,7 +1167,8 @@ const MKP=(function(){
   function ready(){isReady=true;if(want)setTimeout(show,1500);}
   document.addEventListener('click',function(ev){
     if(ev.target.id==='mk-push-y'){const o=os();if(!o)return;hide();
-      o.setConsentGiven(true);o.Notifications.requestPermission();}
+      o.setConsentGiven(true);Promise.resolve(o.Notifications.requestPermission()).then(function(){
+        if(o.Notifications.permission&&!o.User.PushSubscription.optedIn)return o.User.PushSubscription.optIn();}).then(function(){if(on())tag();}).catch(function(e){console.warn('push',e);});}
     if(ev.target.id==='mk-push-n'){hide();try{localStorage.setItem(DKEY,String(Date.now()+3*864e5));}catch(_){}}
   });
   return {show,hide,tag,ready};
