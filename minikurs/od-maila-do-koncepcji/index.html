@@ -578,7 +578,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 <script>
 window.OneSignalDeferred=window.OneSignalDeferred||[];
 OneSignalDeferred.push(async function(OneSignal){
-  try{await OneSignal.init({appId:'%(app)s',requiresUserPrivacyConsent:true,
+  try{await OneSignal.init({appId:'f731215b-2bee-485d-9885-819c21484aeb',requiresUserPrivacyConsent:true,
     serviceWorkerPath:'/OneSignalSDKWorker.js',serviceWorkerParam:{scope:'/'},notifyButton:{enable:false}});}
   catch(e){console.warn('OneSignal init failed',e);return;}
   if(OneSignal.Notifications.permission)OneSignal.setConsentGiven(true);
