@@ -1094,7 +1094,7 @@ const MKT=(function(){
     const bar=document.getElementById('mkt-bar');if(!bar||!get())return;
     const left=end()-Date.now();if(left<=0){bar.hidden=true;lock();return;}
     const d=Math.floor(left/864e5),h=Math.floor(left%864e5/36e5),m=Math.floor(left%36e5/6e4);
-    bar.innerHTML=d>0?'⏳ Dostęp do minikursu: zostało <b>{d} dni {h} h</b>'.replace('{d}',d).replace('{h}',h):'⏳ Dostęp do minikursu: zostało <b>{h} h {m} min</b>'.replace('{h}',h).replace('{m}',m);
+    bar.innerHTML=d>0?'⏳ Dostęp do minikursu: zostało <b>{d} dni {h} h {m} min</b>'.replace('{d}',d).replace('{h}',h).replace('{m}',m):'⏳ Dostęp do minikursu: zostało <b>{h} h {m} min</b>'.replace('{h}',h).replace('{m}',m);
     bar.hidden=false;clearTimeout(tick.t);tick.t=setTimeout(tick,60000);
   }
   function lock(){

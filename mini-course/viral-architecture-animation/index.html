@@ -576,7 +576,7 @@ footer.vmf{background:var(--bg);margin-top:20px}
 </head>
 <body>
 
-<div class="langbar" role="note" aria-label="Course languages"><div class="in"><span aria-hidden="true">🌐</span><span class="ls"><span>English</span><span>Deutsch</span><span>Español</span><span>Français</span><span>Italiano</span><span>Português</span><span>Nederlands</span><span>Polski</span><span>Українська</span><span>हिन्दी</span><span>Bahasa Indonesia</span><span>日本語</span><span>മലയാളം</span></span><small>Choose your language in the video settings after signup</small></div></div>
+<div class="langbar" role="note" aria-label="Course languages"><div class="in"><span aria-hidden="true">🌐</span><span class="ls"><span>English</span><span>Deutsch</span><span>Español</span><span>Français</span><span>Italiano</span><span>Português</span><span>Nederlands</span><span>Polski</span><span>Українська</span><span>हिन्दी</span><span>Bahasa Indonesia</span><span>日本語</span><span>മലയാളം</span></span></div></div>
 <div class="topbar"><div class="mkt-bar" id="mkt-bar" hidden></div><div class="in">
   <div class="nm">Free AI Course: Viral Architecture Animation <span>· Nano Banana Pro + Kling + VizMaker</span></div>
   <a class="cta" href="#signup-sec"><span class="old">$199</span> $0 · Get<span class="cx"> the course</span></a>
@@ -1091,7 +1091,7 @@ const MKT=(function(){
     const bar=document.getElementById('mkt-bar');if(!bar||!get())return;
     const left=end()-Date.now();if(left<=0){bar.hidden=true;lock();return;}
     const d=Math.floor(left/864e5),h=Math.floor(left%864e5/36e5),m=Math.floor(left%36e5/6e4);
-    bar.innerHTML=d>0?'⏳ Course access: <b>{d} days {h} h</b> left'.replace('{d}',d).replace('{h}',h):'⏳ Course access: <b>{h} h {m} min</b> left'.replace('{h}',h).replace('{m}',m);
+    bar.innerHTML=d>0?'⏳ Course access: <b>{d} days {h} h {m} min</b> left'.replace('{d}',d).replace('{h}',h).replace('{m}',m):'⏳ Course access: <b>{h} h {m} min</b> left'.replace('{h}',h).replace('{m}',m);
     bar.hidden=false;clearTimeout(tick.t);tick.t=setTimeout(tick,60000);
   }
   function lock(){
